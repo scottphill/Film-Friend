@@ -1,21 +1,22 @@
-package com.usf_mobile_dev.filmfriend.ui.dashboard;
+package com.usf_mobile_dev.filmfriend.ui.history;
 
 import android.app.Application;
 
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.usf_mobile_dev.filmfriend.MovieRepository;
 
-public class DashboardViewModel extends ViewModel {
+public class HistoryViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> mText;
     private MovieRepository movieRepository;
 
-    public DashboardViewModel(Application application) {
+    public HistoryViewModel(Application application) {
+        super(application);
         mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
+        mText.setValue("This is the History fragment");
         movieRepository = new MovieRepository(application);
     }
 

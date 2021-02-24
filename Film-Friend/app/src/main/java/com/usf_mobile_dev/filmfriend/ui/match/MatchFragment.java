@@ -1,4 +1,4 @@
-package com.usf_mobile_dev.filmfriend.ui.dashboard;
+package com.usf_mobile_dev.filmfriend.ui.match;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.usf_mobile_dev.filmfriend.R;
 
-public class DashboardFragment extends Fragment {
+public class MatchFragment extends Fragment {
 
-    private DashboardViewModel dashboardViewModel;
+    private MatchViewModel matchViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        final TextView textView = root.findViewById(R.id.text_dashboard);
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        matchViewModel =
+                new ViewModelProvider(this).get(MatchViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_match, container, false);
+        final TextView textView = root.findViewById(R.id.text_match);
+        matchViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
