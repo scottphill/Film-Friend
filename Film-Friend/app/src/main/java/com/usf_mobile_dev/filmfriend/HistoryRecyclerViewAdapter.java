@@ -15,11 +15,11 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter
         <HistoryRecyclerViewAdapter.MyViewHolder>{
 
     Context mContext;
-    List<Movie_temp> mData;
+    List<MovieListing> mMovies;
 
-    public HistoryRecyclerViewAdapter(Context mContext, List<Movie_temp> mData) {
+    public HistoryRecyclerViewAdapter(Context mContext) {
         this.mContext = mContext;
-        this.mData = mData;
+        //this.mMovies = mMovies;
     }
 
     @NonNull
@@ -27,7 +27,7 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v;
-        v = LayoutInflater.from(mContext).inflate(R.layout.item_movie_temp, parent, false);
+        v = LayoutInflater.from(mContext).inflate(R.layout.item_movie_listing, parent, false);
         MyViewHolder vHolder = new MyViewHolder(v);
 
         return vHolder;
@@ -35,22 +35,35 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.tv_movie_name.setText(mData.get(position).getName());
+        if (mMovies != null) {
+            MovieListing current = mMovies.get(position);
+            holder.movieItemView.setText(current.getMovieName());
+        } else {
+            // Covers the case of data not being ready yet.
+            holder.movieItemView.setText("No Word");
+        }
+    }
+
+    public void setMovieNames(List<MovieListing> movies){
+        mMovies = movies;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        if (mMovies != null)
+            return mMovies.size();
+        else return 0;
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tv_movie_name;
+        private TextView movieItemView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
-            tv_movie_name = (TextView) itemView.findViewById((R.id.movie_text));
+            movieItemView = (TextView) itemView.findViewById((R.id.movieName));
         }
     }
 }
