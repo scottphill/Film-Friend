@@ -82,8 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:checked="true"
-                android:onClick="onCheckboxClicked"
-                android:text="CheckBox"
+                android:text="Action"
                 app:layout_constraintBottom_toBottomOf="@+id/match_header_genre"
                 app:layout_constraintStart_toEndOf="@+id/match_header_genre"
                 app:layout_constraintTop_toTopOf="@+id/match_header_genre" />
@@ -271,10 +270,11 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/match_FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_margin="64dp"
         android:src="@android:drawable/ic_menu_search" />"
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
