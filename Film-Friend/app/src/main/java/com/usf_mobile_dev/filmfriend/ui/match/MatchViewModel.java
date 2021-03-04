@@ -16,7 +16,7 @@ public class MatchViewModel extends AndroidViewModel {
     public MatchViewModel(Application application) {
         super(application);
         mText = new MutableLiveData<>();
-        mText.setValue("This is the Match fragment");
+        mText.setValue("Filters:");
         movieRepository = new MovieRepository(application);
     }
 
