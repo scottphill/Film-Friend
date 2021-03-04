@@ -2,11 +2,18 @@ package com.usf_mobile_dev.filmfriend.ui.match;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,13 +35,23 @@ public class MatchFragment extends Fragment {
             "Sci-Fi", "TV Movie", "Thriller", "War", "Western"
         };
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.match_nav_menu, menu);
+    }
+
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
         matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
         View root = inflater.inflate(R.layout.fragment_match, container, false);
-
-        Toolbar toolbar = root.findViewById(R.id.match_toolbar);
 
         FloatingActionButton fab = root.findViewById(R.id.match_FAB);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -47,6 +64,44 @@ public class MatchFragment extends Fragment {
                 //*/
             }
         });
+
+
+        //EditText release_year_start = root.findViewById(R.id.release_date_start);
+        //EditText release_year_end = root.findViewById(R.id.release_date_end);
+
+        SeekBar seekbar_min = root.findViewById(R.id.seekBar_rating_min);
+        SeekBar seekbar_max = root.findViewById(R.id.seekBar_rating_max);
+
+        seekbar_min.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Refreshes too slow
+                //Toast.makeText(getActivity(), progress + "", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                matchViewModel.setRating(seekBar.getProgress(), true);
+                Toast.makeText(getActivity(), seekBar.getProgress() + "",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }));
+        seekbar_max.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Refreshes too slow
+                //Toast.makeText(getActivity(), progress + "", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                matchViewModel.setRating(seekBar.getProgress(), false);
+                Toast.makeText(getActivity(), seekBar.getProgress() + "",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }));
 
         checkbox_stub(root);
 
@@ -176,138 +231,6 @@ public class MatchFragment extends Fragment {
             public void onClick(View v) {
                 matchViewModel.setGenreVal(genres[16], ((CheckBox) v).isChecked());
             }});
-    }
-
-    public void onCheckboxClicked(View view)
-    {
-        // Is the view now checked?
-        boolean checked = ((CheckBox) view).isChecked();
-        // Check which checkbox was clicked
-        switch(view.getId())
-        {
-            case R.id.checkBox_genre_0:
-                if (checked)
-                {
-                    // if checkBox_genre_0
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_1:
-                if (checked)
-                {
-                    // if checkBox_genre_1
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_2:
-                if (checked)
-                {
-                    // if checkBox_genre_2
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_3:
-                if (checked)
-                {
-                    // if checkBox_genre_3
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_4:
-                if (checked)
-                {
-                    // if checkBox_genre_4
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_5:
-                if (checked)
-                {
-                    // if checkBox_genre_5
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_6:
-                if (checked)
-                {
-                    // if checkBox_genre_6
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_7:
-                if (checked)
-                {
-                    // if checkBox_genre_7
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_8:
-                if (checked)
-                {
-                    // if checkBox_genre_8
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_9:
-                if (checked)
-                {
-                    // if checkBox_genre_9
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_10:
-                if (checked)
-                {
-                    // if checkBox_genre_10
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_11:
-                if (checked)
-                {
-                    // if checkBox_genre_11
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_12:
-                if (checked)
-                {
-                    // if checkBox_genre_12
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_13:
-                if (checked)
-                {
-                    // if checkBox_genre_13
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_14:
-                if (checked)
-                {
-                    // if checkBox_genre_14
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_15:
-                if (checked)
-                {
-                    // if checkBox_genre_15
-                }
-                else
-                    break;
-            case R.id.checkBox_genre_16:
-                if (checked)
-                {
-                    // if checkBox_genre_16
-                }
-                else
-                    break;
-            default:
-                // Do nothing.
-                break;
-        }
     }
 
 }
