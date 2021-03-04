@@ -1,13 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="60dp"
+    android:padding="10dp"
+    app:cardCornerRadius="50dp"
+    app:cardElevation="10dp">
 
     <TextView
+        android:layout_gravity="center_vertical"
+        android:id="@+id/preference_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Preference"/>
+        android:layout_marginLeft="20dp"
+        android:text="Preference Name"/>
 
-</LinearLayout>
+    <LinearLayout
+        android:gravity="end"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/preference_edit_btn"
+            android:layout_gravity="center_vertical"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_preference_edit_24dp"
+            android:background="@color/white"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+        <ImageButton
+            android:id="@+id/preference_delete_btn"
+            android:layout_gravity="center_vertical"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_preference_delete_24dp"
+            android:background="@color/white"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+        <ImageButton
+            android:id="@+id/preference_load_btn"
+            android:layout_gravity="center_vertical"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_preference_load_24dp"
+            android:background="@color/white"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
