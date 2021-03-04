@@ -1,22 +1,280 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.match.MatchFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    <TextView
-        android:id="@+id/text_match"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+
         android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/match_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"></androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+
+        android:background="#FFFFFF"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ui.match.MatchFragment"
+            tools:layout_editor_absoluteY="81dp">
+
+            <TextView
+                android:id="@+id/match_header_release_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:text="Release Year: "
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/release_date_end"
+                android:layout_width="100dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:ems="10"
+                android:inputType="date"
+                app:layout_constraintBottom_toBottomOf="@+id/release_date_start"
+                app:layout_constraintStart_toEndOf="@+id/release_date_start"
+                app:layout_constraintTop_toTopOf="@+id/release_date_start" />
+
+            <EditText
+                android:id="@+id/release_date_start"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:inputType="date"
+                app:layout_constraintBottom_toBottomOf="@+id/match_header_release_date"
+                app:layout_constraintStart_toEndOf="@+id/match_header_release_date"
+                app:layout_constraintTop_toTopOf="@+id/match_header_release_date" />
+
+            <TextView
+                android:id="@+id/match_header_genre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="48dp"
+                android:text="Genre(s):"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/match_header_release_date" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:text="Action"
+                app:layout_constraintBottom_toBottomOf="@+id/match_header_genre"
+                app:layout_constraintStart_toEndOf="@+id/match_header_genre"
+                app:layout_constraintTop_toTopOf="@+id/match_header_genre" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_genre_0"
+                app:layout_constraintTop_toTopOf="@+id/checkBox_genre_0" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_genre_1"
+                app:layout_constraintTop_toTopOf="@+id/checkBox_genre_1" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkBox_genre_2" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_genre_3"
+                app:layout_constraintTop_toTopOf="@+id/checkBox_genre_3" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:text="CheckBox"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_genre_4"
+                app:layout_constraintTop_toTopOf="@+id/checkBox_genre_4" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_genre_5"
+                app:layout_constraintTop_toTopOf="@+id/checkBox_genre_5" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkBox_genre_6" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:text="CheckBox"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_genre_7"
+                app:layout_constraintTop_toTopOf="@+id/checkBox_genre_7" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_genre_8"
+                app:layout_constraintTop_toTopOf="@+id/checkBox_genre_8" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_genre_9"
+                app:layout_constraintTop_toTopOf="@+id/checkBox_genre_9" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkBox_genre_10" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_genre_11"
+                app:layout_constraintTop_toTopOf="@+id/checkBox_genre_11" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_genre_12"
+                app:layout_constraintTop_toTopOf="@+id/checkBox_genre_12" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_genre_13"
+                app:layout_constraintTop_toTopOf="@+id/checkBox_genre_13" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="106dp"
+                android:layout_marginTop="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkBox_genre_14" />
+
+            <CheckBox
+                android:id="@+id/checkBox_genre_16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:onClick="onCheckboxClicked"
+                android:text="CheckBox"
+                app:layout_constraintStart_toEndOf="@+id/checkBox_genre_15"
+                app:layout_constraintTop_toTopOf="@+id/checkBox_genre_15" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/match_FAB"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_gravity="bottom|end"
+        android:layout_margin="64dp"
+        android:src="@android:drawable/ic_menu_search" />"
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
