@@ -34,6 +34,8 @@ public class MatchPreferences {
     }};
     private int release_year_start;
     private int release_year_end;
+    private int rating_min;
+    private int rating_max;
 
     // Getters and Setters
     public HashMap<Integer, Boolean> getGenres_to_include() {
@@ -42,6 +44,7 @@ public class MatchPreferences {
     public void setGenres_to_include(HashMap<Integer, Boolean> genres_to_include) {
         this.genres_to_include = genres_to_include;
     }
+    // Setting the bool for a single genre
     public void setGenre(Integer id, Boolean new_val) {
         this.genres_to_include.replace(id, new_val);
     }
@@ -49,20 +52,20 @@ public class MatchPreferences {
         return release_year_start;
     }
     public void setRelease_year_start(int release_year_start) {
-        if (getRelease_year_end() > release_year_start)
-            this.release_year_start = getRelease_year_end();
-        else
-            this.release_year_start = release_year_start;
+       this.release_year_start = release_year_start;
     }
     public int getRelease_year_end() {
         return release_year_end;
     }
     public void setRelease_year_end(int release_year_end) {
-        if (getRelease_year_start() < release_year_end)
-            this.release_year_end = getRelease_year_start();
-        else
-            this.release_year_end = release_year_end;
+        this.release_year_end = release_year_end;
     }
+
+    public int getRating_min() { return rating_min; }
+    public void setRating_min(int rating_min) { this.rating_min = rating_min; }
+
+    public int getRating_max() { return rating_max; }
+    public void setRating_max(int rating_max) { this.rating_max = rating_max; }
 
     // Constructors
     public MatchPreferences ()

@@ -10,7 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,8 +65,43 @@ public class MatchFragment extends Fragment {
             }
         });
 
+
         //EditText release_year_start = root.findViewById(R.id.release_date_start);
         //EditText release_year_end = root.findViewById(R.id.release_date_end);
+
+        SeekBar seekbar_min = root.findViewById(R.id.seekBar_rating_min);
+        SeekBar seekbar_max = root.findViewById(R.id.seekBar_rating_max);
+
+        seekbar_min.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Refreshes too slow
+                //Toast.makeText(getActivity(), progress + "", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                matchViewModel.setRating(seekBar.getProgress(), true);
+                Toast.makeText(getActivity(), seekBar.getProgress() + "",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }));
+        seekbar_max.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Refreshes too slow
+                //Toast.makeText(getActivity(), progress + "", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                matchViewModel.setRating(seekBar.getProgress(), false);
+                Toast.makeText(getActivity(), seekBar.getProgress() + "",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }));
 
         checkbox_stub(root);
 

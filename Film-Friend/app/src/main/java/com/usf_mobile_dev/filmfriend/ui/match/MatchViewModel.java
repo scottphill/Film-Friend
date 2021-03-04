@@ -48,6 +48,14 @@ public class MatchViewModel extends AndroidViewModel {
         MP.setGenre(id, new_val);
     }
 
+    public void setRating (int new_rating, boolean is_min)
+    {
+        if (is_min)
+            MP.setRating_min(new_rating);
+        else
+            MP.setRating_max(new_rating);
+    }
+
     public MatchViewModel(Application application) {
         super(application);
         mText = new MutableLiveData<>();
