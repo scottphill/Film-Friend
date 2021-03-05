@@ -14,7 +14,7 @@ import retrofit2.Response;
 public class TMDBApi {
     public static String API_KEY = "25ace50f784640868b88295ea133e67e";
 
-    public static String getMovie(
+    public static void getMovie(
             Callback<DiscoverResponse> discoverCallback,
             Executor callbackExecutor,
             MatchPreferences preferences
@@ -111,9 +111,5 @@ public class TMDBApi {
 
             }
         });
-
-        //discoverCall.
-
-        return "lol";
     }
 }
