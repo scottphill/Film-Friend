@@ -30,6 +30,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.usf_mobile_dev.filmfriend.MainActivity;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.ui.qr.QrActivity;
 import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
 
 import java.lang.reflect.Array;
@@ -232,11 +233,14 @@ public class MatchFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.preferences_menu:
-                Intent intent = new Intent(getActivity(),
+                Intent intent_pref = new Intent(getActivity(),
                         PreferencesActivity.class);
-                startActivity(intent);
+                startActivity(intent_pref);
                 return true;
             case R.id.qr_code_menu:
+                Intent intent_qr = new Intent(getActivity(),
+                        QrActivity.class);
+                startActivity(intent_qr);
                 return true;
             default:
                 // Do nothing
