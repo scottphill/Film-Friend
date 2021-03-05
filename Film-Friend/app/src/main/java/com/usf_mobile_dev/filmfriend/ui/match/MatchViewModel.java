@@ -48,12 +48,41 @@ public class MatchViewModel extends AndroidViewModel {
         MP.setGenre(id, new_val);
     }
 
+    public void setWPVal (String name, Boolean new_val)
+    {
+        MP.setWatchProvider(name, new_val);
+    }
+
     public void setRating (int new_rating, boolean is_min)
     {
         if (is_min)
             MP.setRating_min(new_rating);
         else
             MP.setRating_max(new_rating);
+    }
+
+    public void setReleaseYear(int year, boolean is_start)
+    {
+        if (is_start)
+            MP.setRelease_year_start(year);
+        else
+            MP.setRelease_year_end(year);
+    }
+
+    public void setRuntime(int mins, boolean is_min)
+    {
+        if (is_min)
+            MP.setRuntime_min(mins);
+        else
+            MP.setRuntime_max(mins);
+    }
+
+    public void setVoteCount(int count, boolean is_min)
+    {
+        if (is_min)
+            MP.setVote_count_min(count);
+        else
+            MP.setVote_count_max(count);
     }
 
     public MatchViewModel(Application application) {
