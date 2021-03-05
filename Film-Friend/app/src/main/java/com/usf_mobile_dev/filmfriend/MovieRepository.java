@@ -8,6 +8,8 @@ import androidx.room.Dao;
 
 import java.util.List;
 
+import com.usf_mobile_dev.filmfriend.api.TMDBApi;
+
 public class MovieRepository {
 
     private MovieDao mMovieDao;
@@ -40,5 +42,9 @@ public class MovieRepository {
             mAsyncTaskDao.insert(params[0]);
             return null;
         }
+    }
+
+    public void getMovie(){
+        TMDBApi.getMovie();
     }
 }

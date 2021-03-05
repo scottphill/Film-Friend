@@ -6,6 +6,7 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -23,7 +24,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.usf_mobile_dev.filmfriend.MainActivity;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
 
 public class MatchFragment extends Fragment {
 
@@ -106,6 +109,23 @@ public class MatchFragment extends Fragment {
         checkbox_stub(root);
 
         return root;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.preferences_menu:
+                Intent intent = new Intent(getActivity(),
+                        PreferencesActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.qr_code_menu:
+                return true;
+            default:
+                // Do nothing
+        }
+
+        return super.onOptionsItemSelected(item);
     }
     
     private void checkbox_stub(View root)
