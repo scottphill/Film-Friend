@@ -24,7 +24,6 @@ public class HistoryFragment extends Fragment {
 
     private HistoryViewModel historyViewModel;
     private RecyclerView historyRecyclerView;
-    private HistoryRecyclerViewAdapter adapter;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
