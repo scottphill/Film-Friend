@@ -48,6 +48,14 @@ public class MatchFragment extends Fragment {
     final private String[] watch_providers = {
         "Netflix", "Hulu", "Disney+", "Prime Video", "Google Play"
     };
+    final private int DEF_RELEASE_YEAR_MIN = 1850;
+    final private int DEF_RELEASE_YEAR_MAX = 2021;
+    final private int DEF_RATING_MIN = 0;
+    final private int DEF_RATING_MAX = 10;
+    final private int DEF_RUNTIME_MIN = 0;
+    final private int DEF_RUNTIME_MAX = 500;
+    final private int DEF_VOTE_COUNT_MIN = 0;
+    final private int DEF_VOTE_COUNT_MAX = 10000;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,45 +74,8 @@ public class MatchFragment extends Fragment {
         matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
         View root = inflater.inflate(R.layout.fragment_match, container, false);
 
-        FloatingActionButton fab = root.findViewById(R.id.match_FAB);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /*
-                Intent intent = new Intent(MainActivity.this, OrderActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, mOrderMessage);
-                startActivity(intent);
-                //*/
-
-                Toast.makeText(getActivity(), "FAB pressed!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         EditText release_year_start = root.findViewById(R.id.release_date_start);
         EditText release_year_end = root.findViewById(R.id.release_date_end);
-
-        release_year_start.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                matchViewModel.setReleaseYear(
-                        Integer.parseInt(release_year_start.getText().toString()), true);
-            }
-        });
-        release_year_end.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                matchViewModel.setReleaseYear(
-                        Integer.parseInt(release_year_end.getText().toString()), false);
-            }
-        });
 
         SeekBar seekbar_min = root.findViewById(R.id.seekBar_rating_min);
         SeekBar seekbar_max = root.findViewById(R.id.seekBar_rating_max);
@@ -114,12 +85,18 @@ public class MatchFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // Refreshes too slow
                 //Toast.makeText(getActivity(), progress + "", Toast.LENGTH_SHORT).show();
+
+                if (progress > 9) {
+                    seekbar_min.setProgress(9);
+                }
+                if (seekbar_max.getProgress() <= progress) {
+                    seekbar_max.setProgress(progress + 1);
+                }
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                matchViewModel.setRating(seekBar.getProgress(), true);
                 Toast.makeText(getActivity(), seekBar.getProgress() + "",
                         Toast.LENGTH_SHORT).show();
             }
@@ -129,12 +106,18 @@ public class MatchFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // Refreshes too slow
                 //Toast.makeText(getActivity(), progress + "", Toast.LENGTH_SHORT).show();
+
+                if (progress < 1) {
+                    seekbar_max.setProgress(1);
+                }
+                if (seekbar_min.getProgress() >= progress) {
+                    seekbar_min.setProgress(progress - 1);
+                }
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                matchViewModel.setRating(seekBar.getProgress(), false);
                 Toast.makeText(getActivity(), seekBar.getProgress() + "",
                         Toast.LENGTH_SHORT).show();
             }
@@ -149,27 +132,32 @@ public class MatchFragment extends Fragment {
         wp_cb_0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setWPVal(wp_cb_0.getText().toString(), ((CheckBox) v).isChecked());
+                matchViewModel.setWPVal(wp_cb_0.getText().toString(),
+                        ((CheckBox) v).isChecked());
             }});
         wp_cb_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setGenreVal(wp_cb_1.getText().toString(), ((CheckBox) v).isChecked());
+                matchViewModel.setGenreVal(wp_cb_1.getText().toString(),
+                        ((CheckBox) v).isChecked());
             }});
         wp_cb_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setGenreVal(wp_cb_2.getText().toString(), ((CheckBox) v).isChecked());
+                matchViewModel.setGenreVal(wp_cb_2.getText().toString(),
+                        ((CheckBox) v).isChecked());
             }});
         wp_cb_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setGenreVal(wp_cb_3.getText().toString(), ((CheckBox) v).isChecked());
+                matchViewModel.setGenreVal(wp_cb_3.getText().toString(),
+                        ((CheckBox) v).isChecked());
             }});
         wp_cb_4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setGenreVal(wp_cb_4.getText().toString(), ((CheckBox) v).isChecked());
+                matchViewModel.setGenreVal(wp_cb_4.getText().toString(),
+                        ((CheckBox) v).isChecked());
             }});
 
         genre_checkbox_stub(root);
@@ -177,52 +165,76 @@ public class MatchFragment extends Fragment {
         EditText runtime_min = root.findViewById(R.id.runtime_min);
         EditText runtime_max = root.findViewById(R.id.runtime_max);
 
-        runtime_min.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                matchViewModel.setRuntime(
-                        Integer.parseInt(runtime_min.getText().toString()), true);
-            }
-        });
-        runtime_max.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                matchViewModel.setRuntime(
-                        Integer.parseInt(runtime_max.getText().toString()), false);
-            }
-        });
-
         EditText vote_count_min = root.findViewById(R.id.vote_count_min);
         EditText vote_count_max = root.findViewById(R.id.vote_count_max);
 
-        vote_count_min.addTextChangedListener(new TextWatcher() {
+        FloatingActionButton fab = root.findViewById(R.id.match_FAB);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                matchViewModel.setVoteCount(
+            public void onClick(View view) {
+
+                Toast.makeText(getActivity(), "FAB pressed!", Toast.LENGTH_SHORT).show();
+                // SAVE ALL INFO
+                try {
+                    matchViewModel.setReleaseYear(
+                            Integer.parseInt(release_year_start.getText().toString()), true);
+                }
+                catch (Exception e) {
+                    matchViewModel.setReleaseYear(DEF_RELEASE_YEAR_MIN, true);
+                }
+                try {
+                    matchViewModel.setReleaseYear(
+                        Integer.parseInt(release_year_end.getText().toString()), false);
+                }
+                catch (Exception e) {
+                    matchViewModel.setReleaseYear(DEF_RELEASE_YEAR_MAX, false);
+                }
+                try {
+                    matchViewModel.setRating(seekbar_min.getProgress(), true);
+                }
+                catch (Exception e) {
+                    matchViewModel.setRating(DEF_RATING_MIN, true);
+                }
+                try {
+                    matchViewModel.setRating(seekbar_max.getProgress(), false);
+                }
+                catch (Exception e) {
+                    matchViewModel.setRating(DEF_RATING_MAX, false);
+                }
+                try {
+                    matchViewModel.setRuntime(
+                        Integer.parseInt(runtime_min.getText().toString()), true);
+                }
+                catch (Exception e) {
+                    matchViewModel.setRuntime(DEF_RUNTIME_MIN, true);
+                }
+                try {
+                    matchViewModel.setRuntime(
+                        Integer.parseInt(runtime_max.getText().toString()), false);
+                }
+                catch (Exception e) {
+                    matchViewModel.setRuntime(DEF_RUNTIME_MAX, false);
+                }
+                try {
+                    matchViewModel.setVoteCount(
                         Integer.parseInt(vote_count_min.getText().toString()), true);
-            }
-        });
-        vote_count_max.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                matchViewModel.setVoteCount(
+                }
+                catch (Exception e) {
+                    matchViewModel.setVoteCount(DEF_VOTE_COUNT_MIN, true);
+                }
+                try {
+                    matchViewModel.setVoteCount(
                         Integer.parseInt(vote_count_max.getText().toString()), false);
+                }
+                catch (Exception e) {
+                    matchViewModel.setVoteCount(DEF_VOTE_COUNT_MAX, false);
+                }
+
+                /*
+                Intent intent = new Intent(MainActivity.this, OrderActivity.class);
+                intent.putExtra(EXTRA_MESSAGE, mOrderMessage);
+                startActivity(intent);
+                //*/
             }
         });
 

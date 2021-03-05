@@ -42,14 +42,14 @@ public class MatchPreferences {
         put("Prime Video", watch_providers_cb_init);
         put("Google Play", watch_providers_cb_init);
     }};
-    private int release_year_start;
-    private int release_year_end;
-    private int rating_min;
-    private int rating_max;
-    private int runtime_min;
-    private int runtime_max;
-    private int vote_count_min;
-    private int vote_count_max;
+    private int release_year_start = 1850;
+    private int release_year_end = 2021;
+    private int rating_min = 0;
+    private int rating_max = 10;
+    private int runtime_min = 0;
+    private int runtime_max = 500;
+    private int vote_count_min = 0;
+    private int vote_count_max = 10000;
 
     // Getters and Setters
     public HashMap<Integer, Boolean> getGenres_to_include() {
