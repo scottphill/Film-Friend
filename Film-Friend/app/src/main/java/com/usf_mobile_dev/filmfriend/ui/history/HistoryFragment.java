@@ -1,7 +1,11 @@
 package com.usf_mobile_dev.filmfriend.ui.history;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -17,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.usf_mobile_dev.filmfriend.HistoryRecyclerViewAdapter;
 import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
 
 import java.util.List;
 
@@ -45,8 +50,12 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
-
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.history_menu, menu);
     }
 
     @Override
@@ -69,4 +78,15 @@ public class HistoryFragment extends Fragment {
             }
         });
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.analytics_menu) {
+            Intent intent_pref = new Intent(getActivity(),
+                    AnalyticsActivity.class);
+            startActivity(intent_pref);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
