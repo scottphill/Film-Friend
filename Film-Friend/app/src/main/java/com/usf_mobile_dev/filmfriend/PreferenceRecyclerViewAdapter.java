@@ -5,10 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
 import com.usf_mobile_dev.filmfriend.ui.savedPreferences.SavedPreference;
 
 import java.util.List;
@@ -19,8 +21,9 @@ public class PreferenceRecyclerViewAdapter extends RecyclerView.Adapter
     Context mContext;
     List<SavedPreference> mSavedPreferences;
 
-    public PreferenceRecyclerViewAdapter(Context mContext) {
+    public PreferenceRecyclerViewAdapter(Context mContext, List<SavedPreference> preferences) {
         this.mContext = mContext;
+        this.mSavedPreferences = preferences;
     }
 
     @NonNull
@@ -45,11 +48,6 @@ public class PreferenceRecyclerViewAdapter extends RecyclerView.Adapter
         }
     }
 
-    public void setMovieNames(List<SavedPreference> preferences){
-        mSavedPreferences = preferences;
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemCount() {
         if (mSavedPreferences != null)
@@ -57,7 +55,7 @@ public class PreferenceRecyclerViewAdapter extends RecyclerView.Adapter
         else return 0;
     }
 
-    public static class PreferenceViewHolder extends RecyclerView.ViewHolder {
+    public class PreferenceViewHolder extends RecyclerView.ViewHolder {
 
         private TextView preferenceItemView;
 
@@ -65,6 +63,25 @@ public class PreferenceRecyclerViewAdapter extends RecyclerView.Adapter
             super(itemView);
 
             preferenceItemView = (TextView) itemView.findViewById((R.id.preference_name));
+
+            itemView.findViewById(R.id.preference_delete_btn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(mContext, "Delete", Toast.LENGTH_LONG).show();
+                }
+            });
+            itemView.findViewById(R.id.preference_edit_btn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(mContext, "Edit", Toast.LENGTH_LONG).show();
+                }
+            });
+            itemView.findViewById(R.id.preference_load_btn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(mContext, "Load", Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 }

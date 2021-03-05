@@ -31,7 +31,7 @@ public class PreferencesActivity extends AppCompatActivity {
         // Create recycler view.
         mRecyclerView = findViewById(R.id.preferences_recyclerview);
         // Create an adapter and supply the data to be displayed.
-        mAdapter = new PreferenceRecyclerViewAdapter(this);
+        mAdapter = new PreferenceRecyclerViewAdapter(this, mPreferenceList);
         // Connect the adapter with the recycler view.
         mRecyclerView.setAdapter(mAdapter);
         // Give the recycler view a default layout manager.
