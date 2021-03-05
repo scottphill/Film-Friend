@@ -5,7 +5,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface TMDBInterface {
-    @GET("/discover/movie")
+    @GET("discover/movie")
     Call<DiscoverResponse> discoverMovie(
             @Query(value = "api_key", encoded = true)
                     String api_key,
@@ -32,6 +32,8 @@ interface TMDBInterface {
             @Query(value = "with_runtime.lte", encoded = true)
                     Integer withRuntimeUpperBound,
             @Query(value = "with_watch_providers", encoded = true)
-                    String withWatchProviders
+                    String withWatchProviders,
+            @Query(value = "watch_region", encoded = true)
+                    String watchRegion
     );
 }

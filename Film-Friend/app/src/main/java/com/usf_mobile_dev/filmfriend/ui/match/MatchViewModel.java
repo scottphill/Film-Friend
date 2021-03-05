@@ -1,22 +1,42 @@
 package com.usf_mobile_dev.filmfriend.ui.match;
 
 import android.app.Application;
+import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.util.Pair;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.usf_mobile_dev.filmfriend.MovieRepository;
+import com.usf_mobile_dev.filmfriend.RepositoryCallback;
+import com.usf_mobile_dev.filmfriend.ThreadResult;
+import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MatchViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> mText;
     private MovieRepository movieRepository;
     private MatchPreferences MP;
+
+    public MatchViewModel(Application application) {
+        super(application);
+        mText = new MutableLiveData<>();
+        mText.setValue("Filters:");
+        movieRepository = new MovieRepository(application);
+        MP = new MatchPreferences();
+    }
 
     // https://api.themoviedb.org/3/genre/movie/list?api_key=25ace50f784640868b88295ea133e67e&language=en-US
     final private HashMap<String, Integer> genres_to_api_id = new HashMap<String, Integer>()
@@ -41,6 +61,14 @@ public class MatchViewModel extends AndroidViewModel {
         put("War", 10752);
         put("Western", 37);
     }};
+    final private HashMap<String, Integer> watch_providers_to_api_id = new HashMap<String, Integer>()
+    {{
+        put("Netflix", 8);
+        put("Hulu", 15);
+        put("Disney+", 337);
+        put("Amazon Prime", 9);
+        put("Google Play", 3);
+    }};
 
     public void setGenreVal (String name, Boolean new_val)
     {
@@ -50,7 +78,8 @@ public class MatchViewModel extends AndroidViewModel {
 
     public void setWPVal (String name, Boolean new_val)
     {
-        MP.setWatchProvider(name, new_val);
+        int id = watch_providers_to_api_id.get(name);
+        MP.setWatchProvider(id, new_val);
     }
 
     public void setRating (int new_rating, boolean is_min)
@@ -85,12 +114,42 @@ public class MatchViewModel extends AndroidViewModel {
             MP.setVote_count_max(count);
     }
 
-    public MatchViewModel(Application application) {
-        super(application);
-        mText = new MutableLiveData<>();
-        mText.setValue("Filters:");
-        movieRepository = new MovieRepository(application);
-        MP = new MatchPreferences();
+    public void getTMDBMovie(Context context) {
+        movieRepository.getTMDBMovie(
+                new Callback<DiscoverResponse>() {
+                    @Override
+                    public void onResponse(
+                            Call<DiscoverResponse> call,
+                            Response<DiscoverResponse> response
+                    ) {
+                        Random randGen = new Random();
+
+                        DiscoverResponse results = response.body();
+                        int numMovies = results.movieData.size();
+                        int movieChoice = randGen.nextInt(numMovies);
+                        String resultsStr = results.movieData.get(movieChoice).title;
+                        Toast.makeText(context, resultsStr, Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<DiscoverResponse> call, Throwable t) {
+                        call.cancel();
+                        Toast.makeText(context, "SEARCH FAILED", Toast.LENGTH_LONG).show();
+                    }
+                },
+                context.getMainExecutor(),
+                MP);
+            /*new RepositoryCallback<DiscoverResponse>() {
+                @Override
+                public void onComplete(ThreadResult<DiscoverResponse> result) {
+                    if (result instanceof ThreadResult.Success) {
+                        // Happy Path
+                    }
+                    else {
+                        // Error Happened - Show to User
+                    }
+                }
+            });*/
     }
 
     public LiveData<String> getText() {

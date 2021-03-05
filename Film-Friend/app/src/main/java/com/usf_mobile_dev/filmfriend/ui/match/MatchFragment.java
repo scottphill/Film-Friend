@@ -46,7 +46,7 @@ public class MatchFragment extends Fragment {
         "Sci-Fi", "TV Movie", "Thriller", "War", "Western"
     };
     final private String[] watch_providers = {
-        "Netflix", "Hulu", "Disney+", "Prime Video", "Google Play"
+        "Netflix", "Hulu", "Disney+", "Amazon Prime", "Google Play"
     };
     final private int DEF_RELEASE_YEAR_MIN = 1850;
     final private int DEF_RELEASE_YEAR_MAX = 2021;
@@ -138,25 +138,25 @@ public class MatchFragment extends Fragment {
         wp_cb_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setGenreVal(wp_cb_1.getText().toString(),
+                matchViewModel.setWPVal(wp_cb_1.getText().toString(),
                         ((CheckBox) v).isChecked());
             }});
         wp_cb_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setGenreVal(wp_cb_2.getText().toString(),
+                matchViewModel.setWPVal(wp_cb_2.getText().toString(),
                         ((CheckBox) v).isChecked());
             }});
         wp_cb_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setGenreVal(wp_cb_3.getText().toString(),
+                matchViewModel.setWPVal(wp_cb_3.getText().toString(),
                         ((CheckBox) v).isChecked());
             }});
         wp_cb_4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setGenreVal(wp_cb_4.getText().toString(),
+                matchViewModel.setWPVal(wp_cb_4.getText().toString(),
                         ((CheckBox) v).isChecked());
             }});
 
@@ -235,6 +235,8 @@ public class MatchFragment extends Fragment {
                 intent.putExtra(EXTRA_MESSAGE, mOrderMessage);
                 startActivity(intent);
                 //*/
+
+                matchViewModel.getTMDBMovie(getActivity());
             }
         });
 

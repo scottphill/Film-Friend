@@ -1,8 +1,9 @@
 package com.usf_mobile_dev.filmfriend.ui.match;
 
 import androidx.core.util.Pair;
-
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MatchPreferences {
 
@@ -11,37 +12,7 @@ public class MatchPreferences {
     // True = all checkboxes start as checked, False = unchecked
     final private Boolean watch_providers_cb_init = true;
 
-    // <genre_ids, if_include_in_query>
-    private HashMap<Integer, Boolean> genres_to_include = new HashMap<Integer, Boolean>()
-    {{
-        put(28, genre_cb_init);
-        put(12, genre_cb_init);
-        put(16, genre_cb_init);
-        put(35, genre_cb_init);
-        put(80, genre_cb_init);
-        put(99, genre_cb_init);
-        put(18, genre_cb_init);
-        put(10751, genre_cb_init);
-        put(14, genre_cb_init);
-        put(36, genre_cb_init);
-        put(27, genre_cb_init);
-        put(10402, genre_cb_init);
-        put(9648, genre_cb_init);
-        put(10749, genre_cb_init);
-        put(878, genre_cb_init);
-        put(10770, genre_cb_init);
-        put(53, genre_cb_init);
-        put(10752, genre_cb_init);
-        put(37, genre_cb_init);
-    }};
-    private HashMap<String, Boolean> watch_providers_to_include = new HashMap<String, Boolean>()
-    {{
-        put("Netflix", watch_providers_cb_init);
-        put("Hulu", watch_providers_cb_init);
-        put("Disney+", watch_providers_cb_init);
-        put("Prime Video", watch_providers_cb_init);
-        put("Google Play", watch_providers_cb_init);
-    }};
+    // The movie preferences
     private int release_year_start = 1850;
     private int release_year_end = 2021;
     private int rating_min = 0;
@@ -50,6 +21,65 @@ public class MatchPreferences {
     private int runtime_max = 500;
     private int vote_count_min = 0;
     private int vote_count_max = 10000;
+    private HashMap<Integer, Boolean> genres_to_include;
+    private HashMap<Integer, Boolean> watch_providers_to_include;
+
+    // Constructor
+    public MatchPreferences ()
+    {
+        release_year_start = 1850;
+        release_year_end = 2021;
+        rating_min = 0;
+        rating_max = 10;
+        runtime_min = 0;
+        runtime_max = 500;
+        vote_count_min = 0;
+        vote_count_max = 10000;
+        // <genre_ids, if_include_in_query>
+        genres_to_include = new HashMap<Integer, Boolean>();
+        genres_to_include.put(28, genre_cb_init);
+        genres_to_include.put(12, genre_cb_init);
+        genres_to_include.put(16, genre_cb_init);
+        genres_to_include.put(35, genre_cb_init);
+        genres_to_include.put(80, genre_cb_init);
+        genres_to_include.put(99, genre_cb_init);
+        genres_to_include.put(18, genre_cb_init);
+        genres_to_include.put(10751, genre_cb_init);
+        genres_to_include.put(14, genre_cb_init);
+        genres_to_include.put(36, genre_cb_init);
+        genres_to_include.put(27, genre_cb_init);
+        genres_to_include.put(10402, genre_cb_init);
+        genres_to_include.put(9648, genre_cb_init);
+        genres_to_include.put(10749, genre_cb_init);
+        genres_to_include.put(878, genre_cb_init);
+        genres_to_include.put(10770, genre_cb_init);
+        genres_to_include.put(53, genre_cb_init);
+        genres_to_include.put(10752, genre_cb_init);
+        genres_to_include.put(37, genre_cb_init);
+        // <watch provider ids, if_include_in_query>
+        watch_providers_to_include = new HashMap<Integer, Boolean>()
+        {{
+            put(8, watch_providers_cb_init);
+            put(15, watch_providers_cb_init);
+            put(337, watch_providers_cb_init);
+            put(9, watch_providers_cb_init);
+            put(3, watch_providers_cb_init);
+        }};
+    }
+
+    public String getGenresString() {
+        return genres_to_include.entrySet().stream()
+                .filter(Map.Entry::getValue)
+                .map(entry -> Integer.toString(entry.getKey()))
+                .collect(Collectors.joining(","));
+    }
+
+    public String getWatchProvidersString() {
+        return watch_providers_to_include.entrySet().stream()
+                .filter(Map.Entry::getValue)
+                .map(entry -> Integer.toString(entry.getKey()))
+                .collect(Collectors.joining(","));
+    }
 
     // Getters and Setters
     public HashMap<Integer, Boolean> getGenres_to_include() {
@@ -81,15 +111,15 @@ public class MatchPreferences {
     public int getRating_max() { return rating_max; }
     public void setRating_max(int rating_max) { this.rating_max = rating_max; }
 
-    public HashMap<String, Boolean> getWatch_providers_to_include() {
+    public HashMap<Integer, Boolean> getWatch_providers_to_include() {
         return watch_providers_to_include;
     }
-    public void setWatch_providers_to_include(HashMap<String, Boolean> watch_providers_to_include) {
+    public void setWatch_providers_to_include(HashMap<Integer, Boolean> watch_providers_to_include) {
         this.watch_providers_to_include = watch_providers_to_include;
     }
     // Setting the bool for a single watch provider
-    public void setWatchProvider(String name, Boolean new_val) {
-        this.watch_providers_to_include.replace(name, new_val);
+    public void setWatchProvider(Integer id, Boolean new_val) {
+        this.watch_providers_to_include.replace(id, new_val);
     }
 
     public int getRuntime_min() { return runtime_min; }
@@ -103,10 +133,4 @@ public class MatchPreferences {
 
     public int getVote_count_max() { return vote_count_max; }
     public void setVote_count_max(int vote_count_max) { this.vote_count_max = vote_count_max; }
-
-    // Constructors
-    public MatchPreferences ()
-    {
-
-    }
 }
