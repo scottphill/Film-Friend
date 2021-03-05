@@ -2,6 +2,8 @@ package com.usf_mobile_dev.filmfriend.ui.match;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,8 +11,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -28,15 +32,21 @@ import com.usf_mobile_dev.filmfriend.MainActivity;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MatchFragment extends Fragment {
 
     private MatchViewModel matchViewModel;
-    final private String[] genres =
-        {
-            "Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama",
-            "Family", "Fantasy", "History", "Horror", "Music", "Mystery", "Romance",
-            "Sci-Fi", "TV Movie", "Thriller", "War", "Western"
-        };
+    final private String[] genres = {
+        "Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama",
+        "Family", "Fantasy", "History", "Horror", "Music", "Mystery", "Romance",
+        "Sci-Fi", "TV Movie", "Thriller", "War", "Western"
+    };
+    final private String[] watch_providers = {
+        "Netflix", "Hulu", "Disney+", "Prime Video", "Google Play"
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +58,6 @@ public class MatchFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.match_nav_menu, menu);
     }
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
@@ -65,12 +74,36 @@ public class MatchFragment extends Fragment {
                 intent.putExtra(EXTRA_MESSAGE, mOrderMessage);
                 startActivity(intent);
                 //*/
+
+                Toast.makeText(getActivity(), "FAB pressed!", Toast.LENGTH_SHORT).show();
             }
         });
 
+        EditText release_year_start = root.findViewById(R.id.release_date_start);
+        EditText release_year_end = root.findViewById(R.id.release_date_end);
 
-        //EditText release_year_start = root.findViewById(R.id.release_date_start);
-        //EditText release_year_end = root.findViewById(R.id.release_date_end);
+        release_year_start.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                matchViewModel.setReleaseYear(
+                        Integer.parseInt(release_year_start.getText().toString()), true);
+            }
+        });
+        release_year_end.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                matchViewModel.setReleaseYear(
+                        Integer.parseInt(release_year_end.getText().toString()), false);
+            }
+        });
 
         SeekBar seekbar_min = root.findViewById(R.id.seekBar_rating_min);
         SeekBar seekbar_max = root.findViewById(R.id.seekBar_rating_max);
@@ -106,7 +139,91 @@ public class MatchFragment extends Fragment {
             }
         }));
 
-        checkbox_stub(root);
+        CheckBox wp_cb_0 = (CheckBox)root.findViewById(R.id.wp_button_0);
+        CheckBox wp_cb_1 = (CheckBox)root.findViewById(R.id.wp_button_1);
+        CheckBox wp_cb_2 = (CheckBox)root.findViewById(R.id.wp_button_2);
+        CheckBox wp_cb_3 = (CheckBox)root.findViewById(R.id.wp_button_3);
+        CheckBox wp_cb_4 = (CheckBox)root.findViewById(R.id.wp_button_4);
+
+        wp_cb_0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                matchViewModel.setWPVal(wp_cb_0.getText().toString(), ((CheckBox) v).isChecked());
+            }});
+        wp_cb_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                matchViewModel.setGenreVal(wp_cb_1.getText().toString(), ((CheckBox) v).isChecked());
+            }});
+        wp_cb_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                matchViewModel.setGenreVal(wp_cb_2.getText().toString(), ((CheckBox) v).isChecked());
+            }});
+        wp_cb_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                matchViewModel.setGenreVal(wp_cb_3.getText().toString(), ((CheckBox) v).isChecked());
+            }});
+        wp_cb_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                matchViewModel.setGenreVal(wp_cb_4.getText().toString(), ((CheckBox) v).isChecked());
+            }});
+
+        genre_checkbox_stub(root);
+
+        EditText runtime_min = root.findViewById(R.id.runtime_min);
+        EditText runtime_max = root.findViewById(R.id.runtime_max);
+
+        runtime_min.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                matchViewModel.setRuntime(
+                        Integer.parseInt(runtime_min.getText().toString()), true);
+            }
+        });
+        runtime_max.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                matchViewModel.setRuntime(
+                        Integer.parseInt(runtime_max.getText().toString()), false);
+            }
+        });
+
+        EditText vote_count_min = root.findViewById(R.id.vote_count_min);
+        EditText vote_count_max = root.findViewById(R.id.vote_count_max);
+
+        vote_count_min.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                matchViewModel.setVoteCount(
+                        Integer.parseInt(vote_count_min.getText().toString()), true);
+            }
+        });
+        vote_count_max.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                matchViewModel.setVoteCount(
+                        Integer.parseInt(vote_count_max.getText().toString()), false);
+            }
+        });
 
         return root;
     }
@@ -128,7 +245,7 @@ public class MatchFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
     
-    private void checkbox_stub(View root)
+    private void genre_checkbox_stub(View root)
     {
         CheckBox cb_0 = (CheckBox)root.findViewById(R.id.checkBox_genre_0);
         CheckBox cb_1 = (CheckBox)root.findViewById(R.id.checkBox_genre_1);
