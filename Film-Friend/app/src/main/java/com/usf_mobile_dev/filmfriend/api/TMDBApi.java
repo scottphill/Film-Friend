@@ -26,8 +26,8 @@ public class TMDBApi {
         Call<DiscoverResponse> discoverCall = tmdbInterface.discoverMovie(
                 API_KEY,
                 null,
-                preferences.getRelease_year_start(),
-                preferences.getRelease_year_end(),
+                null,
+                null,
                 preferences.getVote_count_min(),
                 preferences.getVote_count_max(),
                 Double.valueOf(preferences.getRating_min()),

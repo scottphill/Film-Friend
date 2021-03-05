@@ -1,23 +1,25 @@
 package com.usf_mobile_dev.filmfriend.ui.movieInfo;
 
-import android.graphics.Movie;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-
+import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.R;
 
 public class MovieInfoActivity extends AppCompatActivity {
 
     private MovieInfoViewModel movieInfoViewModel;
+    private Movie movie;
 
     private TextView mMovieTitle;
     private TextView mMovieRelease;
     private TextView mMovieDirector;
     private TextView mMovieOverview;
+
+    private ImageView mMovieBanner;
+    private ImageView mMoviePoster;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +33,17 @@ public class MovieInfoActivity extends AppCompatActivity {
         mMovieDirector = findViewById(R.id.movie_info_director);
         mMovieOverview = findViewById(R.id.movie_info_overview);
 
-        /*
-        if(getIntent().getExtras() != null) {
-            Movie randomMovie = (Movie) getIntent().getSerializableExtra("randomMovie");
+        mMovieBanner = findViewById(R.id.movie_banner);
+        mMoviePoster = findViewById(R.id.movie_poster);
 
-            mMovieTitle = randomMovie.getTitle();
-            mMovieRelease = randomMovie.getRelease();
-            mMovieDirector = randomMovie.getDirector();
-            mMovieOverview = randomMovie.getOverview();
+        ///*
+        if(getIntent().getExtras() != null) {
+            movie = (Movie) getIntent().getSerializableExtra("randomMovie");
+
+            mMovieTitle.setText(movie.getTitle());
+            mMovieRelease.setText(movie.getReleaseYear());
+            mMovieDirector.setText(movie.getDirector());
+            mMovieOverview.setText(movie.getOverview());
 
         }
         //*/
