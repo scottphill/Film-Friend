@@ -132,31 +132,31 @@ public class MatchFragment extends Fragment {
         wp_cb_0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setWPVal(wp_cb_0.getText().toString(),
+                matchViewModel.setWPVal(watch_providers[0],
                         ((CheckBox) v).isChecked());
             }});
         wp_cb_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setWPVal(wp_cb_1.getText().toString(),
+                matchViewModel.setWPVal(watch_providers[1],
                         ((CheckBox) v).isChecked());
             }});
         wp_cb_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setWPVal(wp_cb_2.getText().toString(),
+                matchViewModel.setWPVal(watch_providers[2],
                         ((CheckBox) v).isChecked());
             }});
         wp_cb_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setWPVal(wp_cb_3.getText().toString(),
+                matchViewModel.setWPVal(watch_providers[3],
                         ((CheckBox) v).isChecked());
             }});
         wp_cb_4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                matchViewModel.setWPVal(wp_cb_4.getText().toString(),
+                matchViewModel.setWPVal(watch_providers[4],
                         ((CheckBox) v).isChecked());
             }});
 

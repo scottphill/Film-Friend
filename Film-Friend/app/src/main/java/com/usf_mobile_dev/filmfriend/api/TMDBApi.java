@@ -23,20 +23,39 @@ public class TMDBApi {
                 .getClient(null)
                 .create(TMDBInterface.class);
 
+        String releaseYearStart = String.valueOf(
+                preferences.getRelease_year_start()
+                + "-01-01"
+        );
+
+        String releaseYearEnd = String.valueOf(
+                preferences.getRelease_year_end()
+                        + "-12-31"
+        );
+
+        String genresStr = preferences.getGenresString();
+        if(preferences.getNumSelectedGenres() >= 17
+                || preferences.getNumSelectedGenres() == 0)
+            genresStr = null;
+
+        String watchProvidersStr = preferences.getWatchProvidersString();
+        if(preferences.getNumSelectedWatchProviders() == 0)
+            watchProvidersStr = null;
+
         Call<DiscoverResponse> discoverCall = tmdbInterface.discoverMovie(
                 API_KEY,
                 null,
-                null,
-                null,
+                releaseYearStart,
+                releaseYearEnd,
                 preferences.getVote_count_min(),
                 preferences.getVote_count_max(),
                 Double.valueOf(preferences.getRating_min()),
                 Double.valueOf(preferences.getRating_max()),
-                preferences.getGenresString(),
+                genresStr,
                 null,
                 preferences.getRuntime_min(),
                 preferences.getRuntime_max(),
-                preferences.getWatchProvidersString(),
+                watchProvidersStr,
                 "US"
         );
 
@@ -50,9 +69,18 @@ public class TMDBApi {
 
                 Random randGen = new Random();
                 int numPages = discoverResponse.totalPages;
-                int numResults = discoverResponse.totalResults;
-                int randMovieIndex = randGen.nextInt(numResults);
-                int randMoviePage = (randMovieIndex / numPages) + 1;
+                int randMoviePage = 1;
+                if(numPages > 0)
+                    randMoviePage = randGen.nextInt(numPages) + 1;
+
+                String genresStr = preferences.getGenresString();
+                if(preferences.getNumSelectedGenres() >= 17
+                        || preferences.getNumSelectedGenres() == 0)
+                    genresStr = null;
+
+                String watchProvidersStr = preferences.getWatchProvidersString();
+                if(preferences.getNumSelectedWatchProviders() == 0)
+                    watchProvidersStr = null;
 
                 TMDBInterface tmdbInterface = TMDBClient
                         .getClient(callbackExecutor)
@@ -61,17 +89,17 @@ public class TMDBApi {
                 Call<DiscoverResponse> discoverCall = tmdbInterface.discoverMovie(
                         API_KEY,
                         randMoviePage,
+                        releaseYearStart,
+                        releaseYearEnd,
+                        preferences.getVote_count_min(),
+                        preferences.getVote_count_max(),
+                        Double.valueOf(preferences.getRating_min()),
+                        Double.valueOf(preferences.getRating_max()),
+                        genresStr,
                         null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
+                        preferences.getRuntime_min(),
+                        preferences.getRuntime_max(),
+                        watchProvidersStr,
                         "US"
                 );
 

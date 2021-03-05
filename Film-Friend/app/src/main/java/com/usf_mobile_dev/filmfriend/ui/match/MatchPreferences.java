@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 public class MatchPreferences {
 
     // True = all checkboxes start as checked, False = unchecked
-    final private Boolean genre_cb_init = true;
+    final private Boolean genre_cb_init = false;
+    final private Boolean WP_CB_INIT = false;
     // True = all checkboxes start as checked, False = unchecked
     final private Boolean watch_providers_cb_init = true;
 
@@ -54,17 +55,15 @@ public class MatchPreferences {
         genres_to_include.put(878, genre_cb_init);
         genres_to_include.put(10770, genre_cb_init);
         genres_to_include.put(53, genre_cb_init);
-        genres_to_include.put(10752, genre_cb_init);
-        genres_to_include.put(37, genre_cb_init);
+        //genres_to_include.put(10752, genre_cb_init);
+        //genres_to_include.put(37, genre_cb_init);
         // <watch provider ids, if_include_in_query>
-        watch_providers_to_include = new HashMap<Integer, Boolean>()
-        {{
-            put(8, watch_providers_cb_init);
-            put(15, watch_providers_cb_init);
-            put(337, watch_providers_cb_init);
-            put(9, watch_providers_cb_init);
-            put(3, watch_providers_cb_init);
-        }};
+        watch_providers_to_include = new HashMap<Integer, Boolean>();
+        watch_providers_to_include.put(8, WP_CB_INIT);
+        watch_providers_to_include.put(15, WP_CB_INIT);
+        watch_providers_to_include.put(337, WP_CB_INIT);
+        watch_providers_to_include.put(9, WP_CB_INIT);
+        watch_providers_to_include.put(3, WP_CB_INIT);
     }
 
     public String getGenresString() {
@@ -74,11 +73,25 @@ public class MatchPreferences {
                 .collect(Collectors.joining(","));
     }
 
+    public int getNumSelectedGenres() {
+        return (int) genres_to_include.entrySet().stream()
+                .filter(Map.Entry::getValue)
+                .map(entry -> Integer.toString(entry.getKey()))
+                .count();
+    }
+
     public String getWatchProvidersString() {
         return watch_providers_to_include.entrySet().stream()
                 .filter(Map.Entry::getValue)
                 .map(entry -> Integer.toString(entry.getKey()))
                 .collect(Collectors.joining(","));
+    }
+
+    public int getNumSelectedWatchProviders() {
+        return (int) watch_providers_to_include.entrySet().stream()
+                .filter(Map.Entry::getValue)
+                .map(entry -> Integer.toString(entry.getKey()))
+                .count();
     }
 
     // Getters and Setters

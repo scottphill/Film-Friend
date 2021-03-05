@@ -78,7 +78,7 @@ public class MatchViewModel extends AndroidViewModel {
 
     public void setWPVal (String name, Boolean new_val)
     {
-        int id = watch_providers_to_api_id.get(name);
+        Integer id = watch_providers_to_api_id.get(name);
         MP.setWatchProvider(id, new_val);
     }
 
@@ -126,9 +126,15 @@ public class MatchViewModel extends AndroidViewModel {
 
                         DiscoverResponse results = response.body();
                         int numMovies = results.movieData.size();
-                        int movieChoice = randGen.nextInt(numMovies);
-                        String resultsStr = results.movieData.get(movieChoice).title;
-                        Toast.makeText(context, resultsStr, Toast.LENGTH_LONG).show();
+                        int movieChoice = 0;
+                        if(numMovies > 0) {
+                            movieChoice = randGen.nextInt(numMovies);
+                            String resultsStr = results.movieData.get(movieChoice).title;
+                            Toast.makeText(context, resultsStr, Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            Toast.makeText(context, "No Matching Movies!", Toast.LENGTH_LONG).show();
+                        }
                     }
 
                     @Override
