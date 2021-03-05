@@ -1,12 +1,15 @@
 package com.usf_mobile_dev.filmfriend.ui.movieInfo;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.bumptech.glide.Glide;
 import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.R;
+import java.net.URL;
+
 
 public class MovieInfoActivity extends AppCompatActivity {
     public static String INTENT_ACTION_LAUNCH_WITH_MOVIE_DATA = "com.usf_mobile_dev.filmfriend.intent.action.launch_with_movie_data";
@@ -50,7 +53,20 @@ public class MovieInfoActivity extends AppCompatActivity {
             mVoteCount.setText(movie.getVoteCountAsString());
             mMovieOverview.setText(movie.getOverview());
 
-            //----Load images----
+            String posterUrl = getString(R.string.tmdb_image_base_url)
+                    + getString(R.string.tmdb_poster_size_3)
+                    + movie.getPosterPath();
+            String backdropUrl = getString(R.string.tmdb_image_base_url)
+                    + getString(R.string.tmdb_backdrop_size_2)
+                    + movie.getBackdropPath();
+
+            Glide.with(this)
+                    .load(posterUrl)
+                    .into(mMoviePoster);
+
+            Glide.with(this)
+                    .load(backdropUrl)
+                    .into(mMovieBanner);
 
         }
         //*/

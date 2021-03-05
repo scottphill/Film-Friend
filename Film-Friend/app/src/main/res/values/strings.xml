@@ -3,7 +3,20 @@
     <string name="title_history">History</string>
     <string name="title_match">Match</string>
     <string name="title_discover">Discover</string>
+    <string name="tmdb_api_key">25ace50f784640868b88295ea133e67e</string>
     <string name="tmdb_api_base_url">https://api.themoviedb.org/3</string>
+    <string name="tmdb_image_base_url">https://image.tmdb.org/t/p/</string>
+    <string name="tmdb_poster_size_0">w92</string>
+    <string name="tmdb_poster_size_1">w154</string>
+    <string name="tmdb_poster_size_2">w185</string>
+    <string name="tmdb_poster_size_3">w342</string>
+    <string name="tmdb_poster_size_4">w500</string>
+    <string name="tmdb_poster_size_5">w780</string>
+    <string name="tmdb_poster_size_6">original</string>
+    <string name="tmdb_backdrop_size_0">w300</string>
+    <string name="tmdb_backdrop_size_1">w780</string>
+    <string name="tmdb_backdrop_size_2">w1280</string>
+    <string name="tmdb_backdrop_size_3">original</string>
     <string name="title_activity_saved_preferences">SavedPreferences</string>
     <!--
     This string is used for square devices and overridden by hello_world in
