@@ -460,6 +460,14 @@
                             app:layout_constraintStart_toEndOf="@+id/vote_count_min"
                             app:layout_constraintTop_toTopOf="@+id/vote_count_min" />
 
+                        <ImageButton
+                            android:id="@+id/imageButton"
+                            android:layout_width="71dp"
+                            android:layout_height="54dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:srcCompat="@drawable/ic_save_24dp" />
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
