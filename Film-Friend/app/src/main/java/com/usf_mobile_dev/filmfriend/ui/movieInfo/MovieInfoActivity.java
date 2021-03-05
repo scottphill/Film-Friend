@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
+
 import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.R;
 
@@ -15,7 +15,8 @@ public class MovieInfoActivity extends AppCompatActivity {
 
     private TextView mMovieTitle;
     private TextView mMovieRelease;
-    private TextView mMovieDirector;
+    private TextView mRating;
+    private TextView mVoteCount;
     private TextView mMovieOverview;
 
     private ImageView mMovieBanner;
@@ -30,7 +31,8 @@ public class MovieInfoActivity extends AppCompatActivity {
 
         mMovieTitle = findViewById(R.id.movie_info_title);
         mMovieRelease = findViewById(R.id.movie_info_release);
-        mMovieDirector = findViewById(R.id.movie_info_director);
+        mRating = findViewById(R.id.rating);
+        mVoteCount = findViewById(R.id.vote_count);
         mMovieOverview = findViewById(R.id.movie_info_overview);
 
         mMovieBanner = findViewById(R.id.movie_banner);
@@ -42,8 +44,10 @@ public class MovieInfoActivity extends AppCompatActivity {
 
             mMovieTitle.setText(movie.getTitle());
             mMovieRelease.setText(movie.getReleaseYear());
-            mMovieDirector.setText(movie.getDirector());
+            mRating.setText(movie.getDirector());
             mMovieOverview.setText(movie.getOverview());
+
+            //----Load images----
 
         }
         //*/
