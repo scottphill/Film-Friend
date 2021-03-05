@@ -59,19 +59,19 @@ public class MovieRepository {
             final Executor callbackExecutor,
             final MatchPreferences matchPreferences
             ) {
-        threadExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                TMDBApi.getMovie(discoverCallback, callbackExecutor, matchPreferences);
-                /*try {
-                    ThreadResult<DiscoverResponse> discoverResult = getMovie();
-                    notifyTMDBMovieResult(discoverResult, callback);
-                } catch (Exception e) {
-                    ThreadResult<DiscoverResponse> errorResult = new ThreadResult.Error<>(e);
-                    notifyTMDBMovieResult(errorResult, callback);
-                }*/
-            }
-        });
+                threadExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        TMDBApi.getMovie(discoverCallback, callbackExecutor, matchPreferences);
+                        /*try {
+                            ThreadResult<DiscoverResponse> discoverResult = getMovie();
+                            notifyTMDBMovieResult(discoverResult, callback);
+                        } catch (Exception e) {
+                            ThreadResult<DiscoverResponse> errorResult = new ThreadResult.Error<>(e);
+                            notifyTMDBMovieResult(errorResult, callback);
+                        }*/
+                    }
+                });
     }
 
     /*private void notifyTMDBMovieResult(

@@ -2,24 +2,25 @@ package com.usf_mobile_dev.filmfriend.ui.match;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
-
 import androidx.core.util.Pair;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.MovieRepository;
 import com.usf_mobile_dev.filmfriend.RepositoryCallback;
 import com.usf_mobile_dev.filmfriend.ThreadResult;
 import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
+import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -126,12 +127,35 @@ public class MatchViewModel extends AndroidViewModel {
 
                         DiscoverResponse results = response.body();
                         int numMovies = results.movieData.size();
-                        int movieChoice = 0;
+                        // Launches the activity if there are any movies returned
                         if(numMovies > 0) {
-                            movieChoice = randGen.nextInt(numMovies);
-                            String resultsStr = results.movieData.get(movieChoice).title;
-                            Toast.makeText(context, resultsStr, Toast.LENGTH_LONG).show();
+                            int movieChoiceIndex = randGen.nextInt(numMovies);
+                            DiscoverResponse.MovieData resultMovie =
+                                    results.movieData.get(movieChoiceIndex);
+
+                            Movie movie = new Movie();
+                            movie.setTitle(resultMovie.title);
+                            movie.setOverview(resultMovie.overview);
+                            movie.setReleaseYear(Integer.valueOf(
+                                                            resultMovie
+                                                            .releaseDate
+                                                            .split("-")[0]));
+                            movie.setRating(resultMovie.voteAverage);
+                            movie.setVoteCount(resultMovie.voteCount);
+                            movie.setTmdbMovieId(resultMovie.id);
+                            movie.setPosterPath(resultMovie.posterPath);
+                            movie.setBackdropPath(resultMovie.backdropPath);
+
+                            Intent movieActivityIntent = new Intent(
+                                    context,
+                                    MovieInfoActivity.class
+                            );
+                            movieActivityIntent.putExtra(
+                                    MovieInfoActivity.INTENT_EXTRAS_MOVIE_DATA,
+                                    movie);
+                            context.startActivity(movieActivityIntent);
                         }
+                        // Pops a toast if there aren't any movies returned
                         else {
                             Toast.makeText(context, "No Matching Movies!", Toast.LENGTH_LONG).show();
                         }

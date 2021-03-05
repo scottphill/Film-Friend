@@ -9,6 +9,8 @@ import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.R;
 
 public class MovieInfoActivity extends AppCompatActivity {
+    public static String INTENT_ACTION_LAUNCH_WITH_MOVIE_DATA = "com.usf_mobile_dev.filmfriend.intent.action.launch_with_movie_data";
+    public static String INTENT_EXTRAS_MOVIE_DATA = "com.usf_mobile_dev.filmfriend.intent.extras.movie_data";
 
     private MovieInfoViewModel movieInfoViewModel;
     private Movie movie;
@@ -40,11 +42,12 @@ public class MovieInfoActivity extends AppCompatActivity {
 
         ///*
         if(getIntent().getExtras() != null) {
-            movie = (Movie) getIntent().getSerializableExtra("randomMovie");
+            movie = (Movie) getIntent().getSerializableExtra(INTENT_EXTRAS_MOVIE_DATA);
 
             mMovieTitle.setText(movie.getTitle());
-            mMovieRelease.setText(movie.getReleaseYear());
-            mRating.setText(movie.getDirector());
+            mMovieRelease.setText(movie.getReleaseYearAsStr());
+            mRating.setText(movie.getRatingAsFormattedStr());
+            mVoteCount.setText(movie.getVoteCountAsString());
             mMovieOverview.setText(movie.getOverview());
 
             //----Load images----
