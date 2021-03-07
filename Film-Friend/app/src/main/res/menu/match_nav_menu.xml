@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/qr_code_menu"
+        android:orderInCategory="20"
+        android:title="QR Code"
+        android:icon="@drawable/ic_qr_code"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/preferences_menu"
+        android:orderInCategory="10"
+        android:title="Preferences"
+        android:icon="@drawable/ic_preferences"
+        app:showAsAction="always"
+        />
+
+</menu>
