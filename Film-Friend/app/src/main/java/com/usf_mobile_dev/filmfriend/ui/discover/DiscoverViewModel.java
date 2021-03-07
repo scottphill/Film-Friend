@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.usf_mobile_dev.filmfriend.MovieListing;
+import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.MovieRepository;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class DiscoverViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> mText;
     private MovieRepository movieRepository;
-    private LiveData<List<MovieListing>> mAllMovies;
+    private LiveData<List<Movie>> mAllMovies;
 
     public DiscoverViewModel(Application application) {
         super(application);
@@ -25,9 +25,9 @@ public class DiscoverViewModel extends AndroidViewModel {
         mAllMovies = movieRepository.getAllMovies();
     }
 
-    LiveData<List<MovieListing>> getAllMovies() {return mAllMovies;}
+    LiveData<List<Movie>> getAllMovies() {return mAllMovies;}
 
-    public void insert(MovieListing movie) {movieRepository.insert(movie);}
+    public void insert(Movie movie) {movieRepository.insert(movie);}
 
     public LiveData<String> getText() {
         return mText;

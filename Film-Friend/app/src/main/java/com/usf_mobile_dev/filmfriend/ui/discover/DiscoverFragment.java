@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,10 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.usf_mobile_dev.filmfriend.HistoryRecyclerViewAdapter;
-import com.usf_mobile_dev.filmfriend.MovieListing;
+import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.R;
 
-import java.lang.reflect.Array;
 import java.util.List;
 
 public class DiscoverFragment extends Fragment {
@@ -60,11 +58,11 @@ public class DiscoverFragment extends Fragment {
         spinnerMileRadius = view.findViewById(R.id.spinner_miles);
         populateSpinnerMiles();
 
-        discoverViewModel.getAllMovies().observe(getViewLifecycleOwner(), new Observer<List<MovieListing>>() {
+        discoverViewModel.getAllMovies().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
-            public void onChanged(@Nullable final List<MovieListing> movies) {
+            public void onChanged(@Nullable final List<Movie> movies) {
                 // Update the cached copy of the words in the adapter.
-                adapter.setMovieNames(movies);
+                adapter.setMovies(movies);
             }
         });
     }

@@ -18,11 +18,11 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter
         <HistoryRecyclerViewAdapter.MyViewHolder>{
 
     Context mContext;
-    List<MovieListing> mMovies;
+    List<Movie> mMovies;
+    private static ClickListener clickListener;
 
     public HistoryRecyclerViewAdapter(Context mContext) {
         this.mContext = mContext;
-        //this.mMovies = mMovies;
     }
 
     @NonNull
@@ -39,12 +39,12 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         if (mMovies != null) {
-            MovieListing current = mMovies.get(position);
-            holder.movieItemName.setText(current.getMovieName());
+            Movie current = mMovies.get(position);
+            holder.movieItemName.setText(current.getTitle());
             holder.movieItemRelease.setText((String.valueOf(current.getReleaseYear())));
 
             String posterUrl = "https://image.tmdb.org/t/p/w342"
-                    + current.getPosterUrl();
+                    + current.getPosterPath();
             Glide.with(mContext)
                     .load(posterUrl)
                     .into(holder.movieItemPoster);
@@ -54,7 +54,7 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter
         }
     }
 
-    public void setMovieNames(List<MovieListing> movies){
+    public void setMovies(List<Movie> movies){
         mMovies = movies;
         notifyDataSetChanged();
     }
@@ -64,6 +64,10 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter
         if (mMovies != null)
             return mMovies.size();
         else return 0;
+    }
+
+    public Movie getMovieAtPosition(int position) {
+        return mMovies.get(position);
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -78,6 +82,20 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter
             movieItemName = itemView.findViewById(R.id.movieListingName);
             movieItemRelease = itemView.findViewById(R.id.movieListingRelease);
             movieItemPoster = itemView.findViewById(R.id.movieListingPoster);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickListener.onItemClick(view, getAdapterPosition());
+                }
+            });
         }
+    }
+
+    public void setOnItemClickListener(ClickListener clickListener) {
+        HistoryRecyclerViewAdapter.clickListener = clickListener;
+    }
+
+    public interface ClickListener {
+        void onItemClick(View v, int position);
     }
 }

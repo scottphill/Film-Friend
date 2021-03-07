@@ -1,6 +1,5 @@
 package com.usf_mobile_dev.filmfriend.ui.movieInfo;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,10 +8,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.usf_mobile_dev.filmfriend.Movie;
-import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.ui.history.HistoryViewModel;
-import java.net.URL;
 
 
 public class MovieInfoActivity extends AppCompatActivity {
@@ -21,7 +18,6 @@ public class MovieInfoActivity extends AppCompatActivity {
 
     private MovieInfoViewModel movieInfoViewModel;
     private Movie movie;
-    private MovieListing movieListing;
 
     private TextView mMovieTitle;
     private TextView mMovieRelease;
@@ -74,9 +70,11 @@ public class MovieInfoActivity extends AppCompatActivity {
                     .load(backdropUrl)
                     .into(mMovieBanner);
 
-            movieListing = new MovieListing(movie.getTitle(), movie.getReleaseYear(), movie.getPosterPath());
-            historyViewModel.insert(movieListing);
+            /*movie = new Movie(movie.getTitle(), movie.getOverview(), movie.getReleaseYear(),
+                    movie.getRating(), movie.getVoteCount(), movie.getTmdbMovieId(),
+                    movie.getPosterPath(), movie.getBackdropPath());*/
 
+            historyViewModel.insert(movie);
         }
         //*/
     }

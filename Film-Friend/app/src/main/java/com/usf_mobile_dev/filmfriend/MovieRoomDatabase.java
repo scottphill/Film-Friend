@@ -10,7 +10,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {MovieListing.class}, version = 1, exportSchema = false)
+@Database(entities = {Movie.class}, version = 1, exportSchema = false)
 public abstract class MovieRoomDatabase extends RoomDatabase {
 
     public abstract MovieDao movieDao();
@@ -21,7 +21,7 @@ public abstract class MovieRoomDatabase extends RoomDatabase {
             synchronized (MovieRoomDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            MovieRoomDatabase.class, "word_database")
+                            MovieRoomDatabase.class, "movie_database")
                             // Wipes and rebuilds instead of migrating
                             // if no Migration object.
                             // Migration is not part of this practical.

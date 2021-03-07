@@ -1,11 +1,11 @@
 package com.usf_mobile_dev.filmfriend;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.os.Handler;
 
 import androidx.lifecycle.LiveData;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -18,7 +18,8 @@ import retrofit2.Callback;
 public class MovieRepository {
 
     private MovieDao mMovieDao;
-    private LiveData<List<MovieListing>> mAllMovies;
+    private LiveData<List<Movie>> mAllMovies;
+    private int movieCheck;
     private final Executor threadExecutor;
     private final Handler resultHandler;
 
@@ -31,15 +32,15 @@ public class MovieRepository {
         this.resultHandler = ((MovieApplication)application).mainThreadHandler;
     }
 
-    public LiveData<List<MovieListing>> getAllMovies() {
+    public LiveData<List<Movie>> getAllMovies() {
         return mAllMovies;
     }
 
-    public void insert (MovieListing movie) {
+    public void insert (Movie movie) {
         new insertAsyncTask(mMovieDao).execute(movie);
     }
 
-    private static class insertAsyncTask extends AsyncTask<MovieListing, Void, Void> {
+    private static class insertAsyncTask extends android.os.AsyncTask<Movie, Void, Void> {
 
         private MovieDao mAsyncTaskDao;
 
@@ -48,7 +49,7 @@ public class MovieRepository {
         }
 
         @Override
-        protected Void doInBackground(final MovieListing... params) {
+        protected Void doInBackground(final Movie... params) {
             mAsyncTaskDao.insert(params[0]);
             return null;
         }

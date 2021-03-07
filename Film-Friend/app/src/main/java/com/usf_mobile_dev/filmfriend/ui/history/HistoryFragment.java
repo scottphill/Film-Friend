@@ -1,5 +1,6 @@
 package com.usf_mobile_dev.filmfriend.ui.history;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,9 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.usf_mobile_dev.filmfriend.HistoryRecyclerViewAdapter;
-import com.usf_mobile_dev.filmfriend.MovieListing;
+import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.R;
-import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
+import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
 
 import java.util.List;
 
@@ -70,11 +70,20 @@ public class HistoryFragment extends Fragment {
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         historyRecyclerView.setAdapter(adapter);
 
-        historyViewModel.getAllMovies().observe(getViewLifecycleOwner(), new Observer<List<MovieListing>>() {
+        historyViewModel.getAllMovies().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
-            public void onChanged(@Nullable final List<MovieListing> movies) {
+            public void onChanged(@Nullable final List<Movie> movies) {
                 // Update the cached copy of the words in the adapter.
-                adapter.setMovieNames(movies);
+                adapter.setMovies(movies);
+            }
+        });
+
+        adapter.setOnItemClickListener(new HistoryRecyclerViewAdapter.ClickListener()  {
+
+            @Override
+            public void onItemClick(View v, int position) {
+                Movie movie = adapter.getMovieAtPosition(position);
+                launchMovieInfoActivity(movie);
             }
         });
     }
@@ -87,6 +96,20 @@ public class HistoryFragment extends Fragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void launchMovieInfoActivity( Movie movie) {
+        Context context = getActivity();
+        Intent movieActivityIntent = new Intent(
+                context,
+                MovieInfoActivity.class
+        );
+        movieActivityIntent.putExtra(
+                MovieInfoActivity.INTENT_EXTRAS_MOVIE_DATA,
+                movie);
+        if (context != null) {
+            context.startActivity(movieActivityIntent);
+        }
     }
 
 }
