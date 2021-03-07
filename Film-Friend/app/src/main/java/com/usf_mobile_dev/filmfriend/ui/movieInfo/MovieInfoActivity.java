@@ -5,9 +5,13 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.bumptech.glide.Glide;
 import com.usf_mobile_dev.filmfriend.Movie;
+import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.ui.history.HistoryViewModel;
 import java.net.URL;
 
 
@@ -17,6 +21,7 @@ public class MovieInfoActivity extends AppCompatActivity {
 
     private MovieInfoViewModel movieInfoViewModel;
     private Movie movie;
+    private MovieListing movieListing;
 
     private TextView mMovieTitle;
     private TextView mMovieRelease;
@@ -33,6 +38,7 @@ public class MovieInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_info);
 
         //movieInfoViewModel = new ViewModelProvider(this).get(MovieInfoViewModel.class);
+        HistoryViewModel historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
 
         mMovieTitle = findViewById(R.id.movie_info_title);
         mMovieRelease = findViewById(R.id.movie_info_release);
@@ -67,6 +73,9 @@ public class MovieInfoActivity extends AppCompatActivity {
             Glide.with(this)
                     .load(backdropUrl)
                     .into(mMovieBanner);
+
+            movieListing = new MovieListing(movie.getTitle(), movie.getReleaseYear(), movie.getPosterPath());
+            historyViewModel.insert(movieListing);
 
         }
         //*/

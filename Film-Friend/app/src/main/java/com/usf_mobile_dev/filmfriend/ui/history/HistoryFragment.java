@@ -65,7 +65,7 @@ public class HistoryFragment extends Fragment {
         historyViewModel =
                 new ViewModelProvider(this).get(HistoryViewModel.class);
 
-        historyRecyclerView = (RecyclerView) view.findViewById(R.id.history_recyclerview);
+        historyRecyclerView = view.findViewById(R.id.history_recyclerview);
         HistoryRecyclerViewAdapter adapter  = new HistoryRecyclerViewAdapter(getContext());
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         historyRecyclerView.setAdapter(adapter);

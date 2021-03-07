@@ -34,6 +34,7 @@ public abstract class MovieRoomDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
+    ///*
     private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback(){
 
         @Override
@@ -48,9 +49,9 @@ public abstract class MovieRoomDatabase extends RoomDatabase {
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private final MovieDao mDao;
-        String [] titles = {"Shrek", "Shrek 2", "The Lighthouse", "Soul", "Breach", "Ava",
+        /*String [] titles = {"Shrek", "Shrek 2", "The Lighthouse", "Soul", "Breach", "Ava",
                 "Tom & Jerry", "Jumanji", "Monster Hunter", "Grand Isle", "Shutter Island",
-                "Crisis", "The Vigil", "Burn It All"};
+                "Crisis", "The Vigil", "Burn It All"};*/
 
         PopulateDbAsync(MovieRoomDatabase db) { mDao = db.movieDao(); }
 
@@ -60,11 +61,13 @@ public abstract class MovieRoomDatabase extends RoomDatabase {
             // Not needed if you only populate on creation.
             mDao.deleteAll();
 
+            /*
             for( int i = 0; i <= titles.length - 1; i++) {
                 MovieListing movie = new MovieListing(titles[i]);
                 mDao.insert(movie);
-            }
+            }//*/
             return null;
         }
     }
+    //*/
 }

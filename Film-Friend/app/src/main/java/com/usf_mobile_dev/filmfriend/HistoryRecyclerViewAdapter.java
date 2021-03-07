@@ -1,10 +1,13 @@
 package com.usf_mobile_dev.filmfriend;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,10 +40,17 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         if (mMovies != null) {
             MovieListing current = mMovies.get(position);
-            holder.movieItemView.setText(current.getMovieName());
+            holder.movieItemName.setText(current.getMovieName());
+            holder.movieItemRelease.setText((String.valueOf(current.getReleaseYear())));
+
+            String posterUrl = "https://image.tmdb.org/t/p/w342"
+                    + current.getPosterUrl();
+            Glide.with(mContext)
+                    .load(posterUrl)
+                    .into(holder.movieItemPoster);
         } else {
             // Covers the case of data not being ready yet.
-            holder.movieItemView.setText("No Word");
+            holder.movieItemName.setText("No Word");
         }
     }
 
@@ -58,12 +68,16 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView movieItemView;
+        private TextView movieItemName;
+        private TextView movieItemRelease;
+        private ImageView movieItemPoster;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
-            movieItemView = (TextView) itemView.findViewById((R.id.movieName));
+            movieItemName = itemView.findViewById(R.id.movieListingName);
+            movieItemRelease = itemView.findViewById(R.id.movieListingRelease);
+            movieItemPoster = itemView.findViewById(R.id.movieListingPoster);
         }
     }
 }
