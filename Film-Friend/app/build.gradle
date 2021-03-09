@@ -76,4 +76,7 @@ dependencies {
 
     //MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    //QR code scanner: https://github.com/yuriy-budiyev/code-scanner
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
 }
