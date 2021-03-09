@@ -47,24 +47,26 @@ public class DiscoverFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+
         discoverViewModel =
                 new ViewModelProvider(this).get(DiscoverViewModel.class);
 
-        discoverRecyclerView = (RecyclerView) view.findViewById(R.id.discover_recyclerview);
+        /*discoverRecyclerView = (RecyclerView) view.findViewById(R.id.discover_recyclerview);
         HistoryRecyclerViewAdapter adapter  = new HistoryRecyclerViewAdapter(getContext());
         discoverRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        discoverRecyclerView.setAdapter(adapter);
+        discoverRecyclerView.setAdapter(adapter);*/
 
         spinnerMileRadius = view.findViewById(R.id.spinner_miles);
         populateSpinnerMiles();
 
-        discoverViewModel.getAllMovies().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        /*discoverViewModel.getAllMovies().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable final List<Movie> movies) {
                 // Update the cached copy of the words in the adapter.
                 adapter.setMovies(movies);
             }
-        });
+        });*/
     }
 
     private void populateSpinnerMiles() {
