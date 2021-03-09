@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "572265125016",
+    "project_id": "film-friend",
+    "storage_bucket": "film-friend.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:572265125016:android:63e163aef47b7ad340eced",
+        "android_client_info": {
+          "package_name": "com.usf_mobile_dev.filmfriend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "572265125016-tvhpjv8kij5p50ir5vrbouko8vo9m3ld.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAppcbUr2Y70VH0G4vyB9QexdWH1Ovko18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "572265125016-tvhpjv8kij5p50ir5vrbouko8vo9m3ld.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
