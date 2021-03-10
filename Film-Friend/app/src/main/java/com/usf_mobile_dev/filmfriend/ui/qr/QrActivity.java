@@ -10,7 +10,6 @@ import android.widget.Toast;
 import com.usf_mobile_dev.filmfriend.MainActivity;
 import com.usf_mobile_dev.filmfriend.R;
 
-
 public class QrActivity extends AppCompatActivity {
 
     @Override

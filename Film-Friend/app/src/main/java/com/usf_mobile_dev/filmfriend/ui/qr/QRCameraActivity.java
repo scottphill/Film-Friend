@@ -66,10 +66,8 @@ public class QRCameraActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Log.e("QRCamera", "Camera initialization error: " + error.getMessage());
-                    }
-                });
-            }
-        });
+                    }});
+            }});
 
         //Continuously looks for a new code
         scannerView.setOnClickListener(new View.OnClickListener() {
@@ -96,8 +94,7 @@ public class QRCameraActivity extends AppCompatActivity {
         int permission = ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.CAMERA);
 
-        if (permission != PackageManager.PERMISSION_GRANTED)
-        {
+        if (permission != PackageManager.PERMISSION_GRANTED){
             makePermissionRequest();
         }
     }
@@ -114,8 +111,11 @@ public class QRCameraActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Enable camera permission to use this section of the app.", Toast.LENGTH_LONG).show();
-            } else {
+                Toast.makeText(this,
+                        "Enable camera permission to use this section of the app.",
+                        Toast.LENGTH_LONG).show();
+            }
+            else {
                 //successful request: do nothing!
             }
         }
