@@ -2,13 +2,24 @@ package com.usf_mobile_dev.filmfriend;
 
 import android.app.Application;
 import android.os.Handler;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
 import com.usf_mobile_dev.filmfriend.api.TMDBApi;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
@@ -19,6 +30,7 @@ public class MovieRepository {
 
     private MovieDao mMovieDao;
     private LiveData<List<Movie>> mAllMovies;
+    private MutableLiveData<List<Movie>> mAllMoviesInRadius = new MutableLiveData<>();
     private int movieCheck;
     private final Executor threadExecutor;
     private final Handler resultHandler;
@@ -53,6 +65,66 @@ public class MovieRepository {
             mAsyncTaskDao.insert(params[0]);
             return null;
         }
+    }
+
+    public MutableLiveData<List<Movie>> getAllMoviesNearby(List<String> usersNearby)
+    {
+        //do firebase query
+        FirebaseDatabase.getInstance().getReference("users")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists()) {
+                            //Log.d("movieID",snapshot.getValue().toString());
+                            mAllMoviesInRadius.postValue(findUserMatches(usersNearby, snapshot));
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+        return mAllMoviesInRadius;
+    }
+
+    public List<Movie> findUserMatches(List<String> usersNearby, DataSnapshot snapshot)
+    {
+        List<Movie> movieList = new ArrayList<>();
+        List<String> movieIDs = new ArrayList<>();
+        //Log.d("movieID",String.valueOf(usersNearby.size()));
+        //Log.d("movieID",snapshot.getValue().toString());
+        /*for(DataSnapshot postSnapshot: snapshot.getChildren())
+        {
+            movieList.add(postSnapshot.getValue(Movie.class));
+        }*/
+        //Grab the recentMatch of all nearby users
+        for(String FID: usersNearby)
+        {
+            movieIDs.add(Objects.requireNonNull(snapshot.child(FID).child("recentMatch").getValue()).toString());
+            //Log.d("movieID", movieIDs.get(0));
+        }
+        Log.d("movieID", String.valueOf(movieIDs));
+
+        FirebaseDatabase.getInstance().getReference("movies").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                }
+                else {
+                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                    for(String movieID: movieIDs)
+                    {
+                        movieList.add(task.getResult().child(movieID).getValue(Movie.class));
+                        Log.d("movieID", String.valueOf(task.getResult().child(movieID).getValue(Movie.class).getTitle()));
+                    }
+                }
+            }
+        });
+
+        return movieList;
     }
 
     public void getTMDBMovie(

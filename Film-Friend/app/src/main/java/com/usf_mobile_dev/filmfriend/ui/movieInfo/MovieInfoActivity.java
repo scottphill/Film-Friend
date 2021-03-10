@@ -1,20 +1,53 @@
 package com.usf_mobile_dev.filmfriend.ui.movieInfo;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.installations.FirebaseInstallations;
 import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.ui.history.HistoryViewModel;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class MovieInfoActivity extends AppCompatActivity {
+
+public class MovieInfoActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
     public static String INTENT_ACTION_LAUNCH_WITH_MOVIE_DATA = "com.usf_mobile_dev.filmfriend.intent.action.launch_with_movie_data";
     public static String INTENT_EXTRAS_MOVIE_DATA = "com.usf_mobile_dev.filmfriend.intent.extras.movie_data";
+    public final static int ENABLE_FINE_LOCATION = 1;
+    public final static int ENABLE_COARSE_LOCATION = 2;
+
+    FirebaseDatabase rootNode;
+    DatabaseReference ref_user;
+    DatabaseReference ref_movies;
+    DatabaseReference ref_geoFire;
+    GeoFire geoFire;
+    String FID;
+    Task<String> firebaseInstallation;
+
+    private FusedLocationProviderClient fusedLocationClient;
+
 
     private MovieInfoViewModel movieInfoViewModel;
     private Movie movie;
@@ -46,7 +79,7 @@ public class MovieInfoActivity extends AppCompatActivity {
         mMoviePoster = findViewById(R.id.movie_poster);
 
         ///*
-        if(getIntent().getExtras() != null) {
+        if (getIntent().getExtras() != null) {
             movie = (Movie) getIntent().getSerializableExtra(INTENT_EXTRAS_MOVIE_DATA);
 
             mMovieTitle.setText(movie.getTitle());
@@ -70,12 +103,69 @@ public class MovieInfoActivity extends AppCompatActivity {
                     .load(backdropUrl)
                     .into(mMovieBanner);
 
-            /*movie = new Movie(movie.getTitle(), movie.getOverview(), movie.getReleaseYear(),
-                    movie.getRating(), movie.getVoteCount(), movie.getTmdbMovieId(),
-                    movie.getPosterPath(), movie.getBackdropPath());*/
-
             historyViewModel.insert(movie);
+
+            //Set up firebase instance/references
+            rootNode = FirebaseDatabase.getInstance();
+            ref_user = rootNode.getReference("users");
+            ref_movies = rootNode.getReference("movies");
+            ref_geoFire = rootNode.getReference("geoFire");
+            geoFire = new GeoFire(ref_geoFire);
+
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+            if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this, new String[] {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, ENABLE_FINE_LOCATION);
+                ActivityCompat.requestPermissions(this, new String[] {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, ENABLE_COARSE_LOCATION);
+            }
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                firebaseInstallation = FirebaseInstallations.getInstance().getId()
+                                        .addOnCompleteListener(new OnCompleteListener<String>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<String> task) {
+                                                if (task.isSuccessful()) {
+                                                    FID = task.getResult();
+                                                    ref_user.child(FID).child("recentMatch").setValue(movie.getTmdbMovieId());
+                                                    ref_movies.child(movie.getTmdbMovieIdAsStr()).setValue(movie);
+                                                    geoFire.setLocation(FID, new GeoLocation(location.getLatitude(), location.getLongitude()));
+                                                } else {
+                                                    Log.e("Installations", "Unable to get Installation ID");
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    });
         }
-        //*/
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case ENABLE_FINE_LOCATION:
+            case ENABLE_COARSE_LOCATION:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is granted. Continue the action or workflow
+                    // in your app.
+                } else {
+                    // Explain to the user that the feature is unavailable because
+                    // the features requires a permission that the user has denied.
+                    // At the same time, respect the user's decision. Don't link to
+                    // system settings in an effort to convince the user to change
+                    // their decision.
+                }
+        }
+        // Other 'case' lines to check for other
+        // permissions this app might request.
     }
 }
