@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -56,6 +55,7 @@ public class DiscoverFragment extends Fragment {
     Double[] mileRadius;
     private double radius;
     private List<String> usersNearby = new ArrayList<>();
+    private List<Movie> movieTest = new ArrayList<>();
 
     GeoFire geoFire;
     GeoQuery geoQuery;
@@ -81,6 +81,8 @@ public class DiscoverFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+
         discoverViewModel =
                 new ViewModelProvider(this).get(DiscoverViewModel.class);
         //test = view.findViewById(R.id.nearestMovie);
@@ -92,14 +94,62 @@ public class DiscoverFragment extends Fragment {
         DiscoverRecyclerAdapter adapter  = new DiscoverRecyclerAdapter(getContext());
         discoverRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         discoverRecyclerView.setAdapter(adapter);
-        FragmentActivity activity = getActivity();
 
         spinnerMileRadius.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 radius = (Double) adapterView.getItemAtPosition(i);
-                discoverViewModel.getNearbyUsers(radius, activity);
-                Log.d("NEARBY", String.valueOf(usersNearby));
+                usersNearby.clear();
+                //Log.d("RADIUS", "Here is the radius: " + radius);
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+                if (ActivityCompat.checkSelfPermission(getActivity(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(getActivity(), new String[] {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, ENABLE_FINE_LOCATION);
+                    ActivityCompat.requestPermissions(getActivity(), new String[] {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, ENABLE_COARSE_LOCATION);
+                }
+                fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                // Got last known location. In some rare situations this can be null.
+                                if (location != null) {
+                                    geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), radius);
+                                    geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                                        @Override
+                                        public void onKeyEntered(String key, GeoLocation location) {
+                                            usersNearby.add(key);//add the FID of all the users within range.
+                                        }
+
+                                        @Override
+                                        public void onKeyExited(String key) {
+
+                                        }
+
+                                        @Override
+                                        public void onKeyMoved(String key, GeoLocation location) {
+
+                                        }
+
+                                        @Override
+                                        public void onGeoQueryReady() {
+                                            for(String key: usersNearby)
+                                            {
+                                                Log.d("FID", key);
+                                            }
+                                            movieTest = discoverViewModel.getAllMoviesNearby(usersNearby);
+                                            adapter.setMovies(movieTest);
+                                        }
+
+                                        @Override
+                                        public void onGeoQueryError(DatabaseError error) {
+
+                                        }
+                                    });
+                                }
+                            }
+                        });
             }
 
             @Override
@@ -108,12 +158,13 @@ public class DiscoverFragment extends Fragment {
             }
         });
 
-        discoverViewModel.getAllMoviesNearby(usersNearby).observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        /*discoverViewModel.getAllMoviesNearby(usersNearby).observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable final List<Movie> movies) {
                 adapter.setMovies(movies);
             }
-        });
+        });*/
+
 
         adapter.setOnItemClickListener(new DiscoverRecyclerAdapter.ClickListener()  {
 

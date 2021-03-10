@@ -30,7 +30,7 @@ public class MovieRepository {
 
     private MovieDao mMovieDao;
     private LiveData<List<Movie>> mAllMovies;
-    private MutableLiveData<List<Movie>> mAllMoviesInRadius = new MutableLiveData<>();
+    private List<Movie> mAllMoviesInRadius = new ArrayList<>();
     private int movieCheck;
     private final Executor threadExecutor;
     private final Handler resultHandler;
@@ -67,7 +67,7 @@ public class MovieRepository {
         }
     }
 
-    public MutableLiveData<List<Movie>> getAllMoviesNearby(List<String> usersNearby)
+    public List<Movie> getAllMoviesNearby(List<String> usersNearby)
     {
         //do firebase query
         FirebaseDatabase.getInstance().getReference("users")
@@ -76,7 +76,8 @@ public class MovieRepository {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.exists()) {
                             //Log.d("movieID",snapshot.getValue().toString());
-                            mAllMoviesInRadius.postValue(findUserMatches(usersNearby, snapshot));
+
+                            mAllMoviesInRadius = findUserMatches(usersNearby, snapshot);
                         }
 
                     }
