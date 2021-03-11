@@ -9,24 +9,29 @@ import androidx.lifecycle.MutableLiveData;
 import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.MovieRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DiscoverViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> mText;
     private MovieRepository movieRepository;
-    private List<Movie> mAllMovies;
+    private MutableLiveData<List<Movie>> mAllMovies;
 
     public DiscoverViewModel(Application application) {
         super(application);
         mText = new MutableLiveData<>();
         mText.setValue("This is the Discover fragment");
         movieRepository = new MovieRepository(application);
+        mAllMovies = new MutableLiveData<>();
 
     }
 
-    public List<Movie> getAllMoviesNearby(List<String> usersNearby) {
-        mAllMovies = movieRepository.getAllMoviesNearby(usersNearby);
+    void getAllMoviesNearby(List<String> usersNearby) {
+        mAllMovies.postValue(movieRepository.getAllMoviesNearby(usersNearby));
+    }
+
+    MutableLiveData<List<Movie>> getDiscoverMovieList() {
         return mAllMovies;
     }
 

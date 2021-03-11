@@ -30,7 +30,7 @@ public class MovieRepository {
 
     private MovieDao mMovieDao;
     private LiveData<List<Movie>> mAllMovies;
-    private List<Movie> mAllMoviesInRadius = new ArrayList<>();
+    private List<Movie> mAllMoviesInRadius;
     private int movieCheck;
     private final Executor threadExecutor;
     private final Handler resultHandler;
@@ -76,17 +76,16 @@ public class MovieRepository {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.exists()) {
                             //Log.d("movieID",snapshot.getValue().toString());
-
                             mAllMoviesInRadius = findUserMatches(usersNearby, snapshot);
                         }
 
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
                     }
                 });
+        Log.d("NearbyMovies:", String.valueOf(mAllMoviesInRadius));
         return mAllMoviesInRadius;
     }
 
@@ -94,19 +93,13 @@ public class MovieRepository {
     {
         List<Movie> movieList = new ArrayList<>();
         List<String> movieIDs = new ArrayList<>();
-        //Log.d("movieID",String.valueOf(usersNearby.size()));
-        //Log.d("movieID",snapshot.getValue().toString());
-        /*for(DataSnapshot postSnapshot: snapshot.getChildren())
-        {
-            movieList.add(postSnapshot.getValue(Movie.class));
-        }*/
+
         //Grab the recentMatch of all nearby users
         for(String FID: usersNearby)
         {
             movieIDs.add(Objects.requireNonNull(snapshot.child(FID).child("recentMatch").getValue()).toString());
-            //Log.d("movieID", movieIDs.get(0));
         }
-        Log.d("movieID", String.valueOf(movieIDs));
+        Log.d("movieIDs", String.valueOf(movieIDs));
 
         FirebaseDatabase.getInstance().getReference("movies").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -119,7 +112,7 @@ public class MovieRepository {
                     for(String movieID: movieIDs)
                     {
                         movieList.add(task.getResult().child(movieID).getValue(Movie.class));
-                        Log.d("movieID", String.valueOf(task.getResult().child(movieID).getValue(Movie.class).getTitle()));
+                        Log.d("movieTitle", String.valueOf(task.getResult().child(movieID).getValue(Movie.class).getTitle()));
                     }
                 }
             }

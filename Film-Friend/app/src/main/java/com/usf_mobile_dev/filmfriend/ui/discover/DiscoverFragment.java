@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -55,7 +56,7 @@ public class DiscoverFragment extends Fragment {
     Double[] mileRadius;
     private double radius;
     private List<String> usersNearby = new ArrayList<>();
-    private List<Movie> movieTest = new ArrayList<>();
+    private DiscoverRecyclerAdapter adapter;
 
     GeoFire geoFire;
     GeoQuery geoQuery;
@@ -66,13 +67,29 @@ public class DiscoverFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        discoverViewModel =
-                new ViewModelProvider(this).get(DiscoverViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_discover, container, false);
 
         rootNode = FirebaseDatabase.getInstance();
         ref_geoFire = rootNode.getReference("geoFire");
         geoFire = new GeoFire(ref_geoFire);
+
+        discoverViewModel =
+                new ViewModelProvider(this).get(DiscoverViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_discover, container, false);
+        adapter  = new DiscoverRecyclerAdapter(getContext());
+        discoverRecyclerView = (RecyclerView) root.findViewById(R.id.discover_recyclerview);
+        discoverRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        discoverRecyclerView.setAdapter(adapter);
+
+        final Observer<List<Movie>> movieListObserver = new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(List<Movie> movies) {
+                Log.d("onChanged:", "Movie list has changed");
+                adapter.setMovies(movies);
+                Log.d("onChanged:", "Adapter set");
+            }
+        };
+
+        discoverViewModel.getDiscoverMovieList().observe(getViewLifecycleOwner(), movieListObserver);
 
         return root;
     }
@@ -81,19 +98,8 @@ public class DiscoverFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-
-        discoverViewModel =
-                new ViewModelProvider(this).get(DiscoverViewModel.class);
-        //test = view.findViewById(R.id.nearestMovie);
-
         spinnerMileRadius = view.findViewById(R.id.spinner_miles);
         populateSpinnerMiles();
-
-        discoverRecyclerView = (RecyclerView) view.findViewById(R.id.discover_recyclerview);
-        DiscoverRecyclerAdapter adapter  = new DiscoverRecyclerAdapter(getContext());
-        discoverRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        discoverRecyclerView.setAdapter(adapter);
 
         spinnerMileRadius.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -134,12 +140,13 @@ public class DiscoverFragment extends Fragment {
 
                                         @Override
                                         public void onGeoQueryReady() {
-                                            for(String key: usersNearby)
+                                            /*for(String key: usersNearby)
                                             {
                                                 Log.d("FID", key);
-                                            }
-                                            movieTest = discoverViewModel.getAllMoviesNearby(usersNearby);
-                                            adapter.setMovies(movieTest);
+                                            }*/
+                                            Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
+                                            discoverViewModel.getAllMoviesNearby(usersNearby);
+                                            Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
                                         }
 
                                         @Override
@@ -158,14 +165,6 @@ public class DiscoverFragment extends Fragment {
             }
         });
 
-        /*discoverViewModel.getAllMoviesNearby(usersNearby).observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable final List<Movie> movies) {
-                adapter.setMovies(movies);
-            }
-        });*/
-
-
         adapter.setOnItemClickListener(new DiscoverRecyclerAdapter.ClickListener()  {
 
             @Override
@@ -175,6 +174,8 @@ public class DiscoverFragment extends Fragment {
             }
         });
     }
+
+    
 
     public void launchMovieInfoActivity( Movie movie) {
         Context context = getActivity();
@@ -197,4 +198,6 @@ public class DiscoverFragment extends Fragment {
         spinnerMileRadius.setAdapter(rangeAdapter);
 
     }
+
+
 }
