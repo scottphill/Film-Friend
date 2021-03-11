@@ -7,22 +7,24 @@
     tools:context=".ui.qr.QrActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_qr_scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="192dp"
         android:text="Scan QR"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:onClick="launchQRCamera"/>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/button_qr_generate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="160dp"
         android:text="Generate QR"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/button_qr_scan"
+        android:onClick="launchQRGenerator"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
