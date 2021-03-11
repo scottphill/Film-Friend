@@ -3,24 +3,20 @@ package com.usf_mobile_dev.filmfriend.ui.match;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.Toast;
-import androidx.core.util.Pair;
-import androidx.fragment.app.FragmentActivity;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.MovieRepository;
-import com.usf_mobile_dev.filmfriend.RepositoryCallback;
-import com.usf_mobile_dev.filmfriend.ThreadResult;
 import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
