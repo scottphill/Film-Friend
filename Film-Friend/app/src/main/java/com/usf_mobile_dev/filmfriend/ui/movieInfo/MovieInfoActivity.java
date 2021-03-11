@@ -28,6 +28,8 @@ import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.ui.history.HistoryViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -47,6 +49,7 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
     Task<String> firebaseInstallation;
 
     private FusedLocationProviderClient fusedLocationClient;
+    private Location loc;
 
 
     private MovieInfoViewModel movieInfoViewModel;
@@ -120,34 +123,27 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                 ActivityCompat.requestPermissions(this, new String[] {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, ENABLE_FINE_LOCATION);
                 ActivityCompat.requestPermissions(this, new String[] {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, ENABLE_COARSE_LOCATION);
             }
-            fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                firebaseInstallation = FirebaseInstallations.getInstance().getId()
-                                        .addOnCompleteListener(new OnCompleteListener<String>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<String> task) {
-                                                if (task.isSuccessful()) {
-                                                    FID = task.getResult();
-                                                    ref_user.child(FID).child("recentMatch").setValue(movie.getTmdbMovieId());
-                                                    ref_movies.child(movie.getTmdbMovieIdAsStr()).setValue(movie);
-                                                    geoFire.setLocation(FID, new GeoLocation(location.getLatitude(), location.getLongitude()));
-                                                } else {
-                                                    Log.e("Installations", "Unable to get Installation ID");
-                                                }
-                                            }
-                                        });
+            else if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            {
+                fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                // Got last known location. In some rare situations this can be null.
+                                if (location != null) {
+                                    loc = location;
+                                    Log.d("MovieInfo", "DEBUG1");
+                                    addDataToFirebase();
+                                }
                             }
-                        }
-                    });
+                        });
+            }
         }
     }
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions,
+                                           @NotNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case ENABLE_FINE_LOCATION:
@@ -157,15 +153,58 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission is granted. Continue the action or workflow
                     // in your app.
-                } else {
+                    if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        fusedLocationClient.getLastLocation()
+                                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                                    @Override
+                                    public void onSuccess(Location location) {
+                                        // Got last known location. In some rare situations this can be null.
+                                        if (location != null) {
+                                            loc = location;
+                                            Log.d("MovieInfo", "DEBUG1");
+                                            addDataToFirebase();
+                                        }
+                                    }
+                                });
+                    }
+                }
+                else
+                {
                     // Explain to the user that the feature is unavailable because
                     // the features requires a permission that the user has denied.
                     // At the same time, respect the user's decision. Don't link to
                     // system settings in an effort to convince the user to change
                     // their decision.
+                    Log.d("MovieInfo", "DEBUG2");
+                    addDataToFirebase();//adds without location.
                 }
         }
         // Other 'case' lines to check for other
         // permissions this app might request.
+    }
+
+    public void addDataToFirebase() {
+        firebaseInstallation = FirebaseInstallations.getInstance().getId()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (task.isSuccessful()) {
+                            FID = task.getResult();
+                            ref_user.child(FID).child("recentMatch").setValue(movie.getTmdbMovieId());
+                            ref_movies.child(movie.getTmdbMovieIdAsStr()).setValue(movie);
+                            if(loc != null) {
+                                geoFire.setLocation(FID, new GeoLocation(loc.getLatitude(), loc.getLongitude()));
+                                Log.d("Location", "Added location");
+                            }
+                            else
+                                Log.d("Location", "Added without location");
+                        }
+                        else
+                        {
+                            Log.e("Installations", "Unable to get Installation ID");
+                        }
+                    }
+                });
     }
 }

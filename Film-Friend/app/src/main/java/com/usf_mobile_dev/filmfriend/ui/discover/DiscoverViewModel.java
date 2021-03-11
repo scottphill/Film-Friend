@@ -28,8 +28,8 @@ public class DiscoverViewModel extends AndroidViewModel {
 
     }
 
-    public void getAllMoviesNearby(List<String> usersNearby, FragmentActivity discoverActivity) {
-        movieRepository.getAllMoviesNearby(usersNearby, discoverActivity);
+    public void getAllMoviesNearby(double radius, FragmentActivity discoverActivity) {
+        movieRepository.getAllMoviesNearby(radius, discoverActivity);
     }
 
     public MutableLiveData<List<Movie>> getDiscoverMovieList() {

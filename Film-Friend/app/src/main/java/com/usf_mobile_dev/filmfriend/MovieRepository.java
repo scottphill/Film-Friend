@@ -1,10 +1,14 @@
 package com.usf_mobile_dev.filmfriend;
 
+import android.Manifest;
 import android.app.Application;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -16,12 +20,21 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.installations.FirebaseInstallations;
 import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
 import com.usf_mobile_dev.filmfriend.api.TMDBApi;
 import com.usf_mobile_dev.filmfriend.ui.discover.DiscoverViewModel;
@@ -29,15 +42,28 @@ import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 import retrofit2.Callback;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 public class MovieRepository {
+
+    public final static int ENABLE_FINE_LOCATION = 1;
+    public final static int ENABLE_COARSE_LOCATION = 2;
 
     private MovieDao mMovieDao;
     private LiveData<List<Movie>> mAllMovies;
-    private List<Movie> mAllMoviesInRadius;
-    private int movieCheck;
+    private List<String> usersNearby;
     private final Executor threadExecutor;
     private final Handler resultHandler;
     private DiscoverViewModel discoverViewModel;
+
+    GeoFire geoFire;
+    GeoQuery geoQuery;
+    FirebaseDatabase rootNode;
+    DatabaseReference ref_geoFire;
+    private FusedLocationProviderClient fusedLocationClient;
+    String FID;
+    Task<String> firebaseInstallation;
 
     public MovieRepository(Application application){
         MovieRoomDatabase db = MovieRoomDatabase.getDatabase(application);
@@ -46,6 +72,11 @@ public class MovieRepository {
 
         this.threadExecutor = ((MovieApplication)application).executorService;
         this.resultHandler = ((MovieApplication)application).mainThreadHandler;
+
+        rootNode = FirebaseDatabase.getInstance();
+        ref_geoFire = rootNode.getReference("geoFire");
+        geoFire = new GeoFire(ref_geoFire);
+        usersNearby = new ArrayList<>();
     }
 
     public LiveData<List<Movie>> getAllMovies() {
@@ -71,25 +102,85 @@ public class MovieRepository {
         }
     }
 
-    public void getAllMoviesNearby(List<String> usersNearby, FragmentActivity discoverActivity)
+    public void getAllMoviesNearby(double radius, FragmentActivity discoverActivity)
     {
-        //do firebase query
-        discoverViewModel = new ViewModelProvider(discoverActivity).get(DiscoverViewModel.class);
-        FirebaseDatabase.getInstance().getReference("users")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+
+        firebaseInstallation = FirebaseInstallations.getInstance().getId()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists()) {
-                            //Log.d("movieID",snapshot.getValue().toString());
-                            findUserMatches(usersNearby, snapshot);
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (task.isSuccessful()) {
+                            FID = task.getResult();
+                            usersNearby.clear();
+                            fusedLocationClient = LocationServices.getFusedLocationProviderClient(discoverActivity);
+
+                            if (ActivityCompat.checkSelfPermission(discoverActivity, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                                    && ActivityCompat.checkSelfPermission(discoverActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                                ActivityCompat.requestPermissions(discoverActivity, new String[] {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, ENABLE_FINE_LOCATION);
+                                ActivityCompat.requestPermissions(discoverActivity, new String[] {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, ENABLE_COARSE_LOCATION);
+                            }
+                            fusedLocationClient.getLastLocation()
+                                    .addOnSuccessListener(discoverActivity, new OnSuccessListener<Location>() {
+                                        @Override
+                                        public void onSuccess(Location location) {
+                                            // Got last known location. In some rare situations this can be null.
+                                            if (location != null) {
+                                                geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), radius);
+                                                geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                                                    @Override
+                                                    public void onKeyEntered(String key, GeoLocation location) {
+                                                        usersNearby.add(key);//add the FID of all the users within range.
+                                                    }
+
+                                                    @Override
+                                                    public void onKeyExited(String key) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onKeyMoved(String key, GeoLocation location) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onGeoQueryReady() {
+                                                        discoverViewModel = new ViewModelProvider(discoverActivity).get(DiscoverViewModel.class);
+                                                        FirebaseDatabase.getInstance().getReference("users")
+                                                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                    @Override
+                                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                        if(snapshot.exists()) {
+                                                                            //Log.d("movieID",snapshot.getValue().toString());
+                                                                            findUserMatches(usersNearby, snapshot);
+                                                                        }
+
+                                                                    }
+                                                                    @Override
+                                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                    }
+                                                                });
+                                                    }
+
+                                                    @Override
+                                                    public void onGeoQueryError(DatabaseError error) {
+
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
                         }
-
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
+                        else
+                        {
+                            Log.e("Installations", "Unable to get Installation ID");
+                        }
                     }
                 });
+
+        //do firebase query
+
         //Log.d("NearbyMovies:", String.valueOf(mAllMoviesInRadius));
         //return mAllMoviesInRadius;
     }
@@ -98,6 +189,7 @@ public class MovieRepository {
     {
         List<Movie> movieList = new ArrayList<>();
         List<String> movieIDs = new ArrayList<>();
+        usersNearby.remove(FID);
 
         //Grab the recentMatch of all nearby users
         for(String FID: usersNearby)

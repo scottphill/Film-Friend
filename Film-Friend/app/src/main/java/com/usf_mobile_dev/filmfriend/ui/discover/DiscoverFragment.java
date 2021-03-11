@@ -47,8 +47,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class DiscoverFragment extends Fragment {
 
-    public final static int ENABLE_FINE_LOCATION = 1;
-    public final static int ENABLE_COARSE_LOCATION = 2;
+
 
     private DiscoverViewModel discoverViewModel;
     private RecyclerView discoverRecyclerView;
@@ -58,20 +57,8 @@ public class DiscoverFragment extends Fragment {
     private List<String> usersNearby = new ArrayList<>();
     private DiscoverRecyclerAdapter adapter;
 
-    GeoFire geoFire;
-    GeoQuery geoQuery;
-    FirebaseDatabase rootNode;
-    DatabaseReference ref_geoFire;
-    private FusedLocationProviderClient fusedLocationClient;
-    //private Location loc;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
-        rootNode = FirebaseDatabase.getInstance();
-        ref_geoFire = rootNode.getReference("geoFire");
-        geoFire = new GeoFire(ref_geoFire);
-
         discoverViewModel =
                 new ViewModelProvider(requireActivity()).get(DiscoverViewModel.class);
         View root = inflater.inflate(R.layout.fragment_discover, container, false);
@@ -106,57 +93,10 @@ public class DiscoverFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 radius = (Double) adapterView.getItemAtPosition(i);
                 usersNearby.clear();
-                //Log.d("RADIUS", "Here is the radius: " + radius);
-                fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
-                if (ActivityCompat.checkSelfPermission(getActivity(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                    ActivityCompat.requestPermissions(getActivity(), new String[] {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, ENABLE_FINE_LOCATION);
-                    ActivityCompat.requestPermissions(getActivity(), new String[] {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, ENABLE_COARSE_LOCATION);
-                }
-                fusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                // Got last known location. In some rare situations this can be null.
-                                if (location != null) {
-                                    geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), radius);
-                                    geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-                                        @Override
-                                        public void onKeyEntered(String key, GeoLocation location) {
-                                            usersNearby.add(key);//add the FID of all the users within range.
-                                        }
-
-                                        @Override
-                                        public void onKeyExited(String key) {
-
-                                        }
-
-                                        @Override
-                                        public void onKeyMoved(String key, GeoLocation location) {
-
-                                        }
-
-                                        @Override
-                                        public void onGeoQueryReady() {
-                                            /*for(String key: usersNearby)
-                                            {
-                                                Log.d("FID", key);
-                                            }*/
-                                            Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
-                                            discoverViewModel.getAllMoviesNearby(usersNearby, requireActivity());
-                                            Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
-                                        }
-
-                                        @Override
-                                        public void onGeoQueryError(DatabaseError error) {
-
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
+                discoverViewModel.getAllMoviesNearby(radius, requireActivity());
+                Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
             }
 
             @Override
