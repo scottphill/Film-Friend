@@ -2,6 +2,7 @@ package com.usf_mobile_dev.filmfriend.ui.discover;
 
 import android.app.Application;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -27,11 +28,11 @@ public class DiscoverViewModel extends AndroidViewModel {
 
     }
 
-    void getAllMoviesNearby(List<String> usersNearby) {
-        mAllMovies.postValue(movieRepository.getAllMoviesNearby(usersNearby));
+    public void getAllMoviesNearby(List<String> usersNearby, FragmentActivity discoverActivity) {
+        movieRepository.getAllMoviesNearby(usersNearby, discoverActivity);
     }
 
-    MutableLiveData<List<Movie>> getDiscoverMovieList() {
+    public MutableLiveData<List<Movie>> getDiscoverMovieList() {
         return mAllMovies;
     }
 

@@ -73,7 +73,7 @@ public class DiscoverFragment extends Fragment {
         geoFire = new GeoFire(ref_geoFire);
 
         discoverViewModel =
-                new ViewModelProvider(this).get(DiscoverViewModel.class);
+                new ViewModelProvider(requireActivity()).get(DiscoverViewModel.class);
         View root = inflater.inflate(R.layout.fragment_discover, container, false);
         adapter  = new DiscoverRecyclerAdapter(getContext());
         discoverRecyclerView = (RecyclerView) root.findViewById(R.id.discover_recyclerview);
@@ -145,7 +145,7 @@ public class DiscoverFragment extends Fragment {
                                                 Log.d("FID", key);
                                             }*/
                                             Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
-                                            discoverViewModel.getAllMoviesNearby(usersNearby);
+                                            discoverViewModel.getAllMoviesNearby(usersNearby, requireActivity());
                                             Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
                                         }
 

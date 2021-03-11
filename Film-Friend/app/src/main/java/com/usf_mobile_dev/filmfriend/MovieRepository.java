@@ -5,8 +5,10 @@ import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
 import com.usf_mobile_dev.filmfriend.api.TMDBApi;
+import com.usf_mobile_dev.filmfriend.ui.discover.DiscoverViewModel;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 import retrofit2.Callback;
@@ -34,6 +37,7 @@ public class MovieRepository {
     private int movieCheck;
     private final Executor threadExecutor;
     private final Handler resultHandler;
+    private DiscoverViewModel discoverViewModel;
 
     public MovieRepository(Application application){
         MovieRoomDatabase db = MovieRoomDatabase.getDatabase(application);
@@ -67,16 +71,17 @@ public class MovieRepository {
         }
     }
 
-    public List<Movie> getAllMoviesNearby(List<String> usersNearby)
+    public void getAllMoviesNearby(List<String> usersNearby, FragmentActivity discoverActivity)
     {
         //do firebase query
+        discoverViewModel = new ViewModelProvider(discoverActivity).get(DiscoverViewModel.class);
         FirebaseDatabase.getInstance().getReference("users")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.exists()) {
                             //Log.d("movieID",snapshot.getValue().toString());
-                            mAllMoviesInRadius = findUserMatches(usersNearby, snapshot);
+                            findUserMatches(usersNearby, snapshot);
                         }
 
                     }
@@ -85,11 +90,11 @@ public class MovieRepository {
 
                     }
                 });
-        Log.d("NearbyMovies:", String.valueOf(mAllMoviesInRadius));
-        return mAllMoviesInRadius;
+        //Log.d("NearbyMovies:", String.valueOf(mAllMoviesInRadius));
+        //return mAllMoviesInRadius;
     }
 
-    public List<Movie> findUserMatches(List<String> usersNearby, DataSnapshot snapshot)
+    public void findUserMatches(List<String> usersNearby, DataSnapshot snapshot)
     {
         List<Movie> movieList = new ArrayList<>();
         List<String> movieIDs = new ArrayList<>();
@@ -114,11 +119,13 @@ public class MovieRepository {
                         movieList.add(task.getResult().child(movieID).getValue(Movie.class));
                         Log.d("movieTitle", String.valueOf(task.getResult().child(movieID).getValue(Movie.class).getTitle()));
                     }
+                    discoverViewModel.getDiscoverMovieList().postValue(movieList);
                 }
             }
         });
 
-        return movieList;
+        //Log.d("NearbyMovies:", String.valueOf(movieList));
+        //return movieList;
     }
 
     public void getTMDBMovie(
