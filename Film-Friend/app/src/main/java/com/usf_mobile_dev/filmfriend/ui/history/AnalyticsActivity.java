@@ -21,7 +21,7 @@ public class AnalyticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analytics);
 
-        PieChart pie = (PieChart) findViewById(R.id.genre_pie_chart);
+        /*PieChart pie = (PieChart) findViewById(R.id.genre_pie_chart);
         PieChart test = (PieChart) findViewById(R.id.test_pie_chart);
         pie.setTouchEnabled(false);
         test.setTouchEnabled(false);
@@ -41,7 +41,7 @@ public class AnalyticsActivity extends AppCompatActivity {
         PieData data = new PieData(set);
         data.setValueTextSize((float) 16.0);
         pie.setData(data);
-        test.setData(data);
+        test.setData(data);*/
 
 
     }

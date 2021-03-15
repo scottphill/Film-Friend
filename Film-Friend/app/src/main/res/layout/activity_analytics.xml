@@ -11,13 +11,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/genre_pie_chart"
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/movies_by_decade_chart"
             android:layout_width="match_parent"
             android:layout_height="500dp"
             android:layout_marginBottom="100dp" />
 
-        <com.github.mikephil.charting.charts.PieChart
+        <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/test_pie_chart"
             android:layout_width="match_parent"
             android:layout_height="500dp" />
