@@ -25,4 +25,6 @@
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_movie_info">MovieInfoActivity</string>
     <string name="movie_info_activity_label">A Random Movie Just For You!</string>
+    <string name="find_new_movie">Find New Movie</string>
+    <string name="watch_this_movie">Watch This Movie</string>
 </resources>

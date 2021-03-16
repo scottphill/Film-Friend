@@ -6,469 +6,348 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/match_FAB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="64dp"
-            android:src="@android:drawable/ic_menu_search"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/match_FAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="64dp"
+        android:src="@android:drawable/ic_menu_search"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <ScrollView
-            android:id="@+id/match_scrollview"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/match_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:minHeight="700dp"
+            android:paddingBottom="100dp"
+            tools:context=".ui.match.MatchFragment">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+            <TextView
+                android:id="@+id/match_header_release_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:text="Release Year: "
+                app:layout_constraintBottom_toTopOf="@id/match_header_included_genre"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/release_date_end"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:ems="10"
+                android:hint="To"
+                android:inputType="number"
+                android:maxLength="4"
+                app:layout_constraintBottom_toBottomOf="@+id/release_date_start"
+                app:layout_constraintStart_toEndOf="@+id/release_date_start"
+                app:layout_constraintTop_toTopOf="@+id/release_date_start" />
+
+            <EditText
+                android:id="@+id/release_date_start"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:hint="From"
+                android:inputType="number"
+                android:maxLength="4"
+                app:layout_constraintBottom_toBottomOf="@+id/match_header_release_date"
+                app:layout_constraintStart_toEndOf="@+id/match_header_release_date"
+                app:layout_constraintTop_toTopOf="@+id/match_header_release_date" />
+
+            <TextView
+                android:id="@+id/match_header_included_genre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="40dp"
+                android:text="Genre(s) I Want To See:"
+                app:layout_constraintBottom_toTopOf="@+id/included_genres_rellayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/match_header_release_date" />
+
+            <RelativeLayout
+                android:id="@+id/included_genres_rellayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/match_header_excluded_genre"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/match_header_included_genre">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/included_genres_grid"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:minHeight="700dp"
-                    tools:context=".ui.match.MatchFragment">
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:nestedScrollingEnabled="false"
+                    android:padding="8dp" />
 
-                        <TextView
-                            android:id="@+id/match_header_release_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="32dp"
-                            android:text="Release Year: "
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+            </RelativeLayout>
 
-                        <EditText
-                            android:id="@+id/release_date_end"
-                            android:layout_width="100dp"
-                            android:layout_height="50dp"
-                            android:layout_marginStart="16dp"
-                            android:ems="10"
-                            android:hint="To"
-                            android:inputType="number"
-                            android:maxLength="4"
-                            app:layout_constraintBottom_toBottomOf="@+id/release_date_start"
-                            app:layout_constraintStart_toEndOf="@+id/release_date_start"
-                            app:layout_constraintTop_toTopOf="@+id/release_date_start" />
+            <TextView
+                android:id="@+id/match_header_excluded_genre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="40dp"
+                android:text="Genre(s) I DON'T Want To See:"
+                app:layout_constraintBottom_toTopOf="@+id/excluded_genres_rellayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/included_genres_rellayout" />
 
-                        <EditText
-                            android:id="@+id/release_date_start"
-                            android:layout_width="100dp"
-                            android:layout_height="50dp"
-                            android:layout_marginStart="8dp"
-                            android:ems="10"
-                            android:hint="From"
-                            android:inputType="number"
-                            android:maxLength="4"
-                            app:layout_constraintBottom_toBottomOf="@+id/match_header_release_date"
-                            app:layout_constraintStart_toEndOf="@+id/match_header_release_date"
-                            app:layout_constraintTop_toTopOf="@+id/match_header_release_date" />
+            <RelativeLayout
+                android:id="@+id/excluded_genres_rellayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/match_header_rating"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/match_header_excluded_genre">
 
-                        <TextView
-                            android:id="@+id/match_header_genre"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="40dp"
-                            android:text="Genre(s):"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/match_header_release_date" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/excluded_genres_grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:nestedScrollingEnabled="false"
+                    android:padding="8dp" />
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_0"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:text="Action"
-                            app:layout_constraintBottom_toBottomOf="@+id/match_header_genre"
-                            app:layout_constraintStart_toEndOf="@+id/match_header_genre"
-                            app:layout_constraintTop_toTopOf="@+id/match_header_genre" />
+            </RelativeLayout>
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox_genre_0"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox_genre_0" />
+            <TextView
+                android:id="@+id/match_header_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="Rating:"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/excluded_genres_rellayout" />
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox_genre_1"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox_genre_1" />
+            <TextView
+                android:id="@+id/match_header_rating_min"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Min"
+                app:layout_constraintEnd_toEndOf="@+id/match_header_rating"
+                app:layout_constraintStart_toStartOf="@+id/match_header_rating"
+                app:layout_constraintTop_toBottomOf="@+id/match_header_rating" />
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/checkBox_genre_2" />
+            <SeekBar
+                android:id="@+id/seekBar_rating_min"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="0dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="32dp"
+                android:max="100"
+                android:min="0"
+                android:progress="0"
+                app:layout_constraintBottom_toBottomOf="@+id/match_header_rating_min"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/match_header_rating_min"
+                app:layout_constraintTop_toTopOf="@+id/match_header_rating_min" />
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox_genre_3"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox_genre_3" />
+            <TextView
+                android:id="@+id/match_header_rating_max"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Max"
+                app:layout_constraintEnd_toEndOf="@+id/match_header_rating"
+                app:layout_constraintStart_toStartOf="@+id/match_header_rating"
+                app:layout_constraintTop_toBottomOf="@+id/match_header_rating_min" />
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox_genre_4"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox_genre_4" />
+            <SeekBar
+                android:id="@+id/seekBar_rating_max"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="0dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="32dp"
+                android:max="100"
+                android:min="0"
+                android:progress="100"
+                app:layout_constraintBottom_toBottomOf="@+id/match_header_rating_max"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/match_header_rating_max"
+                app:layout_constraintTop_toTopOf="@+id/match_header_rating_max" />
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox_genre_5"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox_genre_5" />
+            <TextView
+                android:id="@+id/match_header_watch_providers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:text="Watch Providers:"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/match_header_rating_max" />
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_7"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/checkBox_genre_6" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toEndOf="@+id/match_header_watch_providers"
+                app:layout_constraintTop_toTopOf="@+id/match_header_watch_providers">
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_8"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox_genre_7"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox_genre_7" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_9"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox_genre_8"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox_genre_8" />
+                    <CheckBox
+                        android:id="@+id/wp_button_0"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="32dp"
+                        android:text="Netflix" />
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_10"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox_genre_9"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox_genre_9" />
+                    <CheckBox
+                        android:id="@+id/wp_button_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="32dp"
+                        android:text="Hulu" />
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_11"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/checkBox_genre_10" />
+                    <CheckBox
+                        android:id="@+id/wp_button_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="32dp"
+                        android:text="Disney+" />
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_12"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox_genre_11"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox_genre_11" />
+                </LinearLayout>
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_13"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox_genre_12"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox_genre_12" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_14"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox_genre_13"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox_genre_13" />
+                    <CheckBox
+                        android:id="@+id/wp_button_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="32dp"
+                        android:text="Prime Video" />
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_15"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="106dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/checkBox_genre_14" />
+                    <CheckBox
+                        android:id="@+id/wp_button_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="32dp"
+                        android:text="Google Play" />
+                </LinearLayout>
+            </LinearLayout>
 
-                        <CheckBox
-                            android:id="@+id/checkBox_genre_16"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:checked="false"
-                            android:onClick="onCheckboxClicked"
-                            android:text="CheckBox"
-                            app:layout_constraintStart_toEndOf="@+id/checkBox_genre_15"
-                            app:layout_constraintTop_toTopOf="@+id/checkBox_genre_15" />
+            <TextView
+                android:id="@+id/match_header_runtime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="72dp"
+                android:text="Runtime (mins): "
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/match_header_watch_providers" />
 
-                        <TextView
-                            android:id="@+id/match_header_rating"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:text="Rating:"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/checkBox_genre_15" />
+            <EditText
+                android:id="@+id/runtime_min"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:hint="Min"
+                android:inputType="number"
+                android:maxLength="3"
+                app:layout_constraintBottom_toBottomOf="@+id/match_header_runtime"
+                app:layout_constraintStart_toEndOf="@+id/match_header_runtime"
+                app:layout_constraintTop_toTopOf="@+id/match_header_runtime" />
 
-                        <TextView
-                            android:id="@+id/match_header_rating_min"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Min"
-                            app:layout_constraintEnd_toEndOf="@+id/match_header_rating"
-                            app:layout_constraintStart_toStartOf="@+id/match_header_rating"
-                            app:layout_constraintTop_toBottomOf="@+id/match_header_rating" />
+            <EditText
+                android:id="@+id/runtime_max"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:ems="10"
+                android:hint="Max"
+                android:inputType="number"
+                android:maxLength="3"
+                app:layout_constraintBottom_toBottomOf="@+id/runtime_min"
+                app:layout_constraintStart_toEndOf="@+id/runtime_min"
+                app:layout_constraintTop_toTopOf="@+id/runtime_min" />
 
-                        <SeekBar
-                            android:id="@+id/seekBar_rating_min"
-                            style="@style/Widget.AppCompat.SeekBar.Discrete"
-                            android:layout_width="0dp"
-                            android:layout_height="18dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="32dp"
-                            android:max="10"
-                            android:min="0"
-                            android:progress="0"
-                            app:layout_constraintBottom_toBottomOf="@+id/match_header_rating_min"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/match_header_rating_min"
-                            app:layout_constraintTop_toTopOf="@+id/match_header_rating_min" />
+            <TextView
+                android:id="@+id/match_header_vote_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="48dp"
+                android:text="Vote Count: "
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/match_header_runtime" />
 
-                        <TextView
-                            android:id="@+id/match_header_rating_max"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Max"
-                            app:layout_constraintEnd_toEndOf="@+id/match_header_rating"
-                            app:layout_constraintStart_toStartOf="@+id/match_header_rating"
-                            app:layout_constraintTop_toBottomOf="@+id/match_header_rating_min" />
+            <EditText
+                android:id="@+id/vote_count_min"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:hint="Min"
+                android:inputType="number"
+                app:layout_constraintBottom_toBottomOf="@+id/match_header_vote_count"
+                app:layout_constraintStart_toEndOf="@+id/match_header_vote_count"
+                app:layout_constraintTop_toTopOf="@+id/match_header_vote_count" />
 
-                        <SeekBar
-                            android:id="@+id/seekBar_rating_max"
-                            style="@style/Widget.AppCompat.SeekBar.Discrete"
-                            android:layout_width="0dp"
-                            android:layout_height="18dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="32dp"
-                            android:max="10"
-                            android:min="0"
-                            android:progress="10"
-                            app:layout_constraintBottom_toBottomOf="@+id/match_header_rating_max"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/match_header_rating_max"
-                            app:layout_constraintTop_toTopOf="@+id/match_header_rating_max" />
+            <EditText
+                android:id="@+id/vote_count_max"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:ems="10"
+                android:hint="Max"
+                android:inputType="number"
+                app:layout_constraintBottom_toBottomOf="@+id/vote_count_min"
+                app:layout_constraintStart_toEndOf="@+id/vote_count_min"
+                app:layout_constraintTop_toTopOf="@+id/vote_count_min" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/languages_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/imageButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:padding="8dp"
+                android:layout_margin="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/vote_count_max" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="71dp"
+                android:layout_height="54dp"
+                android:layout_marginTop="32dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/languages_recyclerview"
+                app:srcCompat="@drawable/ic_save_24dp" />
 
 
-                        <TextView
-                            android:id="@+id/match_header_watch_providers"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="32dp"
-                            android:text="Watch Providers:"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/match_header_rating_max" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="8dp"
-                            android:orientation="vertical"
-                            app:layout_constraintStart_toEndOf="@+id/match_header_watch_providers"
-                            app:layout_constraintTop_toTopOf="@+id/match_header_watch_providers">
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
-
-                                        <CheckBox
-                                            android:id="@+id/wp_button_0"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:minHeight="32dp"
-                                            android:text="Netflix" />
-
-                                        <CheckBox
-                                            android:id="@+id/wp_button_1"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:minHeight="32dp"
-                                            android:text="Hulu" />
-
-                                        <CheckBox
-                                            android:id="@+id/wp_button_2"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:minHeight="32dp"
-                                            android:text="Disney+" />
-
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
-
-                                        <CheckBox
-                                            android:id="@+id/wp_button_3"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:minHeight="32dp"
-                                            android:text="Prime Video" />
-
-                                        <CheckBox
-                                            android:id="@+id/wp_button_4"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:minHeight="32dp"
-                                            android:text="Google Play" />
-                                </LinearLayout>
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/match_header_runtime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="72dp"
-                            android:text="Runtime (mins): "
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/match_header_watch_providers" />
-
-                        <EditText
-                            android:id="@+id/runtime_min"
-                            android:layout_width="100dp"
-                            android:layout_height="50dp"
-                            android:layout_marginStart="8dp"
-                            android:ems="10"
-                            android:hint="Min"
-                            android:inputType="number"
-                            android:maxLength="3"
-                            app:layout_constraintBottom_toBottomOf="@+id/match_header_runtime"
-                            app:layout_constraintStart_toEndOf="@+id/match_header_runtime"
-                            app:layout_constraintTop_toTopOf="@+id/match_header_runtime" />
-
-                        <EditText
-                            android:id="@+id/runtime_max"
-                            android:layout_width="100dp"
-                            android:layout_height="50dp"
-                            android:layout_marginStart="16dp"
-                            android:ems="10"
-                            android:hint="Max"
-                            android:inputType="number"
-                            android:maxLength="3"
-                            app:layout_constraintBottom_toBottomOf="@+id/runtime_min"
-                            app:layout_constraintStart_toEndOf="@+id/runtime_min"
-                            app:layout_constraintTop_toTopOf="@+id/runtime_min" />
-
-                        <TextView
-                            android:id="@+id/match_header_vote_count"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="48dp"
-                            android:text="Vote Count: "
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/match_header_runtime" />
-
-                        <EditText
-                            android:id="@+id/vote_count_min"
-                            android:layout_width="100dp"
-                            android:layout_height="50dp"
-                            android:layout_marginStart="8dp"
-                            android:ems="10"
-                            android:hint="Min"
-                            android:inputType="number"
-                            app:layout_constraintBottom_toBottomOf="@+id/match_header_vote_count"
-                            app:layout_constraintStart_toEndOf="@+id/match_header_vote_count"
-                            app:layout_constraintTop_toTopOf="@+id/match_header_vote_count" />
-
-                        <EditText
-                            android:id="@+id/vote_count_max"
-                            android:layout_width="100dp"
-                            android:layout_height="50dp"
-                            android:layout_marginStart="16dp"
-                            android:ems="10"
-                            android:hint="Max"
-                            android:inputType="number"
-                            app:layout_constraintBottom_toBottomOf="@+id/vote_count_min"
-                            app:layout_constraintStart_toEndOf="@+id/vote_count_min"
-                            app:layout_constraintTop_toTopOf="@+id/vote_count_min" />
-
-                        <ImageButton
-                            android:id="@+id/imageButton"
-                            android:layout_width="71dp"
-                            android:layout_height="54dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:srcCompat="@drawable/ic_save_24dp" />
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
