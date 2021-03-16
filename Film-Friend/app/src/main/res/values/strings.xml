@@ -25,4 +25,7 @@
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_movie_info">MovieInfoActivity</string>
     <string name="movie_info_activity_label">A Random Movie Just For You!</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
