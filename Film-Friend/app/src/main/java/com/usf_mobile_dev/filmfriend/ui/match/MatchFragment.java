@@ -2,44 +2,44 @@ package com.usf_mobile_dev.filmfriend.ui.match;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.usf_mobile_dev.filmfriend.MainActivity;
+import com.usf_mobile_dev.filmfriend.GenresGridAdapter;
+import com.usf_mobile_dev.filmfriend.LanguagesGridAdapter;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.api.GenreResponse;
+import com.usf_mobile_dev.filmfriend.api.LanguageResponse;
 import com.usf_mobile_dev.filmfriend.ui.qr.QrActivity;
 import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MatchFragment extends Fragment {
 
     private MatchViewModel matchViewModel;
+    private RecyclerView includedGenresGrid;
+    private RecyclerView excludedGenresGrid;
+    private RecyclerView languagesGrid;
+
     final private String[] genres = {
         "Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama",
         "Family", "Fantasy", "History", "Horror", "Music", "Mystery", "Romance",
@@ -85,9 +85,9 @@ public class MatchFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // Refreshes too slow
                 //Toast.makeText(getActivity(), progress + "", Toast.LENGTH_SHORT).show();
-
-                if (progress > 9) {
-                    seekbar_min.setProgress(9);
+                int max = seekBar.getMax();
+                if (progress >= max) {
+                    seekbar_min.setProgress(max-1);
                 }
                 if (seekbar_max.getProgress() <= progress) {
                     seekbar_max.setProgress(progress + 1);
@@ -97,8 +97,11 @@ public class MatchFragment extends Fragment {
             public void onStartTrackingTouch(SeekBar seekBar) { }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(getActivity(), seekBar.getProgress() + "",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        getActivity(),
+                        ((double)seekBar.getProgress()/seekBar.getMax())*DEF_RATING_MAX + "",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         }));
         seekbar_max.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
@@ -106,9 +109,9 @@ public class MatchFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // Refreshes too slow
                 //Toast.makeText(getActivity(), progress + "", Toast.LENGTH_SHORT).show();
-
-                if (progress < 1) {
-                    seekbar_max.setProgress(1);
+                int min = seekBar.getMin();
+                if (progress <= min) {
+                    seekbar_max.setProgress(min + 1);
                 }
                 if (seekbar_min.getProgress() >= progress) {
                     seekbar_min.setProgress(progress - 1);
@@ -118,8 +121,11 @@ public class MatchFragment extends Fragment {
             public void onStartTrackingTouch(SeekBar seekBar) { }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(getActivity(), seekBar.getProgress() + "",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        getActivity(),
+                        ((double)seekBar.getProgress()/seekBar.getMax())*DEF_RATING_MAX + "",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         }));
 
@@ -160,8 +166,6 @@ public class MatchFragment extends Fragment {
                         ((CheckBox) v).isChecked());
             }});
 
-        genre_checkbox_stub(root);
-
         EditText runtime_min = root.findViewById(R.id.runtime_min);
         EditText runtime_max = root.findViewById(R.id.runtime_max);
 
@@ -173,7 +177,6 @@ public class MatchFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(getActivity(), "FAB pressed!", Toast.LENGTH_SHORT).show();
                 // SAVE ALL INFO
                 try {
                     matchViewModel.setReleaseYear(
@@ -190,13 +193,17 @@ public class MatchFragment extends Fragment {
                     matchViewModel.setReleaseYear(DEF_RELEASE_YEAR_MAX, false);
                 }
                 try {
-                    matchViewModel.setRating(seekbar_min.getProgress(), true);
+                    matchViewModel.setRating(
+                            ((double)seekbar_min.getProgress()/seekbar_min.getMax())*DEF_RATING_MAX,
+                            true);
                 }
                 catch (Exception e) {
                     matchViewModel.setRating(DEF_RATING_MIN, true);
                 }
                 try {
-                    matchViewModel.setRating(seekbar_max.getProgress(), false);
+                    matchViewModel.setRating(
+                            ((double)seekbar_max.getProgress()/seekbar_max.getMax())*DEF_RATING_MAX,
+                            false);
                 }
                 catch (Exception e) {
                     matchViewModel.setRating(DEF_RATING_MAX, false);
@@ -244,6 +251,90 @@ public class MatchFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Sets up the GridView for the included genres checkboxes
+        includedGenresGrid = (RecyclerView)view.findViewById(R.id.included_genres_grid);
+        GenresGridAdapter genresIncludedGridAdapter = new GenresGridAdapter(
+                new CompoundButton.OnCheckedChangeListener()
+                {
+                    @Override
+                    public void onCheckedChanged(
+                            CompoundButton buttonView,
+                            boolean isChecked) {
+                        String genre = buttonView.getText().toString();
+                        matchViewModel.setIncludedGenreVal(genre, isChecked);
+                    }
+                });
+        includedGenresGrid.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        includedGenresGrid.setAdapter(genresIncludedGridAdapter);
+
+        // Sets up the GridView for the excluded genres checkboxes
+        excludedGenresGrid = (RecyclerView)view.findViewById(R.id.excluded_genres_grid);
+        GenresGridAdapter genresExcludedGridAdapter = new GenresGridAdapter(
+                new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(
+                            CompoundButton buttonView,
+                            boolean isChecked) {
+                        String genre = buttonView.getText().toString();
+                        matchViewModel.setExcludedGenreVal(genre, isChecked);
+                    }
+                }
+        );
+        excludedGenresGrid.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        excludedGenresGrid.setAdapter(genresExcludedGridAdapter);
+
+        // Observes the LiveData for when the genres change in the ViewModel
+        matchViewModel.getGenres().observe(
+                getViewLifecycleOwner(),
+                new Observer<List<GenreResponse.Genre>>() {
+                    @Override
+                    public void onChanged(List<GenreResponse.Genre> genres) {
+                        genresIncludedGridAdapter.setGenres(genres);
+                        genresExcludedGridAdapter.setGenres(genres);
+                    }
+                });
+
+        // Sets up the GridView for the languages radiobuttons grid
+        languagesGrid = (RecyclerView)view.findViewById(R.id.languages_recyclerview);
+        LanguagesGridAdapter languagesGridAdapter = new LanguagesGridAdapter(
+                new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        String language = buttonView.getText().toString();
+                        if(isChecked && !matchViewModel.getSelectedLanguage()
+                                .getValue()
+                                .equals(language)) {
+                            matchViewModel.setSelectedLanguage(language);
+                        }
+                    }
+                }
+        );
+        languagesGrid.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        languagesGrid.setAdapter(languagesGridAdapter);
+        matchViewModel.getLanguages().observe(
+                getViewLifecycleOwner(),
+                new Observer<List<LanguageResponse>>() {
+                    @Override
+                    public void onChanged(List<LanguageResponse> languageResponses) {
+                        languagesGridAdapter.setLanguages(languageResponses);
+                    }
+                }
+        );
+        matchViewModel.getSelectedLanguage().observe(
+                getViewLifecycleOwner(),
+                new Observer<String>() {
+                    @Override
+                    public void onChanged(String selectedLanguage) {
+                        languagesGridAdapter.setSelectedLanguage(selectedLanguage);
+                    }
+                }
+        );
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.preferences_menu:
@@ -262,7 +353,8 @@ public class MatchFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
-    
+
+    /*
     private void genre_checkbox_stub(View root)
     {
         CheckBox cb_0 = (CheckBox)root.findViewById(R.id.checkBox_genre_0);
@@ -387,5 +479,6 @@ public class MatchFragment extends Fragment {
                 matchViewModel.setGenreVal(genres[16], ((CheckBox) v).isChecked());
             }});
     }
+     */
 
 }

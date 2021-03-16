@@ -1,5 +1,6 @@
 package com.usf_mobile_dev.filmfriend.ui.history;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,7 +30,6 @@ public class HistoryFragment extends Fragment {
 
     private HistoryViewModel historyViewModel;
     private RecyclerView historyRecyclerView;
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
