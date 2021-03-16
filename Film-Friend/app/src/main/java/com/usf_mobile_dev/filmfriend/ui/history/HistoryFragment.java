@@ -30,7 +30,6 @@ public class HistoryFragment extends Fragment {
     private HistoryViewModel historyViewModel;
     private RecyclerView historyRecyclerView;
 
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 

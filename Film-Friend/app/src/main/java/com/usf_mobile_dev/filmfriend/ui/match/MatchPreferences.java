@@ -1,11 +1,16 @@
 package com.usf_mobile_dev.filmfriend.ui.match;
 
 import androidx.core.util.Pair;
+
+import com.usf_mobile_dev.filmfriend.api.GenreResponse;
+
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MatchPreferences {
+public class MatchPreferences implements Serializable {
 
     // True = all checkboxes start as checked, False = unchecked
     final private Boolean genre_cb_init = false;
@@ -16,14 +21,16 @@ public class MatchPreferences {
     // The movie preferences
     private int release_year_start = 1850;
     private int release_year_end = 2021;
-    private int rating_min = 0;
-    private int rating_max = 10;
+    private double rating_min = 0;
+    private double rating_max = 10;
     private int runtime_min = 0;
     private int runtime_max = 500;
     private int vote_count_min = 0;
     private int vote_count_max = 10000;
     private HashMap<Integer, Boolean> genres_to_include;
+    private HashMap<Integer, Boolean> genres_to_exclude;
     private HashMap<Integer, Boolean> watch_providers_to_include;
+    private String selected_language;
 
     // Constructor
     public MatchPreferences ()
@@ -38,6 +45,8 @@ public class MatchPreferences {
         vote_count_max = 10000;
         // <genre_ids, if_include_in_query>
         genres_to_include = new HashMap<Integer, Boolean>();
+        genres_to_exclude = new HashMap<Integer, Boolean>();
+        /*
         genres_to_include.put(28, genre_cb_init);
         genres_to_include.put(12, genre_cb_init);
         genres_to_include.put(16, genre_cb_init);
@@ -55,6 +64,7 @@ public class MatchPreferences {
         genres_to_include.put(878, genre_cb_init);
         genres_to_include.put(10770, genre_cb_init);
         genres_to_include.put(53, genre_cb_init);
+         */
         //genres_to_include.put(10752, genre_cb_init);
         //genres_to_include.put(37, genre_cb_init);
         // <watch provider ids, if_include_in_query>
@@ -66,15 +76,29 @@ public class MatchPreferences {
         watch_providers_to_include.put(3, WP_CB_INIT);
     }
 
-    public String getGenresString() {
+    public String getIncludedGenresString() {
         return genres_to_include.entrySet().stream()
                 .filter(Map.Entry::getValue)
                 .map(entry -> Integer.toString(entry.getKey()))
                 .collect(Collectors.joining(","));
     }
 
-    public int getNumSelectedGenres() {
+    public String getExcludedGenresString() {
+        return genres_to_exclude.entrySet().stream()
+                .filter(Map.Entry::getValue)
+                .map(entry -> Integer.toString(entry.getKey()))
+                .collect(Collectors.joining(","));
+    }
+
+    public int getNumSelectedIncludedGenres() {
         return (int) genres_to_include.entrySet().stream()
+                .filter(Map.Entry::getValue)
+                .map(entry -> Integer.toString(entry.getKey()))
+                .count();
+    }
+
+    public int getNumSelectedExcludedGenres() {
+        return (int) genres_to_exclude.entrySet().stream()
                 .filter(Map.Entry::getValue)
                 .map(entry -> Integer.toString(entry.getKey()))
                 .count();
@@ -98,13 +122,45 @@ public class MatchPreferences {
     public HashMap<Integer, Boolean> getGenres_to_include() {
         return genres_to_include;
     }
-    public void setGenres_to_include(HashMap<Integer, Boolean> genres_to_include) {
-        this.genres_to_include = genres_to_include;
+    public HashMap<Integer, Boolean> getGenres_to_exclude() {
+        return genres_to_exclude;
     }
+
+
+    public void setGenres(List<GenreResponse.Genre> genres) {
+        this.clearGenres();
+        this.addGenres(genres);
+    }
+
+    // Adds a genre id to the genre HashMap
+    public void addGenre(Integer id) {
+        this.genres_to_include.put(id, genre_cb_init);
+        this.genres_to_exclude.put(id, genre_cb_init);
+    }
+
+    public void addGenres(List<GenreResponse.Genre> genres) {
+        for (GenreResponse.Genre genre : genres) {
+            this.genres_to_include.put(genre.id, genre_cb_init);
+            this.genres_to_exclude.put(genre.id, genre_cb_init);
+        }
+    }
+
+    // Removes all genres from the genres HashMap
+    public void clearGenres() {
+        this.genres_to_include.clear();
+        this.genres_to_exclude.clear();
+    }
+
     // Setting the bool for a single genre
-    public void setGenre(Integer id, Boolean new_val) {
+    public void setIncludedGenre(Integer id, Boolean new_val) {
         this.genres_to_include.replace(id, new_val);
     }
+
+    // Setting the bool for a single genre
+    public void setExcludedGenre(Integer id, Boolean new_val) {
+        this.genres_to_exclude.replace(id, new_val);
+    }
+
     public int getRelease_year_start() {
         return release_year_start;
     }
@@ -118,11 +174,11 @@ public class MatchPreferences {
         this.release_year_end = release_year_end;
     }
 
-    public int getRating_min() { return rating_min; }
-    public void setRating_min(int rating_min) { this.rating_min = rating_min; }
+    public double getRating_min() { return rating_min; }
+    public void setRating_min(double rating_min) { this.rating_min = rating_min; }
 
-    public int getRating_max() { return rating_max; }
-    public void setRating_max(int rating_max) { this.rating_max = rating_max; }
+    public double getRating_max() { return rating_max; }
+    public void setRating_max(double rating_max) { this.rating_max = rating_max; }
 
     public HashMap<Integer, Boolean> getWatch_providers_to_include() {
         return watch_providers_to_include;
@@ -133,6 +189,14 @@ public class MatchPreferences {
     // Setting the bool for a single watch provider
     public void setWatchProvider(Integer id, Boolean new_val) {
         this.watch_providers_to_include.replace(id, new_val);
+    }
+
+    public void setSelected_language(String selected_language) {
+        this.selected_language = selected_language;
+    }
+
+    public String getSelected_language() {
+        return this.selected_language;
     }
 
     public int getRuntime_min() { return runtime_min; }

@@ -1,5 +1,7 @@
 package com.usf_mobile_dev.filmfriend.ui.movieInfo;
 
+import android.os.Bundle;
+import android.widget.Button;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -26,10 +28,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 import com.usf_mobile_dev.filmfriend.ui.history.HistoryViewModel;
-
 import org.jetbrains.annotations.NotNull;
-
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -51,61 +52,36 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
     private FusedLocationProviderClient fusedLocationClient;
     private Location loc;
 
-
     private MovieInfoViewModel movieInfoViewModel;
-    private Movie movie;
-
     private TextView mMovieTitle;
     private TextView mMovieRelease;
     private TextView mRating;
     private TextView mVoteCount;
     private TextView mMovieOverview;
-
     private ImageView mMovieBanner;
     private ImageView mMoviePoster;
-
+    private Button newMovieBtn;
+    private Button watchMovieBtn;
+  
+  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_info);
 
-        //movieInfoViewModel = new ViewModelProvider(this).get(MovieInfoViewModel.class);
+        movieInfoViewModel = new ViewModelProvider(this).get(MovieInfoViewModel.class);
         HistoryViewModel historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
 
-        mMovieTitle = findViewById(R.id.movie_info_title);
-        mMovieRelease = findViewById(R.id.movie_info_release);
-        mRating = findViewById(R.id.rating);
-        mVoteCount = findViewById(R.id.vote_count);
-        mMovieOverview = findViewById(R.id.movie_info_overview);
-
-        mMovieBanner = findViewById(R.id.movie_banner);
-        mMoviePoster = findViewById(R.id.movie_poster);
-
-        ///*
-        if (getIntent().getExtras() != null) {
-            movie = (Movie) getIntent().getSerializableExtra(INTENT_EXTRAS_MOVIE_DATA);
-
-            mMovieTitle.setText(movie.getTitle());
-            mMovieRelease.setText(movie.getReleaseYearAsStr());
-            mRating.setText(movie.getRatingAsFormattedStr());
-            mVoteCount.setText(movie.getVoteCountAsString());
-            mMovieOverview.setText(movie.getOverview());
-
-            String posterUrl = getString(R.string.tmdb_image_base_url)
-                    + getString(R.string.tmdb_poster_size_3)
-                    + movie.getPosterPath();
-            String backdropUrl = getString(R.string.tmdb_image_base_url)
-                    + getString(R.string.tmdb_backdrop_size_2)
-                    + movie.getBackdropPath();
-
-            Glide.with(this)
-                    .load(posterUrl)
-                    .into(mMoviePoster);
-
-            Glide.with(this)
-                    .load(backdropUrl)
-                    .into(mMovieBanner);
-
+        if(getIntent().getExtras() != null) {
+            Movie newMovie = (Movie)getIntent()
+                    .getSerializableExtra(MovieInfoViewModel.INTENT_EXTRAS_MOVIE_DATA);
+            setMovieDetails(newMovie);
+            movieInfoViewModel.setCurrentMovie(newMovie);
+            movieInfoViewModel.setActivityMode(getIntent()
+                    .getStringExtra(MovieInfoViewModel.INTENT_EXTRAS_ACTIVITY_MODE));
+            movieInfoViewModel.setCurMatchPreferences((MatchPreferences)getIntent()
+                    .getSerializableExtra(MovieInfoViewModel.INTENT_EXTRAS_MOVIE_PREFERENCES));
+          
             historyViewModel.insert(movie);
 
             //Set up firebase instance/references
@@ -140,7 +116,49 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                         });
             }
         }
+
+        movieInfoViewModel.getCurrentMovie().observe(
+                this,
+                currentMovie -> {
+                    if(currentMovie != null)
+                        setMovieDetails(currentMovie);
+                }
+        );
+
+        newMovieBtn.setOnClickListener(movieInfoViewModel
+                .getNewMovieBtnOnClickListener());
+        watchMovieBtn.setOnClickListener(movieInfoViewModel
+                .getWatchMovieOnClickListener());
     }
+
+  
+    // Sets the UI elements of this activity to show info for a new movie
+    public void setMovieDetails(Movie newMovie) {
+
+        mMovieTitle.setText(newMovie.getTitle());
+        mMovieRelease.setText(newMovie.getReleaseYearAsStr());
+        mRating.setText(newMovie.getRatingAsFormattedStr());
+        mVoteCount.setText(newMovie.getVoteCountAsString());
+        mMovieOverview.setText(newMovie.getOverview());
+
+        String posterUrl = getString(R.string.tmdb_image_base_url)
+                + getString(R.string.tmdb_poster_size_3)
+                + newMovie.getPosterPath();
+        String backdropUrl = getString(R.string.tmdb_image_base_url)
+                + getString(R.string.tmdb_backdrop_size_2)
+                + newMovie.getBackdropPath();
+
+        Glide.with(this)
+                .load(posterUrl)
+                .into(mMoviePoster);
+
+        Glide.with(this)
+                .load(backdropUrl)
+                .into(mMovieBanner);
+  
+    }
+
+  
     @Override
     public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions,
                                            @NotNull int[] grantResults) {
@@ -184,6 +202,7 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
         // permissions this app might request.
     }
 
+  
     public void addDataToFirebase() {
         firebaseInstallation = FirebaseInstallations.getInstance().getId()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
