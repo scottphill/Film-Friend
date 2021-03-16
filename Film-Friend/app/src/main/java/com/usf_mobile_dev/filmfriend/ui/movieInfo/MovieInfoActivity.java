@@ -63,17 +63,29 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
     private Button newMovieBtn;
     private Button watchMovieBtn;
   
-  
+
+    private HistoryViewModel historyViewModel;
+    private Movie newMovie;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_info);
 
         movieInfoViewModel = new ViewModelProvider(this).get(MovieInfoViewModel.class);
-        HistoryViewModel historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+        historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+
+        mMovieTitle = findViewById(R.id.movie_info_title);
+        mMovieRelease = findViewById(R.id.movie_info_release);
+        mRating = findViewById(R.id.rating);
+        mVoteCount = findViewById(R.id.vote_count);
+        mMovieOverview = findViewById(R.id.movie_info_overview);
+        mMoviePoster = findViewById(R.id.movie_poster);
+        mMovieBanner = findViewById(R.id.movie_banner);
+        newMovieBtn = findViewById(R.id.button_new_movie);
+        watchMovieBtn = findViewById(R.id.button_watch_movie);
 
         if(getIntent().getExtras() != null) {
-            Movie newMovie = (Movie)getIntent()
+            newMovie = (Movie)getIntent()
                     .getSerializableExtra(MovieInfoViewModel.INTENT_EXTRAS_MOVIE_DATA);
             setMovieDetails(newMovie);
             movieInfoViewModel.setCurrentMovie(newMovie);
@@ -82,7 +94,7 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
             movieInfoViewModel.setCurMatchPreferences((MatchPreferences)getIntent()
                     .getSerializableExtra(MovieInfoViewModel.INTENT_EXTRAS_MOVIE_PREFERENCES));
           
-            historyViewModel.insert(movie);
+            historyViewModel.insert(newMovie);
 
             //Set up firebase instance/references
             rootNode = FirebaseDatabase.getInstance();
@@ -134,6 +146,9 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
   
     // Sets the UI elements of this activity to show info for a new movie
     public void setMovieDetails(Movie newMovie) {
+
+        historyViewModel.insert(newMovie);
+        this.newMovie = newMovie;
 
         mMovieTitle.setText(newMovie.getTitle());
         mMovieRelease.setText(newMovie.getReleaseYearAsStr());
@@ -210,8 +225,8 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                     public void onComplete(@NonNull Task<String> task) {
                         if (task.isSuccessful()) {
                             FID = task.getResult();
-                            ref_user.child(FID).child("recentMatch").setValue(movie.getTmdbMovieId());
-                            ref_movies.child(movie.getTmdbMovieIdAsStr()).setValue(movie);
+                            ref_user.child(FID).child("recentMatch").setValue(newMovie.getTmdbMovieId());
+                            ref_movies.child(newMovie.getTmdbMovieIdAsStr()).setValue(newMovie);
                             if(loc != null) {
                                 geoFire.setLocation(FID, new GeoLocation(loc.getLatitude(), loc.getLongitude()));
                                 Log.d("Location", "Added location");

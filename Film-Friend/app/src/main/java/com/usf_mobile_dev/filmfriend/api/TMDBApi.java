@@ -54,7 +54,7 @@ public class TMDBApi {
             watchProvidersStr = null;
 
         String selectedLanguage = preferences.getSelected_language();
-        if(selectedLanguage.equals(""))
+        if(selectedLanguage == null || selectedLanguage.equals(""))
             selectedLanguage = null;
 
         Call<DiscoverResponse> discoverCall = tmdbInterface.discoverMovie(
@@ -121,7 +121,7 @@ public class TMDBApi {
                     watchProvidersStr = null;
 
                 String selectedLanguage = preferences.getSelected_language();
-                if(selectedLanguage.equals(""))
+                if(selectedLanguage == null || selectedLanguage.equals(""))
                     selectedLanguage = null;
 
                 TMDBInterface tmdbInterface = TMDBClient
