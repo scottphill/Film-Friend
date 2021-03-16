@@ -26,8 +26,9 @@ public class QrActivity extends AppCompatActivity {
     }
 
     public void launchQRGenerator(View view) {
-        Toast.makeText(this, "Feature coming soon", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Generating Code...", Toast.LENGTH_SHORT).show();
 
-
+        Intent intent = new Intent(this, QRGenerateActivity.class);
+        startActivity(intent);
     }
 }
