@@ -1,19 +1,31 @@
 package com.usf_mobile_dev.filmfriend;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 
+@Entity(tableName = "movies_history")
 public class Movie implements Serializable {
 
+
+    @NonNull
     private String title;
+
     private String overview;
     private int releaseYear;
     private Double rating;
     private int voteCount;
 
+    @PrimaryKey
     private int tmdbMovieId;
+
     private String posterPath;
     private String backdropPath;
 
+    @Ignore
     public Movie() {
         this.title = "title";
         this.overview = "lorem ipsum";
@@ -24,6 +36,21 @@ public class Movie implements Serializable {
         this.posterPath = "/";
         this.backdropPath = "/";
     }
+
+    //Used for inserting into room.
+    public Movie(String title, String overview, int releaseYear, Double rating, int voteCount,
+                 int tmdbMovieId, String posterPath, String backdropPath) {
+        this.title = title;
+        this.overview = overview;
+        this.releaseYear = releaseYear;
+        this.rating = rating;
+        this.voteCount = voteCount;
+        this.tmdbMovieId = tmdbMovieId;
+        this.posterPath = posterPath;
+        this.backdropPath = backdropPath;
+    }
+
+
 
     public String getTitle() {
         return title;

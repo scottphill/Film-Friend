@@ -1,43 +1,43 @@
 package com.usf_mobile_dev.filmfriend;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
-public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter
-        <HistoryRecyclerViewAdapter.MyViewHolder>{
+public class DiscoverRecyclerAdapter extends RecyclerView.Adapter
+        <DiscoverRecyclerAdapter.MyViewHolder> {
 
     Context mContext;
     List<Movie> mMovies;
-    private static ClickListener clickListener;
+    private static DiscoverRecyclerAdapter.ClickListener clickListener;
 
-    public HistoryRecyclerViewAdapter(Context mContext) {
+    public DiscoverRecyclerAdapter(Context mContext) {
         this.mContext = mContext;
     }
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public DiscoverRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v;
         v = LayoutInflater.from(mContext).inflate(R.layout.item_movie_listing, parent, false);
-        MyViewHolder vHolder = new MyViewHolder(v);
+        DiscoverRecyclerAdapter.MyViewHolder vHolder = new DiscoverRecyclerAdapter.MyViewHolder(v);
 
         return vHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DiscoverRecyclerAdapter.MyViewHolder holder, int position) {
         if (mMovies != null) {
             Movie current = mMovies.get(position);
             holder.movieItemName.setText(current.getTitle());
@@ -91,8 +91,8 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter
         }
     }
 
-    public void setOnItemClickListener(ClickListener clickListener) {
-        HistoryRecyclerViewAdapter.clickListener = clickListener;
+    public void setOnItemClickListener(DiscoverRecyclerAdapter.ClickListener clickListener) {
+        DiscoverRecyclerAdapter.clickListener = clickListener;
     }
 
     public interface ClickListener {

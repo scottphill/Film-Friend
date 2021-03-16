@@ -16,4 +16,10 @@
     <color name="colorScreenBackground">#fff3e0</color>
     <color name="colorTextHint">#E0E0E0</color>
 
+    <!--Chart Colors -->
+    <color name = "red">#ed2424</color>
+    <color name="green">#24ed67</color>
+    <color name="yellow">#edc824</color>
+    <color name="blue">#2450ed</color>
+
 </resources>
