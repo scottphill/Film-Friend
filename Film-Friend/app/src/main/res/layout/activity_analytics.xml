@@ -11,16 +11,44 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/genre_pie_chart"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:layout_marginBottom="100dp" />
+            android:layout_height="300dp"
+            android:layout_margin="5dp"
+            app:cardElevation="5dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="15dp"
+                    android:text="Viewed Movies By Decade:"/>
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/test_pie_chart"
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/movies_by_decade_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginBottom="100dp" />
+            </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/totalMovies"
             android:layout_width="match_parent"
-            android:layout_height="500dp" />
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text=" totalMovies"
+            android:layout_marginBottom="20dp"/>
+        <TextView
+            android:id="@+id/averageRating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="averageRating"
+            android:layout_marginBottom="20dp"/>
     </LinearLayout>
 
 </ScrollView>
