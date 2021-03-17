@@ -1,10 +1,12 @@
 package com.usf_mobile_dev.filmfriend.ui.history;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.annotation.ColorRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -28,6 +30,7 @@ import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.R;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -46,10 +49,12 @@ public class AnalyticsActivity extends AppCompatActivity {
                 new ViewModelProvider(this).get(AnalyticsViewModel.class);
         TextView totalMovies = findViewById(R.id.totalMovies);
         TextView averageRating = findViewById(R.id.averageRating);
+        NumberFormat formatter = new DecimalFormat("#0.0");
         decadeList = new ArrayList<>();
         BarChart barChart = (BarChart) findViewById(R.id.movies_by_decade_chart);
         barChart.setTouchEnabled(false);
         List<BarEntry> entries = new ArrayList<>();
+        Context context = this;
 
 
         analyticsViewModel.getAllMovies().observe(this, new Observer<List<Movie>>() {
@@ -59,7 +64,7 @@ public class AnalyticsActivity extends AppCompatActivity {
                 analyticsViewModel.setStatistics(Objects.requireNonNull(movies));
                 decadeList = analyticsViewModel.getDecadeList();
                 totalMovies.setText(String.valueOf(analyticsViewModel.getTotalMovies()));
-                averageRating.setText(String.valueOf(analyticsViewModel.getAverageRating()));
+                averageRating.setText(String.valueOf(formatter.format(analyticsViewModel.getAverageRating())));
                 entries.clear();
                 for(int i = 0; i < decadeList.size(); i++)
                 {
@@ -71,7 +76,8 @@ public class AnalyticsActivity extends AppCompatActivity {
                 entries.add(new BarEntry(2f, 60f));
                 entries.add(new BarEntry(3f, 50f));*/
                 BarDataSet set = new BarDataSet(entries, "Movies by Decade");
-                set.setColor(R.color.purple_700);
+
+                set.setColors(new int[] {R.color.purple_500}, context);
                 BarData data = new BarData(set);
                 data.setValueTextSize((float)18.0);
                 data.setValueFormatter(new ValueFormatter() {
