@@ -98,8 +98,7 @@ public class QRCameraActivity extends AppCompatActivity {
             makePermissionRequest();
         }
     }
-    private void makePermissionRequest()
-    {
+    private void makePermissionRequest() {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.CAMERA},
                 CAMERA_REQUEST_CODE);

@@ -1,5 +1,18 @@
 package com.usf_mobile_dev.filmfriend.ui.qr;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -8,57 +21,64 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.usf_mobile_dev.filmfriend.R;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class QRGenerateActivity {
+public class QRGenerateActivity extends AppCompatActivity {
 
-    // Function to create the QR code
-    public static void createQR(String data, String path, String charset, Map hashMap,
-                                int height, int width)
-            throws WriterException, IOException
-    {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_qr_generate);
 
-        BitMatrix matrix = new MultiFormatWriter().encode(
-                new String(data.getBytes(charset), charset),
-                BarcodeFormat.QR_CODE, width, height);
+        ImageView image = findViewById(R.id.qr_image);
+        String str = "www.geeksforgeeks.org";
 
-        MatrixToImageWriter.writeToFile(
-                matrix,
-                path.substring(path.lastIndexOf('.') + 1),
-                new File(path));
+        try {
+            image.setImageBitmap(createQRBitMap(
+                    str, 300, 300));
+        } catch (WriterException e) {
+            Log.e("QR_Generate", "WriterException error");
+        } catch (IOException e) {
+            Log.e("QR_Generate", "IOException error");
+        } catch (NotFoundException e) {
+            Log.e("QR_Generate","NotFoundException error");
+        } catch (Exception e) {
+            Log.e("QR_Generate", e.getLocalizedMessage());
+        }
+
+        TextView tv = findViewById(R.id.textView);
+        tv.setText(str);
+        Toast.makeText(this, "QR Code Generated!", Toast.LENGTH_SHORT).show();
     }
 
-    /*
-    public static void main(String[] args)
-            throws WriterException, IOException,
-            NotFoundException
+    //*
+    public Bitmap createQRBitMap(String str, int height, int width)
+            throws WriterException, IOException, NotFoundException
     {
-
-        // The data that the QR code will contain
-        String data = "www.geeksforgeeks.org";
-
-        // The path where the image will get saved
-        String path = "demo.png";
-
         // Encoding charset
         String charset = "UTF-8";
-
-        Map<EncodeHintType, ErrorCorrectionLevel> hashMap
-                = new HashMap<EncodeHintType,
-                ErrorCorrectionLevel>();
-
-        hashMap.put(EncodeHintType.ERROR_CORRECTION,
-                ErrorCorrectionLevel.L);
 
         // Create the QR code and save
         // in the specified folder
         // as a jpg file
-        createQR(data, path, charset, hashMap, 200, 200);
-        System.out.println("QR Code Generated!!! ");
+        BitMatrix bitMatrix = new MultiFormatWriter().encode(
+                new String(str.getBytes(charset), charset),
+                BarcodeFormat.QR_CODE, width, height);
+
+        int bit_height = bitMatrix.getHeight();
+        int bit_width = bitMatrix.getWidth();
+        Bitmap bmp = Bitmap.createBitmap(bit_width, bit_height, Bitmap.Config.RGB_565);
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+            }
+        }
+        return bmp;
     }
-    */
+    //*/
 }

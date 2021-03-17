@@ -31,7 +31,6 @@ android {
 
 dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation files('src\\main\\res\\libs\\javase-3.4.0.jar')
     def lifecycle_version = "2.3.0"
     def arch_version = "2.1.0"
     def room_version = "2.2.6"
@@ -84,6 +83,7 @@ dependencies {
     //QR code generator: https://www.geeksforgeeks.org/how-to-generate-and-read-qr-code-with-java-using-zxing-library/
     implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation files('libs/javase-3.4.0.jar')
 
     //Firebase Bill of Materials (BoM)
     implementation platform('com.google.firebase:firebase-bom:26.6.0')
