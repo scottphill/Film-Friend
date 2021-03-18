@@ -57,6 +57,21 @@ public class MatchFragment extends Fragment {
     final private int DEF_VOTE_COUNT_MIN = 0;
     final private int DEF_VOTE_COUNT_MAX = 10000;
 
+    // Made these private variables so they can be put into an intent for QR
+    private EditText release_year_start;
+    private EditText release_year_end;
+    private SeekBar seekbar_min;
+    private SeekBar seekbar_max;
+    private CheckBox wp_cb_0;
+    private CheckBox wp_cb_1;
+    private CheckBox wp_cb_2;
+    private CheckBox wp_cb_3;
+    private CheckBox wp_cb_4;
+    private EditText runtime_min;
+    private EditText runtime_max;
+    private EditText vote_count_min;
+    private EditText vote_count_max;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,18 +89,19 @@ public class MatchFragment extends Fragment {
         matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
         View root = inflater.inflate(R.layout.fragment_match, container, false);
 
-        EditText release_year_start = root.findViewById(R.id.release_date_start);
-        EditText release_year_end = root.findViewById(R.id.release_date_end);
+        release_year_start = root.findViewById(R.id.release_date_start);
+        release_year_end = root.findViewById(R.id.release_date_end);
 
-        SeekBar seekbar_min = root.findViewById(R.id.seekBar_rating_min);
-        SeekBar seekbar_max = root.findViewById(R.id.seekBar_rating_max);
+        seekbar_min = root.findViewById(R.id.seekBar_rating_min);
+        seekbar_max = root.findViewById(R.id.seekBar_rating_max);
 
+        // Ensures that min is always less than max.
         seekbar_min.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // Refreshes too slow
-                //Toast.makeText(getActivity(), progress + "", Toast.LENGTH_SHORT).show();
+
                 int max = seekBar.getMax();
+
                 if (progress >= max) {
                     seekbar_min.setProgress(max-1);
                 }
@@ -99,17 +115,20 @@ public class MatchFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Toast.makeText(
                         getActivity(),
-                        ((double)seekBar.getProgress()/seekBar.getMax())*DEF_RATING_MAX + "",
+                        String.format("%.1f",
+                                ((double) seekBar.getProgress() / seekBar.getMax() * DEF_RATING_MAX)),
                         Toast.LENGTH_SHORT
                 ).show();
             }
         }));
+
+        // Ensures that max is always greater than min.
         seekbar_max.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // Refreshes too slow
-                //Toast.makeText(getActivity(), progress + "", Toast.LENGTH_SHORT).show();
+
                 int min = seekBar.getMin();
+
                 if (progress <= min) {
                     seekbar_max.setProgress(min + 1);
                 }
@@ -123,17 +142,18 @@ public class MatchFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Toast.makeText(
                         getActivity(),
-                        ((double)seekBar.getProgress()/seekBar.getMax())*DEF_RATING_MAX + "",
+                        String.format("%.1f",
+                                ((double) seekBar.getProgress() /  seekBar.getMax()) * DEF_RATING_MAX),
                         Toast.LENGTH_SHORT
                 ).show();
             }
         }));
 
-        CheckBox wp_cb_0 = (CheckBox)root.findViewById(R.id.wp_button_0);
-        CheckBox wp_cb_1 = (CheckBox)root.findViewById(R.id.wp_button_1);
-        CheckBox wp_cb_2 = (CheckBox)root.findViewById(R.id.wp_button_2);
-        CheckBox wp_cb_3 = (CheckBox)root.findViewById(R.id.wp_button_3);
-        CheckBox wp_cb_4 = (CheckBox)root.findViewById(R.id.wp_button_4);
+        wp_cb_0 = (CheckBox)root.findViewById(R.id.wp_button_0);
+        wp_cb_1 = (CheckBox)root.findViewById(R.id.wp_button_1);
+        wp_cb_2 = (CheckBox)root.findViewById(R.id.wp_button_2);
+        wp_cb_3 = (CheckBox)root.findViewById(R.id.wp_button_3);
+        wp_cb_4 = (CheckBox)root.findViewById(R.id.wp_button_4);
 
         wp_cb_0.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,88 +186,87 @@ public class MatchFragment extends Fragment {
                         ((CheckBox) v).isChecked());
             }});
 
-        EditText runtime_min = root.findViewById(R.id.runtime_min);
-        EditText runtime_max = root.findViewById(R.id.runtime_max);
+        runtime_min = root.findViewById(R.id.runtime_min);
+        runtime_max = root.findViewById(R.id.runtime_max);
 
-        EditText vote_count_min = root.findViewById(R.id.vote_count_min);
-        EditText vote_count_max = root.findViewById(R.id.vote_count_max);
+        vote_count_min = root.findViewById(R.id.vote_count_min);
+        vote_count_max = root.findViewById(R.id.vote_count_max);
 
         FloatingActionButton fab = root.findViewById(R.id.match_FAB);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // SAVE ALL INFO
-                try {
-                    matchViewModel.setReleaseYear(
-                            Integer.parseInt(release_year_start.getText().toString()), true);
-                }
-                catch (Exception e) {
-                    matchViewModel.setReleaseYear(DEF_RELEASE_YEAR_MIN, true);
-                }
-                try {
-                    matchViewModel.setReleaseYear(
-                        Integer.parseInt(release_year_end.getText().toString()), false);
-                }
-                catch (Exception e) {
-                    matchViewModel.setReleaseYear(DEF_RELEASE_YEAR_MAX, false);
-                }
-                try {
-                    matchViewModel.setRating(
-                            ((double)seekbar_min.getProgress()/seekbar_min.getMax())*DEF_RATING_MAX,
-                            true);
-                }
-                catch (Exception e) {
-                    matchViewModel.setRating(DEF_RATING_MIN, true);
-                }
-                try {
-                    matchViewModel.setRating(
-                            ((double)seekbar_max.getProgress()/seekbar_max.getMax())*DEF_RATING_MAX,
-                            false);
-                }
-                catch (Exception e) {
-                    matchViewModel.setRating(DEF_RATING_MAX, false);
-                }
-                try {
-                    matchViewModel.setRuntime(
-                        Integer.parseInt(runtime_min.getText().toString()), true);
-                }
-                catch (Exception e) {
-                    matchViewModel.setRuntime(DEF_RUNTIME_MIN, true);
-                }
-                try {
-                    matchViewModel.setRuntime(
-                        Integer.parseInt(runtime_max.getText().toString()), false);
-                }
-                catch (Exception e) {
-                    matchViewModel.setRuntime(DEF_RUNTIME_MAX, false);
-                }
-                try {
-                    matchViewModel.setVoteCount(
-                        Integer.parseInt(vote_count_min.getText().toString()), true);
-                }
-                catch (Exception e) {
-                    matchViewModel.setVoteCount(DEF_VOTE_COUNT_MIN, true);
-                }
-                try {
-                    matchViewModel.setVoteCount(
-                        Integer.parseInt(vote_count_max.getText().toString()), false);
-                }
-                catch (Exception e) {
-                    matchViewModel.setVoteCount(DEF_VOTE_COUNT_MAX, false);
-                }
-
-                /*
-                Intent intent = new Intent(MainActivity.this, OrderActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, mOrderMessage);
-                startActivity(intent);
-                //*/
+                // Update info to MoviePreferences object
+                setMoviePreferences();
 
                 matchViewModel.getTMDBMovie(getActivity());
             }
         });
 
         return root;
+    }
+
+    public void setMoviePreferences() {
+        // Tries to catch variables that might be blank
+        try {
+            matchViewModel.setReleaseYear(
+                    Integer.parseInt(release_year_start.getText().toString()), true);
+        }
+        catch (Exception e) {
+            matchViewModel.setReleaseYear(DEF_RELEASE_YEAR_MIN, true);
+        }
+        try {
+            matchViewModel.setReleaseYear(
+                    Integer.parseInt(release_year_end.getText().toString()), false);
+        }
+        catch (Exception e) {
+            matchViewModel.setReleaseYear(DEF_RELEASE_YEAR_MAX, false);
+        }
+        try {
+            matchViewModel.setRating(
+                    ((double)seekbar_min.getProgress()/seekbar_min.getMax())*DEF_RATING_MAX,
+                    true);
+        }
+        catch (Exception e) {
+            matchViewModel.setRating(DEF_RATING_MIN, true);
+        }
+        try {
+            matchViewModel.setRating(
+                    ((double)seekbar_max.getProgress()/seekbar_max.getMax())*DEF_RATING_MAX,
+                    false);
+        }
+        catch (Exception e) {
+            matchViewModel.setRating(DEF_RATING_MAX, false);
+        }
+        try {
+            matchViewModel.setRuntime(
+                    Integer.parseInt(runtime_min.getText().toString()), true);
+        }
+        catch (Exception e) {
+            matchViewModel.setRuntime(DEF_RUNTIME_MIN, true);
+        }
+        try {
+            matchViewModel.setRuntime(
+                    Integer.parseInt(runtime_max.getText().toString()), false);
+        }
+        catch (Exception e) {
+            matchViewModel.setRuntime(DEF_RUNTIME_MAX, false);
+        }
+        try {
+            matchViewModel.setVoteCount(
+                    Integer.parseInt(vote_count_min.getText().toString()), true);
+        }
+        catch (Exception e) {
+            matchViewModel.setVoteCount(DEF_VOTE_COUNT_MIN, true);
+        }
+        try {
+            matchViewModel.setVoteCount(
+                    Integer.parseInt(vote_count_max.getText().toString()), false);
+        }
+        catch (Exception e) {
+            matchViewModel.setVoteCount(DEF_VOTE_COUNT_MAX, false);
+        }
     }
 
     @Override
@@ -345,6 +364,9 @@ public class MatchFragment extends Fragment {
             case R.id.qr_code_menu:
                 Intent intent_qr = new Intent(getActivity(),
                         QrActivity.class);
+                // Pass MoviePreferences object to intent
+                setMoviePreferences();
+                intent_qr.putExtra("CurrentMatchPreference", matchViewModel.getMP());
                 startActivity(intent_qr);
                 return true;
             default:

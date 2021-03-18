@@ -2,6 +2,7 @@ package com.usf_mobile_dev.filmfriend.ui.match;
 
 import androidx.core.util.Pair;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.usf_mobile_dev.filmfriend.api.GenreResponse;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MatchPreferences implements Serializable {
 
     // True = all checkboxes start as checked, False = unchecked

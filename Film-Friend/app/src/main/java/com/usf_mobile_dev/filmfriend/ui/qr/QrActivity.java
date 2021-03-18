@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.usf_mobile_dev.filmfriend.MainActivity;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 public class QrActivity extends AppCompatActivity {
 
@@ -29,6 +30,9 @@ public class QrActivity extends AppCompatActivity {
         Toast.makeText(this, "Generating Code...", Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(this, QRGenerateActivity.class);
+
+        intent.putExtra("CurrentMatchPreference", getIntent().getSerializableExtra("CurrentMatchPreference"));
+
         startActivity(intent);
     }
 }
