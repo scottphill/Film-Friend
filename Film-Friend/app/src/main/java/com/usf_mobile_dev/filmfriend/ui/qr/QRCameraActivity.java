@@ -1,6 +1,7 @@
 package com.usf_mobile_dev.filmfriend.ui.qr;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,7 @@ import com.budiyev.android.codescanner.ScanMode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.zxing.Result;
 
+import com.usf_mobile_dev.filmfriend.MainActivity;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
@@ -59,20 +61,25 @@ public class QRCameraActivity extends AppCompatActivity {
                         TextView text_view = findViewById(R.id.tv_textview);
                         //text_view.setText(result.getText());
 
-                        //*
                         //if decoded qr can be turned into a movie preferences object
                         try {
                             MatchPreferences mp = MPJSONHandling.JSONToMP(result.getText());
                             text_view.setText("QR code found!");
-                            //return to match page
+
+                            // Return to match page
+                            // FIXME: resulting parent is null
+                            //Intent intent = new Intent(getParent().getParent(), MainActivity.class);
+
+                            Intent intent = getParentActivityIntent();;
+
+                            intent.putExtra("NewMatchPreferencesFromQR", mp);
+
+                            startActivity(intent);
 
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                             text_view.setText("Invalid QR code, please scan again.");
                         }
-
-                         //*/
-
                     }});
             }});
 

@@ -3,6 +3,7 @@ package com.usf_mobile_dev.filmfriend.ui.qr;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,50 +27,48 @@ import java.io.UnsupportedEncodingException;
 
 public class QRGenerateActivity extends AppCompatActivity {
 
-    MatchPreferences MP;
-    ImageView image;
-    String json;
+    private MatchPreferences MP = null;
+    private String json = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_generate);
 
-        image = findViewById(R.id.qr_image);
+        ImageView image = findViewById(R.id.qr_image);
 
         // Convert MatchPreferences object to JSON string
         try {
-            json = MPJSONHandling.mpToJSON(
-                    (MatchPreferences) getIntent().getSerializableExtra(
-                            "CurrentMatchPreference"));
+            MP = (MatchPreferences) getIntent().getSerializableExtra( "CurrentMatchPreference");
+            json = MPJSONHandling.mpToJSON(MP);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            Toast.makeText(this,
-                    "Error generating QR Code", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error generating QR Code", Toast.LENGTH_SHORT).show();
         }
-    }
 
-    @Override
-    protected void onStart() {
+        // Get the size of the screen
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getRealMetrics(displayMetrics);
+        double h = displayMetrics.heightPixels;
+        double w = displayMetrics.widthPixels;
+        int qr_size = (int)(Math.min(h, w) * .7);
 
-        super.onStart();
+        Log.d("height pixels", h + "");
+        Log.d("width pixels", w + "");
+        Log.d("final size pixels", qr_size + "");
 
         // Convert JSON string to bitmap and set it to the ImageView
         try {
-            Log.d("QR_Generate", json);
-
-            Bitmap bm = createQRBitMap(json, 300, 300);
-
-            Log.d("QR_Bool", String.valueOf(bm == null));
-            Log.d("QR_String", bm.toString());
+            Bitmap bm = createQRBitMap(json, qr_size, qr_size);
 
             image.setImageBitmap(bm);
+            image.setContentDescription(json);
 
             Toast.makeText(this, "QR Code Generated!", Toast.LENGTH_SHORT).show();
-        } catch (WriterException | NotFoundException | IOException e) {
-            Log.e("QR_Generate", "ERROR in QRGenerateActivity");
-            Toast.makeText(this, "There was an error generating your QR Code.",
-                    Toast.LENGTH_SHORT).show();
+
+        } catch (WriterException | NotFoundException | IOException | NullPointerException e) {
+            Log.e("Bitmap from JSON", "ERROR in QRGenerateActivity");
+            Toast.makeText(this, "Error displaying your QR Code.", Toast.LENGTH_SHORT).show();
         }
 
         // For debugging only, should be invisible

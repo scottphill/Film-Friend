@@ -5,6 +5,8 @@ import androidx.core.util.Pair;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.usf_mobile_dev.filmfriend.api.GenreResponse;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +37,7 @@ public class MatchPreferences implements Serializable {
     private String selected_language;
 
     // Constructor
-    public MatchPreferences ()
+    public MatchPreferences()
     {
         release_year_start = 1850;
         release_year_end = 2021;
@@ -76,6 +78,30 @@ public class MatchPreferences implements Serializable {
         watch_providers_to_include.put(337, WP_CB_INIT);
         watch_providers_to_include.put(9, WP_CB_INIT);
         watch_providers_to_include.put(3, WP_CB_INIT);
+    }
+
+    // Copy Constructor
+    public MatchPreferences(MatchPreferences mp) {
+
+        release_year_start = mp.getRelease_year_start();
+        release_year_end = mp.getRelease_year_end();
+        rating_min = mp.getRating_min();
+        rating_max = mp.getRating_max();
+        runtime_min = mp.getRuntime_min();
+        runtime_max = mp.getRuntime_max();
+        vote_count_min = mp.getVote_count_min();
+        vote_count_max = mp.getVote_count_max();
+        genres_to_include = mp.getGenres_to_include();
+        genres_to_exclude = mp.getGenres_to_exclude();
+        watch_providers_to_include = mp.getWatch_providers_to_include();
+        /*
+        watch_providers_to_include.put(8, WP_CB_INIT);
+        watch_providers_to_include.put(15, WP_CB_INIT);
+        watch_providers_to_include.put(337, WP_CB_INIT);
+        watch_providers_to_include.put(9, WP_CB_INIT);
+        watch_providers_to_include.put(3, WP_CB_INIT);
+        // */
+        selected_language = mp.getSelected_language();
     }
 
     public String getIncludedGenresString() {

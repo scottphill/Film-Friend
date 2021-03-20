@@ -204,7 +204,19 @@ public class MatchFragment extends Fragment {
             }
         });
 
+        MatchPreferences qrMP = (MatchPreferences) getActivity().getIntent().getSerializableExtra(
+                "NewMatchPreferencesFromQR");
+        if (qrMP != null) {
+            matchViewModel.setMP(qrMP);
+            Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
+            setUI();
+        }
+
         return root;
+    }
+
+    public void setUI() {
+
     }
 
     public void setMoviePreferences() {
@@ -362,8 +374,7 @@ public class MatchFragment extends Fragment {
                 startActivity(intent_pref);
                 return true;
             case R.id.qr_code_menu:
-                Intent intent_qr = new Intent(getActivity(),
-                        QrActivity.class);
+                Intent intent_qr = new Intent(getActivity(), QrActivity.class);
                 // Pass MoviePreferences object to intent
                 setMoviePreferences();
                 intent_qr.putExtra("CurrentMatchPreference", matchViewModel.getMP());

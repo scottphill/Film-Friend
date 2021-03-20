@@ -301,6 +301,11 @@ public class MatchViewModel extends AndroidViewModel {
         return this.MP;
     }
 
+    public void setMP(MatchPreferences mp) {
+        this.MP = mp;
+    }
+
+
     public MutableLiveData<List<LanguageResponse>> getLanguages() {
         return this.languages;
     }
