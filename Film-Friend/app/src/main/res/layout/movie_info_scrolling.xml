@@ -9,12 +9,14 @@
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/movie_info_overview_scrollview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_margin="8dp"
-        android:padding="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_guide"
+        app:layout_constraintDimensionRatio="0:1"
         app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -22,9 +24,16 @@
             android:id="@+id/movie_info_overview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Test" />
+            android:text="@string/large_text" />
 
     </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottom_guide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".8" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/movie_info_buttons_layout"
@@ -39,7 +48,7 @@
         <Button
             android:id="@+id/button_new_movie"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_margin="8dp"
             android:text="@string/find_new_movie"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -50,7 +59,7 @@
         <Button
             android:id="@+id/button_watch_movie"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_margin="8dp"
             android:text="@string/watch_this_movie"
             app:layout_constraintBottom_toBottomOf="parent"
