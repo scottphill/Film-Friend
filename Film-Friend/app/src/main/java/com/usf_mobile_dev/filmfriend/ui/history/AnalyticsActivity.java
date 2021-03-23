@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -45,6 +47,8 @@ public class AnalyticsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analytics);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         analyticsViewModel =
                 new ViewModelProvider(this).get(AnalyticsViewModel.class);
@@ -123,6 +127,7 @@ public class AnalyticsActivity extends AppCompatActivity {
             }
         });
 
+
         /*PieChart pie = (PieChart) findViewById(R.id.genre_pie_chart);
         PieChart test = (PieChart) findViewById(R.id.test_pie_chart);
         pie.setTouchEnabled(false);
@@ -147,4 +152,15 @@ public class AnalyticsActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
