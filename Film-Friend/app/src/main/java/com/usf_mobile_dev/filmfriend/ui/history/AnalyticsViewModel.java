@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.usf_mobile_dev.filmfriend.Movie;
+import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.MovieRepository;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.Objects;
 public class AnalyticsViewModel extends AndroidViewModel {
 
     private MovieRepository movieRepository;
-    private LiveData<List<Movie>> mAllMovies;
+    private LiveData<List<MovieListing>> mAllMovies;
     private int totalMovies = 0;
     private double averageRating = 0;
     private List<Integer> decadeList = new ArrayList<>();
@@ -33,17 +34,17 @@ public class AnalyticsViewModel extends AndroidViewModel {
         mAllMovies = movieRepository.getAllMovies();
     }
 
-    LiveData<List<Movie>> getAllMovies() {return mAllMovies;}
+    LiveData<List<MovieListing>> getAllMovies() {return mAllMovies;}
 
-    public void setStatistics(List<Movie> movies){
+    public void setStatistics(List<MovieListing> movies){
         int count = 0;
         int ratingTotal = 0;
         int decade;
-        for(Movie m : movies)
+        for(MovieListing m : movies)
         {
             count++;
-            ratingTotal += m.getRating();
-            decade = ((m.getReleaseYear()/10)*10);
+            ratingTotal += m.getMovie().getRating();
+            decade = ((m.getMovie().getReleaseYear()/10)*10);
             if(!decadeList.contains(decade))
                 decadeList.add(decade);
 

@@ -27,6 +27,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.renderer.PieChartRenderer;
 import com.usf_mobile_dev.filmfriend.Movie;
+import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
 
 import java.text.DecimalFormat;
@@ -57,9 +58,9 @@ public class AnalyticsActivity extends AppCompatActivity {
         Context context = this;
 
 
-        analyticsViewModel.getAllMovies().observe(this, new Observer<List<Movie>>() {
+        analyticsViewModel.getAllMovies().observe(this, new Observer<List<MovieListing>>() {
             @Override
-            public void onChanged(@Nullable final List<Movie> movies) {
+            public void onChanged(@Nullable final List<MovieListing> movies) {
 
                 analyticsViewModel.setStatistics(Objects.requireNonNull(movies));
                 decadeList = analyticsViewModel.getDecadeList();

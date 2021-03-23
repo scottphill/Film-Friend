@@ -27,10 +27,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.usf_mobile_dev.filmfriend.Movie;
+import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 import com.usf_mobile_dev.filmfriend.ui.history.HistoryViewModel;
 import org.jetbrains.annotations.NotNull;
+
+import java.sql.Date;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -66,6 +70,7 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
 
     private HistoryViewModel historyViewModel;
     private Movie newMovie;
+    private MovieListing newMovieListing;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,8 +98,8 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                     .getStringExtra(MovieInfoViewModel.INTENT_EXTRAS_ACTIVITY_MODE));
             movieInfoViewModel.setCurMatchPreferences((MatchPreferences)getIntent()
                     .getSerializableExtra(MovieInfoViewModel.INTENT_EXTRAS_MOVIE_PREFERENCES));
-          
-            historyViewModel.insert(newMovie);
+
+            //historyViewModel.insert(newMovieListing);
 
             //Set up firebase instance/references
             rootNode = FirebaseDatabase.getInstance();
@@ -147,7 +152,9 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
     // Sets the UI elements of this activity to show info for a new movie
     public void setMovieDetails(Movie newMovie) {
 
-        historyViewModel.insert(newMovie);
+        long millis = System.currentTimeMillis();
+        newMovieListing = new MovieListing(newMovie.getTmdbMovieId(), new Date(millis), newMovie);
+        historyViewModel.insert(newMovieListing);
         this.newMovie = newMovie;
 
         mMovieTitle.setText(newMovie.getTitle());
