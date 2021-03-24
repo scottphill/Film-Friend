@@ -1,7 +1,9 @@
 package com.usf_mobile_dev.filmfriend.ui.match;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +16,9 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -60,8 +65,8 @@ public class MatchFragment extends Fragment {
     // Made these private variables so they can be put into an intent for QR
     private EditText release_year_start;
     private EditText release_year_end;
-    private SeekBar seekbar_min;
-    private SeekBar seekbar_max;
+    private SeekBar rating_min;
+    private SeekBar rating_max;
     private CheckBox wp_cb_0;
     private CheckBox wp_cb_1;
     private CheckBox wp_cb_2;
@@ -92,21 +97,21 @@ public class MatchFragment extends Fragment {
         release_year_start = root.findViewById(R.id.release_date_start);
         release_year_end = root.findViewById(R.id.release_date_end);
 
-        seekbar_min = root.findViewById(R.id.seekBar_rating_min);
-        seekbar_max = root.findViewById(R.id.seekBar_rating_max);
+        rating_min = root.findViewById(R.id.seekBar_rating_min);
+        rating_max = root.findViewById(R.id.seekBar_rating_max);
 
         // Ensures that min is always less than max.
-        seekbar_min.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
+        rating_min.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
                 int max = seekBar.getMax();
 
                 if (progress >= max) {
-                    seekbar_min.setProgress(max-1);
+                    rating_min.setProgress(max-1);
                 }
-                if (seekbar_max.getProgress() <= progress) {
-                    seekbar_max.setProgress(progress + 1);
+                if (rating_max.getProgress() <= progress) {
+                    rating_max.setProgress(progress + 1);
                 }
             }
             @Override
@@ -123,17 +128,17 @@ public class MatchFragment extends Fragment {
         }));
 
         // Ensures that max is always greater than min.
-        seekbar_max.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
+        rating_max.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
                 int min = seekBar.getMin();
 
                 if (progress <= min) {
-                    seekbar_max.setProgress(min + 1);
+                    rating_max.setProgress(min + 1);
                 }
-                if (seekbar_min.getProgress() >= progress) {
-                    seekbar_min.setProgress(progress - 1);
+                if (rating_min.getProgress() >= progress) {
+                    rating_min.setProgress(progress - 1);
                 }
             }
             @Override
@@ -204,19 +209,43 @@ public class MatchFragment extends Fragment {
             }
         });
 
-        MatchPreferences qrMP = (MatchPreferences) getActivity().getIntent().getSerializableExtra(
-                "NewMatchPreferencesFromQR");
+        MatchPreferences qrMP = (MatchPreferences)getActivity().getIntent()
+                .getSerializableExtra("NewMatchPreferencesFromQR");
         if (qrMP != null) {
             matchViewModel.setMP(qrMP);
-            Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
-            setUI();
+            setUI(qrMP);
         }
 
         return root;
     }
 
-    public void setUI() {
+    public void setUI(MatchPreferences qrMP) {
 
+        Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
+        Log.d("Setting Match UI", String.valueOf(qrMP.getRelease_year_start()));
+        Log.d("Setting Match UI", String.valueOf(qrMP.getRelease_year_end()));
+
+        /*
+        release_year_start.setText(qrMP.getRelease_year_start()); // ERROR
+        release_year_end.setText(qrMP.getRelease_year_end());
+
+        rating_min.setProgress((int)(qrMP.getRating_min() * rating_min.getMax() * DEF_RATING_MAX));
+        rating_max.setProgress((int)(qrMP.getRating_max() * rating_max.getMax() * DEF_RATING_MAX));
+
+        wp_cb_0.setChecked(qrMP.getWatch_providers_to_include().get((int)0));
+        wp_cb_1.setChecked(qrMP.getWatch_providers_to_include().get((int)1));
+        wp_cb_2.setChecked(qrMP.getWatch_providers_to_include().get((int)2));
+        wp_cb_3.setChecked(qrMP.getWatch_providers_to_include().get((int)3));
+        wp_cb_4.setChecked(qrMP.getWatch_providers_to_include().get((int)4));
+
+        runtime_min.setText(qrMP.getRuntime_min());
+        runtime_max.setText(qrMP.getRuntime_max());
+
+        vote_count_min.setText(qrMP.getVote_count_min());
+        vote_count_max.setText(qrMP.getVote_count_max());
+
+
+         //*/
     }
 
     public void setMoviePreferences() {
@@ -237,7 +266,7 @@ public class MatchFragment extends Fragment {
         }
         try {
             matchViewModel.setRating(
-                    ((double)seekbar_min.getProgress()/seekbar_min.getMax())*DEF_RATING_MAX,
+                    ((double) rating_min.getProgress()/ rating_min.getMax())*DEF_RATING_MAX,
                     true);
         }
         catch (Exception e) {
@@ -245,7 +274,7 @@ public class MatchFragment extends Fragment {
         }
         try {
             matchViewModel.setRating(
-                    ((double)seekbar_max.getProgress()/seekbar_max.getMax())*DEF_RATING_MAX,
+                    ((double) rating_max.getProgress()/ rating_max.getMax())*DEF_RATING_MAX,
                     false);
         }
         catch (Exception e) {
