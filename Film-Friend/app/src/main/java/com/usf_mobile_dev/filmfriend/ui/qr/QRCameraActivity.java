@@ -1,6 +1,8 @@
 package com.usf_mobile_dev.filmfriend.ui.qr;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,9 +21,14 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ErrorCallback;
 import com.budiyev.android.codescanner.ScanMode;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.zxing.Result;
 
+import com.usf_mobile_dev.filmfriend.MainActivity;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
+
+import org.jetbrains.annotations.NotNull;
 
 //https://github.com/yuriy-budiyev/code-scanner
 public class QRCameraActivity extends AppCompatActivity {
@@ -52,9 +59,28 @@ public class QRCameraActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //Toast.makeText(QRCameraActivity.this, result.getText(), Toast.LENGTH_SHORT).show();
                         TextView text_view = findViewById(R.id.tv_textview);
-                        text_view.setText(result.getText());
+                        //text_view.setText(result.getText());
+
+                        //if decoded qr can be turned into a movie preferences object
+                        try {
+                            MatchPreferences mp = MPJSONHandling.JSONToMP(result.getText());
+                            text_view.setText("QR code found!");
+
+                            // Return to match page
+                            //Intent intent = getParentActivityIntent();
+                            Intent intent = new Intent();
+                            intent.putExtra(
+                                    "com.usf_mobile_dev.filmfriend.ui.qr.NewMatchPreferencesFromQR",
+                                    mp);
+
+                            setResult(Activity.RESULT_OK, intent);
+                            finish();
+
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                            text_view.setText("Invalid QR code, please scan again.");
+                        }
                     }});
             }});
 
@@ -65,7 +91,8 @@ public class QRCameraActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.e("QRCamera", "Camera initialization error: " + error.getMessage());
+                        Log.e("QRCamera", "Camera initialization error: "
+                                + error.getMessage());
                     }});
             }});
 
@@ -91,32 +118,28 @@ public class QRCameraActivity extends AppCompatActivity {
     }
 
     private void setUpPermissions() {
-        int permission = ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.CAMERA);
+        int permission =
+                ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA);
 
-        if (permission != PackageManager.PERMISSION_GRANTED){
+        if (permission != PackageManager.PERMISSION_GRANTED) {
             makePermissionRequest();
         }
     }
-    private void makePermissionRequest()
-    {
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.CAMERA},
-                CAMERA_REQUEST_CODE);
+    private void makePermissionRequest() {
+        ActivityCompat.
+                requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                                   CAMERA_REQUEST_CODE);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions,
+                                           @NotNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this,
-                        "Enable camera permission to use this section of the app.",
+                        "Enable camera permission to use this functionality.",
                         Toast.LENGTH_LONG).show();
-            }
-            else {
-                //successful request: do nothing!
             }
         }
     }
