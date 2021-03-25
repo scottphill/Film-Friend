@@ -14,6 +14,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.HashSet;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
+import com.usf_mobile_dev.filmfriend.api.GenreResponse;
+import com.usf_mobile_dev.filmfriend.api.LanguageResponse;
 import com.usf_mobile_dev.filmfriend.api.TMDBApi;
 import com.usf_mobile_dev.filmfriend.ui.discover.DiscoverViewModel;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
@@ -51,7 +54,7 @@ public class MovieRepository {
     public final static int ENABLE_COARSE_LOCATION = 2;
 
     private MovieDao mMovieDao;
-    private LiveData<List<Movie>> mAllMovies;
+    private LiveData<List<MovieListing>> mAllMovies;
     private List<String> usersNearby;
     private final Executor threadExecutor;
     private final Handler resultHandler;
@@ -79,15 +82,15 @@ public class MovieRepository {
         usersNearby = new ArrayList<>();
     }
 
-    public LiveData<List<Movie>> getAllMovies() {
+    public LiveData<List<MovieListing>> getAllMovies() {
         return mAllMovies;
     }
 
-    public void insert (Movie movie) {
-        new insertAsyncTask(mMovieDao).execute(movie);
+    public void insert (MovieListing movieListing) {
+        new insertAsyncTask(mMovieDao).execute(movieListing);
     }
 
-    private static class insertAsyncTask extends android.os.AsyncTask<Movie, Void, Void> {
+    private static class insertAsyncTask extends android.os.AsyncTask<MovieListing, Void, Void> {
 
         private MovieDao mAsyncTaskDao;
 
@@ -96,7 +99,7 @@ public class MovieRepository {
         }
 
         @Override
-        protected Void doInBackground(final Movie... params) {
+        protected Void doInBackground(final MovieListing... params) {
             mAsyncTaskDao.insert(params[0]);
             return null;
         }
@@ -223,21 +226,58 @@ public class MovieRepository {
     public void getTMDBMovie(
             final Callback<DiscoverResponse> discoverCallback,
             final Executor callbackExecutor,
-            final MatchPreferences matchPreferences
+            final MatchPreferences matchPreferences,
+            final String api_key
             ) {
                 threadExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        TMDBApi.getMovie(discoverCallback, callbackExecutor, matchPreferences);
-                        /*try {
-                            ThreadResult<DiscoverResponse> discoverResult = getMovie();
-                            notifyTMDBMovieResult(discoverResult, callback);
-                        } catch (Exception e) {
-                            ThreadResult<DiscoverResponse> errorResult = new ThreadResult.Error<>(e);
-                            notifyTMDBMovieResult(errorResult, callback);
-                        }*/
+                        TMDBApi.getMovie(discoverCallback, callbackExecutor,
+                                matchPreferences, api_key, null);
                     }
                 });
+    }
+
+    public void getNextTMDBMovie(
+            final Callback<DiscoverResponse> discoverCallback,
+            final Executor callbackExecutor,
+            final MatchPreferences curMatchPreferences,
+            final String api_key,
+            final HashSet<Integer> viewedPages
+    ) {
+        threadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                TMDBApi.getMovie(discoverCallback, callbackExecutor,
+                        curMatchPreferences, api_key, viewedPages);
+            }
+        });
+    }
+
+    public void getTMDBGenres(
+            final Callback<GenreResponse> genreCallback,
+            final Executor callbackExecutor,
+            final String api_key
+    ) {
+        threadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                TMDBApi.getGenres(genreCallback, callbackExecutor, api_key);
+            }
+        });
+    }
+
+    public void getTMDBLanguages(
+            final Callback<List<LanguageResponse>> languageCallback,
+            final Executor callbackExecutor,
+            final String api_key
+    ) {
+        threadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                TMDBApi.getLanguages(languageCallback, callbackExecutor, api_key);
+            }
+        });
     }
 
     /*private void notifyTMDBMovieResult(

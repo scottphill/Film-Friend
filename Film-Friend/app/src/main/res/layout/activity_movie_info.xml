@@ -1,68 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".ui.movieInfo.MovieInfoActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottom_guide"
         android:layout_width="match_parent"
-        android:layout_height="290dp"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".3" />
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/movie_info_app_bar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_guide"
+        app:layout_constraintDimensionRatio="0:1"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            android:minHeight="60dp"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title="Movie Info"
-            app:titleEnabled="false"
-            app:expandedTitleGravity="left"
-            app:collapsedTitleGravity="center_horizontal"
-            app:toolbarId="@+id/toolbar">
-
+            android:layout_height="match_parent">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/movie_banner"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                android:scaleType="fitEnd"
-
-                app:layout_collapseMode="parallax"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
                 app:tint="#C9000000"
                 app:tintMode="src_over" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/movie_poster"
-                android:layout_width="134dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="260dp"
-                android:fitsSystemWindows="true"
                 android:outlineAmbientShadowColor="@color/black"
-                android:scaleType="fitEnd"
-                android:scaleX="1"
-                android:scaleY="1"
-
-                app:layout_collapseMode="parallax" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/movie_info_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="80dp"
+                    android:maxEms="10"
                     android:text="A Clockwork Orange"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
@@ -74,9 +73,6 @@
                     android:id="@+id/movie_info_release"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginTop="8dp"
                     android:text="1971"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/movie_info_title" />
@@ -85,8 +81,6 @@
                     android:id="@+id/rating_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="12dp"
                     android:text="Rating:"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/movie_info_release" />
@@ -95,19 +89,17 @@
                     android:id="@+id/rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="5dp"
                     android:text="4.1/5"
                     app:layout_constraintStart_toEndOf="@+id/rating_label"
-                    app:layout_constraintTop_toBottomOf="@+id/movie_info_title" />
+                    app:layout_constraintBaseline_toBaselineOf="@+id/rating_label"/>
 
                 <TextView
                     android:id="@+id/vote_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="8dp"
                     android:text="Votes:"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/rating_label" />
 
@@ -115,27 +107,28 @@
                     android:id="@+id/vote_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="5dp"
                     android:text="123"
                     app:layout_constraintStart_toEndOf="@+id/vote_label"
-                    app:layout_constraintTop_toBottomOf="@+id/rating" />
-
+                    app:layout_constraintBaseline_toBaselineOf="@+id/vote_label"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/movie_info_scrolling" />
+    <FrameLayout
+        android:id="@+id/movie_info_details_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/movie_info_app_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
+        <include layout="@layout/movie_info_scrolling" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

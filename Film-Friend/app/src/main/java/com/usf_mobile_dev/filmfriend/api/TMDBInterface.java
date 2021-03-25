@@ -1,5 +1,7 @@
 package com.usf_mobile_dev.filmfriend.api;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -34,6 +36,22 @@ interface TMDBInterface {
             @Query(value = "with_watch_providers", encoded = true)
                     String withWatchProviders,
             @Query(value = "watch_region", encoded = true)
-                    String watchRegion
+                    String watchRegion,
+            @Query(value = "with_original_language", encoded = true)
+                    String withOriginalLanguage
+    );
+
+    @GET("genre/movie/list")
+    Call<GenreResponse> getGenres(
+            @Query(value = "api_key", encoded = true)
+                String api_key,
+            @Query(value = "language", encoded = true)
+                String language
+    );
+
+    @GET("configuration/languages")
+    Call<List<LanguageResponse>> getLanguages(
+            @Query(value = "api_key", encoded = true)
+                    String api_key
     );
 }

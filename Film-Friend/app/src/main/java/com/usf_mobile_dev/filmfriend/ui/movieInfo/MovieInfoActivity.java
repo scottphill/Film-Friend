@@ -1,5 +1,7 @@
 package com.usf_mobile_dev.filmfriend.ui.movieInfo;
 
+import android.os.Bundle;
+import android.widget.Button;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -25,10 +27,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.usf_mobile_dev.filmfriend.Movie;
+import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 import com.usf_mobile_dev.filmfriend.ui.history.HistoryViewModel;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.sql.Date;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -51,62 +56,50 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
     private FusedLocationProviderClient fusedLocationClient;
     private Location loc;
 
-
     private MovieInfoViewModel movieInfoViewModel;
-    private Movie movie;
-
     private TextView mMovieTitle;
     private TextView mMovieRelease;
     private TextView mRating;
     private TextView mVoteCount;
     private TextView mMovieOverview;
-
     private ImageView mMovieBanner;
     private ImageView mMoviePoster;
+    private Button newMovieBtn;
+    private Button watchMovieBtn;
+  
 
+    private HistoryViewModel historyViewModel;
+    private Movie newMovie;
+    private MovieListing newMovieListing;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_info);
 
-        //movieInfoViewModel = new ViewModelProvider(this).get(MovieInfoViewModel.class);
-        HistoryViewModel historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+        movieInfoViewModel = new ViewModelProvider(this).get(MovieInfoViewModel.class);
+        historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
 
         mMovieTitle = findViewById(R.id.movie_info_title);
         mMovieRelease = findViewById(R.id.movie_info_release);
         mRating = findViewById(R.id.rating);
         mVoteCount = findViewById(R.id.vote_count);
         mMovieOverview = findViewById(R.id.movie_info_overview);
-
-        mMovieBanner = findViewById(R.id.movie_banner);
         mMoviePoster = findViewById(R.id.movie_poster);
+        mMovieBanner = findViewById(R.id.movie_banner);
+        newMovieBtn = findViewById(R.id.button_new_movie);
+        watchMovieBtn = findViewById(R.id.button_watch_movie);
 
-        ///*
-        if (getIntent().getExtras() != null) {
-            movie = (Movie) getIntent().getSerializableExtra(INTENT_EXTRAS_MOVIE_DATA);
+        if(getIntent().getExtras() != null) {
+            newMovie = (Movie)getIntent()
+                    .getSerializableExtra(MovieInfoViewModel.INTENT_EXTRAS_MOVIE_DATA);
+            setMovieDetails(newMovie);
+            movieInfoViewModel.setCurrentMovie(newMovie);
+            movieInfoViewModel.setActivityMode(getIntent()
+                    .getStringExtra(MovieInfoViewModel.INTENT_EXTRAS_ACTIVITY_MODE));
+            movieInfoViewModel.setCurMatchPreferences((MatchPreferences)getIntent()
+                    .getSerializableExtra(MovieInfoViewModel.INTENT_EXTRAS_MOVIE_PREFERENCES));
 
-            mMovieTitle.setText(movie.getTitle());
-            mMovieRelease.setText(movie.getReleaseYearAsStr());
-            mRating.setText(movie.getRatingAsFormattedStr());
-            mVoteCount.setText(movie.getVoteCountAsString());
-            mMovieOverview.setText(movie.getOverview());
-
-            String posterUrl = getString(R.string.tmdb_image_base_url)
-                    + getString(R.string.tmdb_poster_size_3)
-                    + movie.getPosterPath();
-            String backdropUrl = getString(R.string.tmdb_image_base_url)
-                    + getString(R.string.tmdb_backdrop_size_2)
-                    + movie.getBackdropPath();
-
-            Glide.with(this)
-                    .load(posterUrl)
-                    .into(mMoviePoster);
-
-            Glide.with(this)
-                    .load(backdropUrl)
-                    .into(mMovieBanner);
-
-            historyViewModel.insert(movie);
+            //historyViewModel.insert(newMovieListing);
 
             //Set up firebase instance/references
             rootNode = FirebaseDatabase.getInstance();
@@ -140,7 +133,54 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                         });
             }
         }
+
+        movieInfoViewModel.getCurrentMovie().observe(
+                this,
+                currentMovie -> {
+                    if(currentMovie != null)
+                        setMovieDetails(currentMovie);
+                }
+        );
+
+        newMovieBtn.setOnClickListener(movieInfoViewModel
+                .getNewMovieBtnOnClickListener());
+        watchMovieBtn.setOnClickListener(movieInfoViewModel
+                .getWatchMovieOnClickListener());
     }
+
+  
+    // Sets the UI elements of this activity to show info for a new movie
+    public void setMovieDetails(Movie newMovie) {
+
+        long millis = System.currentTimeMillis();
+        newMovieListing = new MovieListing(newMovie.getTmdbMovieId(), new Date(millis), newMovie);
+        historyViewModel.insert(newMovieListing);
+        this.newMovie = newMovie;
+
+        mMovieTitle.setText(newMovie.getTitle());
+        mMovieRelease.setText(newMovie.getReleaseYearAsStr());
+        mRating.setText(newMovie.getRatingAsFormattedStr());
+        mVoteCount.setText(newMovie.getVoteCountAsString());
+        mMovieOverview.setText(newMovie.getOverview());
+
+        String posterUrl = getString(R.string.tmdb_image_base_url)
+                + getString(R.string.tmdb_poster_size_3)
+                + newMovie.getPosterPath();
+        String backdropUrl = getString(R.string.tmdb_image_base_url)
+                + getString(R.string.tmdb_backdrop_size_2)
+                + newMovie.getBackdropPath();
+
+        Glide.with(this)
+                .load(posterUrl)
+                .into(mMoviePoster);
+
+        Glide.with(this)
+                .load(backdropUrl)
+                .into(mMovieBanner);
+  
+    }
+
+  
     @Override
     public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions,
                                            @NotNull int[] grantResults) {
@@ -184,6 +224,7 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
         // permissions this app might request.
     }
 
+  
     public void addDataToFirebase() {
         firebaseInstallation = FirebaseInstallations.getInstance().getId()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
@@ -191,8 +232,8 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                     public void onComplete(@NonNull Task<String> task) {
                         if (task.isSuccessful()) {
                             FID = task.getResult();
-                            ref_user.child(FID).child("recentMatch").setValue(movie.getTmdbMovieId());
-                            ref_movies.child(movie.getTmdbMovieIdAsStr()).setValue(movie);
+                            ref_user.child(FID).child("recentMatch").setValue(newMovie.getTmdbMovieId());
+                            ref_movies.child(newMovie.getTmdbMovieIdAsStr()).setValue(newMovie);
                             if(loc != null) {
                                 geoFire.setLocation(FID, new GeoLocation(loc.getLatitude(), loc.getLongitude()));
                                 Log.d("Location", "Added location");
