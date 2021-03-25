@@ -1,5 +1,6 @@
 package com.usf_mobile_dev.filmfriend.ui.match;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import com.usf_mobile_dev.filmfriend.LanguagesGridAdapter;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.api.GenreResponse;
 import com.usf_mobile_dev.filmfriend.api.LanguageResponse;
+import com.usf_mobile_dev.filmfriend.ui.qr.MPJSONHandling;
 import com.usf_mobile_dev.filmfriend.ui.qr.QrActivity;
 import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
 
@@ -77,10 +79,13 @@ public class MatchFragment extends Fragment {
     private EditText vote_count_min;
     private EditText vote_count_max;
 
+    private static MatchPreferences MPfromQR;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        MPfromQR = null;
     }
 
     @Override
@@ -209,23 +214,35 @@ public class MatchFragment extends Fragment {
             }
         });
 
-        MatchPreferences qrMP = (MatchPreferences)getActivity().getIntent()
-                .getSerializableExtra("NewMatchPreferencesFromQR");
-        if (qrMP != null) {
-            matchViewModel.setMP(qrMP);
-            setUI(qrMP);
-        }
-
         return root;
+    }
+
+    // Unique tag for the intent reply
+    public static final int QR_REQUEST = 1;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Test for the right intent reply.
+        if (requestCode == QR_REQUEST && resultCode == Activity.RESULT_OK) {
+            //*
+            Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
+            MPfromQR = (MatchPreferences) data.getSerializableExtra(
+                            "com.usf_mobile_dev.filmfriend.ui.qr.NewMatchPreferencesFromQR");
+             //*/
+        }
     }
 
     public void setUI(MatchPreferences qrMP) {
 
-        Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
         Log.d("Setting Match UI", String.valueOf(qrMP.getRelease_year_start()));
         Log.d("Setting Match UI", String.valueOf(qrMP.getRelease_year_end()));
 
+        // FIXME: error when setting ui text
         /*
+        matchViewModel.setMP(qrMP);
+
         release_year_start.setText(qrMP.getRelease_year_start()); // ERROR
         release_year_end.setText(qrMP.getRelease_year_end());
 
@@ -243,7 +260,6 @@ public class MatchFragment extends Fragment {
 
         vote_count_min.setText(qrMP.getVote_count_min());
         vote_count_max.setText(qrMP.getVote_count_max());
-
 
          //*/
     }
@@ -313,6 +329,11 @@ public class MatchFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (MPfromQR != null) {
+            setUI(MPfromQR);
+            MPfromQR = null;
+        }
 
         // Sets up the GridView for the included genres checkboxes
         includedGenresGrid = (RecyclerView)view.findViewById(R.id.included_genres_grid);
@@ -406,8 +427,9 @@ public class MatchFragment extends Fragment {
                 Intent intent_qr = new Intent(getActivity(), QrActivity.class);
                 // Pass MoviePreferences object to intent
                 setMoviePreferences();
-                intent_qr.putExtra("CurrentMatchPreference", matchViewModel.getMP());
-                startActivity(intent_qr);
+                intent_qr.putExtra("com.usf_mobile_dev.filmfriend.ui.match.CurrentMatchPreference",
+                        matchViewModel.getMP());
+                startActivityForResult(intent_qr, QR_REQUEST);
                 return true;
             default:
                 // Do nothing

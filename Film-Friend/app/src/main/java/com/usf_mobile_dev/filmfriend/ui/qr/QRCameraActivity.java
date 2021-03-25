@@ -1,6 +1,7 @@
 package com.usf_mobile_dev.filmfriend.ui.qr;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -67,14 +68,14 @@ public class QRCameraActivity extends AppCompatActivity {
                             text_view.setText("QR code found!");
 
                             // Return to match page
-                            // FIXME: resulting parent is null
-                            //Intent intent = new Intent(getParent().getParent(), MainActivity.class);
+                            //Intent intent = getParentActivityIntent();
+                            Intent intent = new Intent();
+                            intent.putExtra(
+                                    "com.usf_mobile_dev.filmfriend.ui.qr.NewMatchPreferencesFromQR",
+                                    mp);
 
-                            Intent intent = getParentActivityIntent();;
-
-                            intent.putExtra("NewMatchPreferencesFromQR", mp);
-
-                            startActivity(intent);
+                            setResult(Activity.RESULT_OK, intent);
+                            finish();
 
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();

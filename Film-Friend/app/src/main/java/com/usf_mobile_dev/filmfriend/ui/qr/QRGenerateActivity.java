@@ -39,7 +39,8 @@ public class QRGenerateActivity extends AppCompatActivity {
 
         // Convert MatchPreferences object to JSON string
         try {
-            MP = (MatchPreferences) getIntent().getSerializableExtra( "CurrentMatchPreference");
+            MP = (MatchPreferences) getIntent().getSerializableExtra(
+                    "com.usf_mobile_dev.filmfriend.ui.qr.CurrentMatchPreference");
             json = MPJSONHandling.mpToJSON(MP);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
