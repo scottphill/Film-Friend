@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -27,6 +29,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.renderer.PieChartRenderer;
 import com.usf_mobile_dev.filmfriend.Movie;
+import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
 
 import java.text.DecimalFormat;
@@ -45,6 +48,8 @@ public class AnalyticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analytics);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         analyticsViewModel =
                 new ViewModelProvider(this).get(AnalyticsViewModel.class);
         TextView totalMovies = findViewById(R.id.totalMovies);
@@ -57,9 +62,9 @@ public class AnalyticsActivity extends AppCompatActivity {
         Context context = this;
 
 
-        analyticsViewModel.getAllMovies().observe(this, new Observer<List<Movie>>() {
+        analyticsViewModel.getAllMovies().observe(this, new Observer<List<MovieListing>>() {
             @Override
-            public void onChanged(@Nullable final List<Movie> movies) {
+            public void onChanged(@Nullable final List<MovieListing> movies) {
 
                 analyticsViewModel.setStatistics(Objects.requireNonNull(movies));
                 decadeList = analyticsViewModel.getDecadeList();
@@ -122,6 +127,7 @@ public class AnalyticsActivity extends AppCompatActivity {
             }
         });
 
+
         /*PieChart pie = (PieChart) findViewById(R.id.genre_pie_chart);
         PieChart test = (PieChart) findViewById(R.id.test_pie_chart);
         pie.setTouchEnabled(false);
@@ -146,4 +152,15 @@ public class AnalyticsActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

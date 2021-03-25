@@ -11,12 +11,12 @@ import java.util.List;
 @Dao
 public interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(Movie movie);
+    void insert(MovieListing movieListing);
 
     @Query("DELETE FROM movies_history")
     void deleteAll();
 
-    @Query("SELECT * from movies_history")
-    LiveData<List<Movie>> getAllMovies();
+    @Query("SELECT * from movies_history ORDER BY dateViewed DESC")
+    LiveData<List<MovieListing>> getAllMovies();
 
 }

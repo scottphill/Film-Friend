@@ -54,7 +54,7 @@ public class MovieRepository {
     public final static int ENABLE_COARSE_LOCATION = 2;
 
     private MovieDao mMovieDao;
-    private LiveData<List<Movie>> mAllMovies;
+    private LiveData<List<MovieListing>> mAllMovies;
     private List<String> usersNearby;
     private final Executor threadExecutor;
     private final Handler resultHandler;
@@ -82,15 +82,15 @@ public class MovieRepository {
         usersNearby = new ArrayList<>();
     }
 
-    public LiveData<List<Movie>> getAllMovies() {
+    public LiveData<List<MovieListing>> getAllMovies() {
         return mAllMovies;
     }
 
-    public void insert (Movie movie) {
-        new insertAsyncTask(mMovieDao).execute(movie);
+    public void insert (MovieListing movieListing) {
+        new insertAsyncTask(mMovieDao).execute(movieListing);
     }
 
-    private static class insertAsyncTask extends android.os.AsyncTask<Movie, Void, Void> {
+    private static class insertAsyncTask extends android.os.AsyncTask<MovieListing, Void, Void> {
 
         private MovieDao mAsyncTaskDao;
 
@@ -99,7 +99,7 @@ public class MovieRepository {
         }
 
         @Override
-        protected Void doInBackground(final Movie... params) {
+        protected Void doInBackground(final MovieListing... params) {
             mAsyncTaskDao.insert(params[0]);
             return null;
         }
