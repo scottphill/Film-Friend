@@ -53,3 +53,4 @@ lint/tmp/
 .DS_Store# App Specific cases
 app/release/output.json
 .idea/codeStyles/
+*.xml

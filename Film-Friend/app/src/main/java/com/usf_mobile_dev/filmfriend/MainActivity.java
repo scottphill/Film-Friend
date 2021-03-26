@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity
 
         /*
         // FIXME
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity
             drawer.addDrawerListener(toggle);
         }
         toggle.syncState();
-         */
+        //*/
     }
 
     /**
