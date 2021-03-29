@@ -3,12 +3,16 @@ package com.usf_mobile_dev.filmfriend.ui.history;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +27,7 @@ import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
+import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoViewModel;
 
 import java.util.List;
 
@@ -30,6 +35,8 @@ public class HistoryFragment extends Fragment {
 
     private HistoryViewModel historyViewModel;
     private RecyclerView historyRecyclerView;
+    String[] filters;
+    Spinner spinnerFilters;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -70,9 +77,10 @@ public class HistoryFragment extends Fragment {
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         historyRecyclerView.setAdapter(adapter);
 
-        historyViewModel.getAllMovies().observe(getViewLifecycleOwner(), new Observer<List<MovieListing>>() {
+        historyViewModel.getMovieList().observe(getViewLifecycleOwner(), new Observer<List<MovieListing>>() {
             @Override
             public void onChanged(@Nullable final List<MovieListing> movies) {
+                Log.d("MOVIELIST", "Movie list changed");
                 // Update the cached copy of the words in the adapter.
                 adapter.setMovies(movies);
             }
@@ -84,6 +92,30 @@ public class HistoryFragment extends Fragment {
             public void onItemClick(View v, int position) {
                 MovieListing movieListing = adapter.getMovieAtPosition(position);
                 launchMovieInfoActivity(movieListing.getMovie());
+            }
+        });
+
+        spinnerFilters = view.findViewById(R.id.spinner_filters);
+        populateSpinnerFilters();
+
+        spinnerFilters.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String selected = (String) adapterView.getItemAtPosition(i);
+
+                if(selected.equals("All Movies")){
+                    historyViewModel.getAllMovies();
+                }
+                if(selected.equals("Watch List")){
+                    historyViewModel.getAllWatchList();
+                }
+                //Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
+                //Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
     }
@@ -107,9 +139,20 @@ public class HistoryFragment extends Fragment {
         movieActivityIntent.putExtra(
                 MovieInfoActivity.INTENT_EXTRAS_MOVIE_DATA,
                 movie);
+        movieActivityIntent.putExtra(
+                MovieInfoViewModel.INTENT_EXTRAS_ACTIVITY_MODE,
+                MovieInfoViewModel.ACTIVITY_MODE_HISTORY);
         if (context != null) {
             context.startActivity(movieActivityIntent);
         }
+    }
+
+    private void populateSpinnerFilters() {
+        filters = new String[]{"All Movies", "Watch List"};
+        ArrayAdapter<String> rangeAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, filters);
+        rangeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerFilters.setAdapter(rangeAdapter);
+
     }
 
 }

@@ -62,7 +62,7 @@ public class AnalyticsActivity extends AppCompatActivity {
         Context context = this;
 
 
-        analyticsViewModel.getAllMovies().observe(this, new Observer<List<MovieListing>>() {
+        analyticsViewModel.getMovieList().observe(this, new Observer<List<MovieListing>>() {
             @Override
             public void onChanged(@Nullable final List<MovieListing> movies) {
 

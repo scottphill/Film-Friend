@@ -10,11 +10,14 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.usf_mobile_dev.filmfriend.Movie;
+import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.MovieRepository;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.RoomCallback;
 import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -29,6 +32,8 @@ import retrofit2.Response;
 
 public class MovieInfoViewModel extends AndroidViewModel {
     public static final String ACTIVITY_MODE_MATCH = "movie_info_mode_match";
+    public static final String ACTIVITY_MODE_HISTORY = "movie_info_mode_history";
+    public static final String ACTIVITY_MODE_DISCOVER = "movie_info_mode_discover";
     public static final String INTENT_ACTION_LAUNCH_WITH_MOVIE_DATA = "com.usf_mobile_dev.filmfriend.intent.action.launch_with_movie_data";
     public static final String INTENT_EXTRAS_MOVIE_DATA = "com.usf_mobile_dev.filmfriend.intent.extras.movie_data";
     public static final String INTENT_EXTRAS_ACTIVITY_MODE = "com.usf_mobile_dev.filmfriend.intent.extras.movie_info_activity_mode";
@@ -44,6 +49,7 @@ public class MovieInfoViewModel extends AndroidViewModel {
     private String activityMode;
     private MovieRepository movieRepository;
     private String api_key;
+    private int willWatch;
 
     public MovieInfoViewModel(Application application) {
         super(application);
@@ -91,6 +97,7 @@ public class MovieInfoViewModel extends AndroidViewModel {
     public void setActivityMode(String activityMode) {
         this.activityMode = activityMode;
     }
+    public String getActivityMode() {return activityMode;}
 
     public void setCurrentMoviePage(
             List<DiscoverResponse.MovieData> newMoviePage,
@@ -98,6 +105,15 @@ public class MovieInfoViewModel extends AndroidViewModel {
     ) {
         this.currentMoviePage = newMoviePage;
         this.viewedPages.add(page);
+    }
+
+    public void updateMovieDatabase(MovieListing movieListing) {
+        movieRepository.update(movieListing);
+    }
+
+    public void getMovie(int id , final RoomCallback callback)
+    {
+        movieRepository.getMovie(id, callback);
     }
 
     public View.OnClickListener getNewMovieBtnOnClickListener() {
@@ -125,7 +141,16 @@ public class MovieInfoViewModel extends AndroidViewModel {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    if(currentMovie.getValue() != null) {
+                        long millis = System.currentTimeMillis();
+                        MovieListing newMovieListing = new MovieListing(
+                                currentMovie.getValue().getTmdbMovieId(),
+                                new Date(millis),
+                                currentMovie.getValue(),
+                                1);
+                        Log.d("WATCHLIST", "Inserting with willWatch value");
+                        movieRepository.update(newMovieListing);
+                    }
                 }
             };
         }
