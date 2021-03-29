@@ -136,7 +136,7 @@ public class MovieInfoViewModel extends AndroidViewModel {
         }
     }
 
-    public View.OnClickListener getWatchMovieOnClickListener() {
+    /*public View.OnClickListener getWatchMovieOnClickListener() {
         if (ACTIVITY_MODE_MATCH.equals(activityMode)) {
             return new View.OnClickListener() {
                 @Override
@@ -162,7 +162,7 @@ public class MovieInfoViewModel extends AndroidViewModel {
                 }
             };
         }
-    }
+    }*/
 
     private void getNextMovie(Context context) {
 

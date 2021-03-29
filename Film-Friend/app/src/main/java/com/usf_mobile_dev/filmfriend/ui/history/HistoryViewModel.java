@@ -18,13 +18,11 @@ import java.util.List;
 
 public class HistoryViewModel extends AndroidViewModel {
 
-    private MutableLiveData<String> mText;
     private MovieRepository movieRepository;
     private MutableLiveData<List<MovieListing>> mAllMovies;
 
     public HistoryViewModel(Application application) {
         super(application);
-        mText.setValue("This is the History fragment");
         movieRepository = new MovieRepository(application);
         mAllMovies = new MutableLiveData<>();
         movieRepository.getAllMovies(new RoomCallback() {
@@ -84,6 +82,4 @@ public class HistoryViewModel extends AndroidViewModel {
     }
 
     public void insert(MovieListing movieListing) {movieRepository.insert(movieListing);}
-
-    public LiveData<String> getText() { return mText;}
 }

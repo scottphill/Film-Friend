@@ -55,7 +55,7 @@ public class MovieRepository {
     public final static int ENABLE_COARSE_LOCATION = 2;
 
     private MovieDao mMovieDao;
-    private List<MovieListing> mAllMovies;
+    private MutableLiveData<List<MovieListing>> mAllMovies;
     private List<String> usersNearby;
     private final Executor threadExecutor;
     private final Handler resultHandler;
@@ -72,8 +72,6 @@ public class MovieRepository {
     public MovieRepository(Application application){
         MovieRoomDatabase db = MovieRoomDatabase.getDatabase(application);
         mMovieDao = db.movieDao();
-        //mAllMovies = mMovieDao.getAllMovies();
-        //Log.d("MOVIELIST", String.valueOf(mAllMovies.getValue()));
 
         this.threadExecutor = ((MovieApplication)application).executorService;
         this.resultHandler = ((MovieApplication)application).mainThreadHandler;
@@ -134,41 +132,29 @@ public class MovieRepository {
     }
 
     public void insert (MovieListing movieListing) {
-        new insertAsyncTask(mMovieDao).execute(movieListing);
+        threadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mMovieDao.insert(movieListing);
+                } catch (Exception e){
+                    Log.e("WATCHLIST", String.valueOf(e));
+                }
+            }
+        });
     }
 
     public void update(MovieListing movieListing) {
-        new updateAsyncTask(mMovieDao).execute(movieListing);
-    }
-
-    private static class insertAsyncTask extends android.os.AsyncTask<MovieListing, Void, Void> {
-
-        private MovieDao mAsyncTaskDao;
-
-        insertAsyncTask(MovieDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final MovieListing... params) {
-            mAsyncTaskDao.insert(params[0]);
-            return null;
-        }
-    }
-
-    private static class updateAsyncTask extends android.os.AsyncTask<MovieListing, Void, Void> {
-
-        private MovieDao mAsyncTaskDao;
-
-        updateAsyncTask(MovieDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final MovieListing... params) {
-            mAsyncTaskDao.update(params[0]);
-            return null;
-        }
+        threadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mMovieDao.update(movieListing);
+                } catch (Exception e){
+                    Log.e("WATCHLIST", String.valueOf(e));
+                }
+            }
+        });
     }
 
     public void getAllMoviesNearby(double radius, FragmentActivity discoverActivity)
