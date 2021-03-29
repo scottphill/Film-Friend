@@ -23,7 +23,7 @@ import java.util.Objects;
 public class AnalyticsViewModel extends AndroidViewModel {
 
     private MovieRepository movieRepository;
-    private MutableLiveData<List<MovieListing>> mAllMovies;
+    private LiveData<List<MovieListing>> mAllMovies;
     private int totalMovies = 0;
     private double averageRating = 0;
     private List<Integer> decadeList = new ArrayList<>();
@@ -33,22 +33,8 @@ public class AnalyticsViewModel extends AndroidViewModel {
         super(application);
 
         movieRepository = new MovieRepository(application);
-        mAllMovies = new MutableLiveData<>();
-        movieRepository.getAllMovies(new RoomCallback() {
-            @Override
-            public void onComplete(List<MovieListing> result) {
-                if(result != null){
-                    //Log.d("WATCHLIST", "Result not null");
-                    //Log.d("WATCHLIST", String.valueOf(result.getValue().get(0).getWillWatch()));
-                    mAllMovies.postValue(result);
-                }
-            }
-
-            @Override
-            public void onComplete(MovieListing result) {
-
-            }
-        });
+        mAllMovies = movieRepository.getAllMovies();
+        mAllMovies = movieRepository.getAllMovies();
     }
 
     LiveData<List<MovieListing>> getMovieList() {return mAllMovies;}

@@ -55,7 +55,8 @@ public class MovieRepository {
     public final static int ENABLE_COARSE_LOCATION = 2;
 
     private MovieDao mMovieDao;
-    private MutableLiveData<List<MovieListing>> mAllMovies;
+    private LiveData<List<MovieListing>> mAllMovies;
+    private LiveData<List<MovieListing>> mWatchList;
     private List<String> usersNearby;
     private final Executor threadExecutor;
     private final Handler resultHandler;
@@ -72,6 +73,8 @@ public class MovieRepository {
     public MovieRepository(Application application){
         MovieRoomDatabase db = MovieRoomDatabase.getDatabase(application);
         mMovieDao = db.movieDao();
+        mAllMovies = mMovieDao.getAllMovies();
+        mWatchList = mMovieDao.getWatchList();
 
         this.threadExecutor = ((MovieApplication)application).executorService;
         this.resultHandler = ((MovieApplication)application).mainThreadHandler;
@@ -82,21 +85,7 @@ public class MovieRepository {
         usersNearby = new ArrayList<>();
     }
 
-    public void getAllMovies(final RoomCallback callback) {
-        threadExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    List<MovieListing> movieListings;
-                    movieListings =  mMovieDao.getAllMovies();
-
-                    callback.onComplete(movieListings);
-                } catch (Exception e){
-                    Log.e("ALLMOVIES", String.valueOf(e));
-                }
-            }
-        });
-    }
+    public LiveData<List<MovieListing>> getAllMovies() { return mAllMovies;}
 
     public void getMovie(int id, final RoomCallback callback) {
         threadExecutor.execute(new Runnable() {
@@ -114,22 +103,7 @@ public class MovieRepository {
         });
     }
 
-    public void getWatchList(final RoomCallback callback) {
-        threadExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Log.d("WATCHLIST", "In watchlist thread");
-                    List<MovieListing> movieListings;
-                    movieListings =  mMovieDao.getWatchList();
-
-                    callback.onComplete(movieListings);
-                } catch (Exception e){
-                    Log.e("WATCHLIST", String.valueOf(e));
-                }
-            }
-        });
-    }
+    public LiveData<List<MovieListing>> getWatchList() {return mWatchList; }
 
     public void insert (MovieListing movieListing) {
         threadExecutor.execute(new Runnable() {

@@ -21,10 +21,10 @@ public interface MovieDao {
     void deleteAll();
 
     @Query("SELECT * from movies_history ORDER BY dateViewed DESC")
-    List<MovieListing> getAllMovies();
+    LiveData<List<MovieListing>> getAllMovies();
 
     @Query("SELECT * from movies_history WHERE willWatch = 1 ORDER BY dateViewed DESC")
-    List<MovieListing> getWatchList();
+    LiveData<List<MovieListing>> getWatchList();
 
     @Query("SELECT * from movies_history WHERE tmdbMovieId = :id")
     MovieListing getMovie(int id);

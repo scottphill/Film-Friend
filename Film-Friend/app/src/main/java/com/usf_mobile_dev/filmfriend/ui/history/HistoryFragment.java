@@ -41,6 +41,7 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+        Log.d("MOVIELIST", "onCreateView");
         View root = inflater.inflate(R.layout.fragment_history, container, false);
 
         return root;
@@ -60,6 +61,7 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("MOVIELIST", "onViewCreated");
 
         historyViewModel =
                 new ViewModelProvider(this).get(HistoryViewModel.class);
@@ -68,13 +70,29 @@ public class HistoryFragment extends Fragment {
         HistoryRecyclerViewAdapter adapter  = new HistoryRecyclerViewAdapter(getContext());
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         historyRecyclerView.setAdapter(adapter);
+        spinnerFilters = view.findViewById(R.id.spinner_filters);
+        populateSpinnerFilters();
+        historyViewModel.setCurrentFilter(spinnerFilters.getSelectedItem().toString());
 
-        historyViewModel.getMovieList().observe(getViewLifecycleOwner(), new Observer<List<MovieListing>>() {
+        historyViewModel.getAllMovies().observe(getViewLifecycleOwner(), new Observer<List<MovieListing>>() {
             @Override
             public void onChanged(@Nullable final List<MovieListing> movies) {
-                Log.d("MOVIELIST", "Movie list changed");
+                //Log.d("MOVIELIST", "All list changed");
+                Log.d("MOVIELIST", historyViewModel.getCurrentFilter());
                 // Update the cached copy of the words in the adapter.
-                adapter.setMovies(movies);
+                if(historyViewModel.getCurrentFilter().equals("All Movies"))
+                    adapter.setMovies(movies);
+            }
+        });
+
+        historyViewModel.getWatchList().observe(getViewLifecycleOwner(), new Observer<List<MovieListing>>() {
+            @Override
+            public void onChanged(@Nullable final List<MovieListing> movies) {
+                //Log.d("MOVIELIST", "Watch list changed");
+                Log.d("MOVIELIST", historyViewModel.getCurrentFilter());
+                // Update the cached copy of the words in the adapter.
+                if(historyViewModel.getCurrentFilter().equals("Watch List"))
+                    adapter.setMovies(movies);
             }
         });
 
@@ -87,19 +105,17 @@ public class HistoryFragment extends Fragment {
             }
         });
 
-        spinnerFilters = view.findViewById(R.id.spinner_filters);
-        populateSpinnerFilters();
-
         spinnerFilters.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String selected = (String) adapterView.getItemAtPosition(i);
+                historyViewModel.setCurrentFilter(selected);
 
                 if(selected.equals("All Movies")){
-                    historyViewModel.getAllMovies();
+                    adapter.setMovies(historyViewModel.getAllMovies().getValue());
                 }
                 if(selected.equals("Watch List")){
-                    historyViewModel.getAllWatchList();
+                    adapter.setMovies(historyViewModel.getWatchList().getValue());
                 }
                 //Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
                 //Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));

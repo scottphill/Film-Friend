@@ -115,6 +115,7 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                 case MovieInfoViewModel.ACTIVITY_MODE_HISTORY:
                 case MovieInfoViewModel.ACTIVITY_MODE_DISCOVER:
                     newMovieBtn.setVisibility(View.GONE);
+                    getSupportActionBar().setTitle(newMovie.getTitle());
                     //watchMovieBtn.setVisibility(View.GONE);
                     break;
                 default:

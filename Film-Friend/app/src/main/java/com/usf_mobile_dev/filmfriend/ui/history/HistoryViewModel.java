@@ -19,67 +19,26 @@ import java.util.List;
 public class HistoryViewModel extends AndroidViewModel {
 
     private MovieRepository movieRepository;
-    private MutableLiveData<List<MovieListing>> mAllMovies;
+    private LiveData<List<MovieListing>> mAllMovies;
+    private LiveData<List<MovieListing>> mWatchList;
+    private String currentFilter;
 
     public HistoryViewModel(Application application) {
         super(application);
         movieRepository = new MovieRepository(application);
-        mAllMovies = new MutableLiveData<>();
-        movieRepository.getAllMovies(new RoomCallback() {
-            @Override
-            public void onComplete(List<MovieListing> result) {
-                if(result != null){
-                    //Log.d("WATCHLIST", "Result not null");
-                    //Log.d("WATCHLIST", String.valueOf(result.getValue().get(0).getWillWatch()));
-                    mAllMovies.postValue(result);
-                }
-            }
-
-            @Override
-            public void onComplete(MovieListing result) {
-
-            }
-        });
+        mAllMovies = movieRepository.getAllMovies();
+        mWatchList = movieRepository.getWatchList();
     }
 
-    LiveData<List<MovieListing>> getMovieList() { return mAllMovies;}
+    public LiveData<List<MovieListing>> getAllMovies() { return mAllMovies;}
 
-    public void getAllWatchList()
-    {
-        movieRepository.getWatchList(new RoomCallback() {
-        @Override
-        public void onComplete(List<MovieListing> result) {
-            if(result != null){
-                //Log.d("WATCHLIST", "Result not null");
-                //Log.d("WATCHLIST", String.valueOf(result.getValue().get(0).getWillWatch()));
-                mAllMovies.postValue(result);
-            }
-        }
+    public LiveData<List<MovieListing>> getWatchList() { return mWatchList;}
 
-        @Override
-        public void onComplete(MovieListing result) {
-
-        }
-        });
+    public void setCurrentFilter(String currentFilter) {
+        this.currentFilter = currentFilter;
     }
 
-    public void getAllMovies(){
-        movieRepository.getAllMovies(new RoomCallback() {
-            @Override
-            public void onComplete(List<MovieListing> result) {
-                if(result != null){
-                    //Log.d("WATCHLIST", "Result not null");
-                    //Log.d("WATCHLIST", String.valueOf(result.getValue().get(0).getWillWatch()));
-                    mAllMovies.postValue(result);
-                }
-            }
-
-            @Override
-            public void onComplete(MovieListing result) {
-
-            }
-        });
-    }
+    public String getCurrentFilter() { return currentFilter; }
 
     public void insert(MovieListing movieListing) {movieRepository.insert(movieListing);}
 }
