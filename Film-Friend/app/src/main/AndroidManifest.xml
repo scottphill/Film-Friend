@@ -70,6 +70,13 @@
             android:name=".ui.history.AnalyticsActivity"
             android:label="Analytics Activity">
         </activity>
+        <activity
+            android:name=".ui.settings.Settings"
+            android:theme="@android:style/Theme.Dialog">
+            <intent-filter>
+                <action android:name="transparent.text.SETTINGS"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
-
 </manifest>

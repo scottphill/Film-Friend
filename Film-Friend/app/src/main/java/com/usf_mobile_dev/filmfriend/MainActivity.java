@@ -1,15 +1,24 @@
 package com.usf_mobile_dev.filmfriend;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.usf_mobile_dev.filmfriend.ui.qr.QrActivity;
+import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
+import com.usf_mobile_dev.filmfriend.ui.settings.Settings;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -93,38 +102,37 @@ public class MainActivity extends AppCompatActivity
      * @param item  Item in the navigation drawer
      * @return      Returns true after closing the nav drawer
      */
-    @SuppressWarnings("StatementWithEmptyBody")
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         int nav_id = item.getItemId();
 
-        // Clear checks
-        for (int i = 0; i < settings_nav.getMenu().size(); i++) {
-            settings_nav.getMenu().getItem(i).setChecked(false);
-        }
-        settings_nav.getMenu().findItem(nav_id).setChecked(true);
-
         // Handle navigation view item clicks here.
         switch (nav_id) {
             case R.id.settings_about:
-                // Handle the camera import action (for now display a toast).
-                Toast.makeText(getApplicationContext(),item.getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "About pressed!", Toast.LENGTH_SHORT).show();
+                drawer.closeDrawer(GravityCompat.START);
 
+                Settings.openPopUp(this, (String) item.getTitle());
 
+                return true;
 
-                break;
             case R.id.settings_credit:
-                // Handle the camera import action (for now display a toast).
-                Toast.makeText(getApplicationContext(),item.getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Credit pressed!", Toast.LENGTH_SHORT).show();
 
+                drawer.closeDrawer(GravityCompat.START);
 
+                Settings.openPopUp(this, (String) item.getTitle());
 
-                break;
+                return true;
+
+            default:
+                // do nothing
         }
-        // If option not selected, close drawer anyway.
+
         drawer.closeDrawer(GravityCompat.START);
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 }

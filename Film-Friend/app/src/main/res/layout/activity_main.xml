@@ -60,8 +60,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/ham_menu_header"
-        app:menu="@menu/ham_menu"
+        app:headerLayout="@layout/header_ham_menu"
+        app:menu="@menu/nav_ham_menu"
         />
 
 </androidx.drawerlayout.widget.DrawerLayout>
