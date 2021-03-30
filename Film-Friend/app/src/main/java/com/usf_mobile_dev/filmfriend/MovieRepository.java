@@ -132,6 +132,30 @@ public class MovieRepository {
         }
     }
 
+    public LiveData<List<MatchPreferences>> getAllMatchPreferences() {
+        return allMatchPreferences;
+    }
+
+    public void insertMatchPreference(MatchPreferences matchPreferences) {
+        new insertMatchPreferencesAsyncTask(matchPreferencesDao)
+                .execute(matchPreferences);
+    }
+
+    private static class insertMatchPreferencesAsyncTask extends android.os.AsyncTask<MatchPreferences, Void, Void> {
+
+        private MatchPreferencesDao mAsyncTaskDao;
+
+        insertMatchPreferencesAsyncTask(MatchPreferencesDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final MatchPreferences... params) {
+            mAsyncTaskDao.insert(params[0]);
+            return null;
+        }
+    }
+
     public void getAllMoviesNearby(double radius, FragmentActivity discoverActivity)
     {
 

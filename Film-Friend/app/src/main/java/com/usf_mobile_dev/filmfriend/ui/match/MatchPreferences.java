@@ -8,18 +8,16 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.usf_mobile_dev.filmfriend.api.GenreResponse;
 import com.usf_mobile_dev.filmfriend.utils.IntBoolHashMapToStringConverter;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(tableName = "match_preferences")
@@ -109,7 +107,7 @@ public class MatchPreferences implements Serializable {
 
     // Copy Constructor
     public MatchPreferences(MatchPreferences mp) {
-
+        preference_title = mp.getPreference_title();
         release_year_start = mp.getRelease_year_start();
         release_year_end = mp.getRelease_year_end();
         rating_min = mp.getRating_min();
