@@ -68,7 +68,7 @@
             android:name=".ui.history.AnalyticsActivity"
             android:label="Analytics Activity">
         </activity>
-        <activity>
+        <activity
             android:name=".SavePreferencesActivity"
             android:label="Save Your Match Preferences!"
             android:parentActivityName=".MainActivity">
