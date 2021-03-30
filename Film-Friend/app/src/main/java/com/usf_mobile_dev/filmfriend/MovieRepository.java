@@ -90,11 +90,11 @@ public class MovieRepository {
         return mAllMovies;
     }
 
-    public void insertMovie(Movie movie) {
-        new insertMovieAsyncTask(mMovieDao).execute(movie);
+    public void insertMovie(MovieListing listing) {
+        new insertMovieAsyncTask(mMovieDao).execute(listing);
     }
 
-    private static class insertMovieAsyncTask extends android.os.AsyncTask<Movie, Void, Void> {
+    private static class insertMovieAsyncTask extends android.os.AsyncTask<MovieListing, Void, Void> {
         private MovieDao mAsyncTaskDao;
 
         insertMovieAsyncTask(MovieDao dao) {
@@ -108,10 +108,6 @@ public class MovieRepository {
         }
     }
 
-    public LiveData<List<MatchPreferences>> getAllMatchPreferences() {
-        return allMatchPreferences;
-    }
-
     public void insertMatchPreference(MatchPreferences matchPreferences) {
         new insertMatchPreferencesAsyncTask(matchPreferencesDao)
                 .execute(matchPreferences);
@@ -134,26 +130,6 @@ public class MovieRepository {
 
     public LiveData<List<MatchPreferences>> getAllMatchPreferences() {
         return allMatchPreferences;
-    }
-
-    public void insertMatchPreference(MatchPreferences matchPreferences) {
-        new insertMatchPreferencesAsyncTask(matchPreferencesDao)
-                .execute(matchPreferences);
-    }
-
-    private static class insertMatchPreferencesAsyncTask extends android.os.AsyncTask<MatchPreferences, Void, Void> {
-
-        private MatchPreferencesDao mAsyncTaskDao;
-
-        insertMatchPreferencesAsyncTask(MatchPreferencesDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final MatchPreferences... params) {
-            mAsyncTaskDao.insert(params[0]);
-            return null;
-        }
     }
 
     public void getAllMoviesNearby(double radius, FragmentActivity discoverActivity)

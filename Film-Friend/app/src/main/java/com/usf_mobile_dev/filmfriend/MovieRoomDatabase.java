@@ -13,7 +13,7 @@ import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 @Database(
         entities = {MovieListing.class, MatchPreferences.class},
-        version = 2,
+        version = 3,
         exportSchema = false
 )
 @TypeConverters({RoomTypeConverters.class})
@@ -49,7 +49,7 @@ public abstract class MovieRoomDatabase extends RoomDatabase {
             super.onOpen(db);
             // If you want to keep the data through app restarts,
             // comment out the following line.
-            new PopulateDbAsync(INSTANCE).execute();
+            //new PopulateDbAsync(INSTANCE).execute();
         }
     };
 

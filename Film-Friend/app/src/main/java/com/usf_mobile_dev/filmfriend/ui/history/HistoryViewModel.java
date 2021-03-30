@@ -29,7 +29,7 @@ public class HistoryViewModel extends AndroidViewModel {
 
     LiveData<List<MovieListing>> getAllMovies() {return mAllMovies;}
 
-    public void insert(MovieListing movieListing) {movieRepository.insert(movieListing);}
+    public void insert(MovieListing movieListing) {movieRepository.insertMovie(movieListing);}
 
     public LiveData<String> getText() { return mText;}
 }
