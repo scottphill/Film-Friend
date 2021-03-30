@@ -52,9 +52,10 @@ public class MovieRepository {
     public final static int ENABLE_COARSE_LOCATION = 2;
 
     private MovieDao mMovieDao;
+    private LiveData<List<MovieListing>> mAllMovies;
     private MatchPreferencesDao matchPreferencesDao;
     private LiveData<List<MatchPreferences>> allMatchPreferences;
-    private LiveData<List<Movie>> mAllMovies;
+    //private LiveData<List<Movie>> mAllMovies;
     private List<String> usersNearby;
     private final Executor threadExecutor;
     private final Handler resultHandler;
@@ -85,7 +86,7 @@ public class MovieRepository {
         usersNearby = new ArrayList<>();
     }
 
-    public LiveData<List<Movie>> getAllMovies() {
+    public LiveData<List<MovieListing>> getAllMovies() {
         return mAllMovies;
     }
 
@@ -94,7 +95,6 @@ public class MovieRepository {
     }
 
     private static class insertMovieAsyncTask extends android.os.AsyncTask<Movie, Void, Void> {
-
         private MovieDao mAsyncTaskDao;
 
         insertMovieAsyncTask(MovieDao dao) {
@@ -102,7 +102,31 @@ public class MovieRepository {
         }
 
         @Override
-        protected Void doInBackground(final Movie... params) {
+        protected Void doInBackground(final MovieListing... params) {
+            mAsyncTaskDao.insert(params[0]);
+            return null;
+        }
+    }
+
+    public LiveData<List<MatchPreferences>> getAllMatchPreferences() {
+        return allMatchPreferences;
+    }
+
+    public void insertMatchPreference(MatchPreferences matchPreferences) {
+        new insertMatchPreferencesAsyncTask(matchPreferencesDao)
+                .execute(matchPreferences);
+    }
+
+    private static class insertMatchPreferencesAsyncTask extends android.os.AsyncTask<MatchPreferences, Void, Void> {
+
+        private MatchPreferencesDao mAsyncTaskDao;
+
+        insertMatchPreferencesAsyncTask(MatchPreferencesDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final MatchPreferences... params) {
             mAsyncTaskDao.insert(params[0]);
             return null;
         }

@@ -1,7 +1,10 @@
 package com.usf_mobile_dev.filmfriend.ui.match;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +18,9 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -32,6 +38,7 @@ import com.usf_mobile_dev.filmfriend.SavePreferencesActivity;
 import com.usf_mobile_dev.filmfriend.SavePreferencesViewModel;
 import com.usf_mobile_dev.filmfriend.api.GenreResponse;
 import com.usf_mobile_dev.filmfriend.api.LanguageResponse;
+import com.usf_mobile_dev.filmfriend.ui.qr.MPJSONHandling;
 import com.usf_mobile_dev.filmfriend.ui.qr.QrActivity;
 import com.usf_mobile_dev.filmfriend.ui.savedPreferences.ViewPreferencesActivity;
 
@@ -61,10 +68,28 @@ public class MatchFragment extends Fragment {
     final private int DEF_VOTE_COUNT_MIN = 0;
     final private int DEF_VOTE_COUNT_MAX = 10000;
 
+    // Made these private variables so they can be put into an intent for QR
+    private EditText release_year_start;
+    private EditText release_year_end;
+    private SeekBar rating_min;
+    private SeekBar rating_max;
+    private CheckBox wp_cb_0;
+    private CheckBox wp_cb_1;
+    private CheckBox wp_cb_2;
+    private CheckBox wp_cb_3;
+    private CheckBox wp_cb_4;
+    private EditText runtime_min;
+    private EditText runtime_max;
+    private EditText vote_count_min;
+    private EditText vote_count_max;
+
+    private static MatchPreferences MPfromQR;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        MPfromQR = null;
     }
 
     @Override
@@ -78,47 +103,24 @@ public class MatchFragment extends Fragment {
         matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
         View root = inflater.inflate(R.layout.fragment_match, container, false);
 
-        EditText release_year_start = root.findViewById(R.id.release_date_start);
-        EditText release_year_end = root.findViewById(R.id.release_date_end);
+        release_year_start = root.findViewById(R.id.release_date_start);
+        release_year_end = root.findViewById(R.id.release_date_end);
 
-        SeekBar seekbar_min = root.findViewById(R.id.seekBar_rating_min);
-        SeekBar seekbar_max = root.findViewById(R.id.seekBar_rating_max);
+        rating_min = root.findViewById(R.id.seekBar_rating_min);
+        rating_max = root.findViewById(R.id.seekBar_rating_max);
 
-        seekbar_min.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
+        // Ensures that min is always less than max.
+        rating_min.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // Refreshes too slow
-                //Toast.makeText(getActivity(), progress + "", Toast.LENGTH_SHORT).show();
+
                 int max = seekBar.getMax();
+
                 if (progress >= max) {
-                    seekbar_min.setProgress(max-1);
+                    rating_min.setProgress(max-1);
                 }
-                if (seekbar_max.getProgress() <= progress) {
-                    seekbar_max.setProgress(progress + 1);
-                }
-            }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) { }
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(
-                        getActivity(),
-                        ((double)seekBar.getProgress()/seekBar.getMax())*DEF_RATING_MAX + "",
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
-        }));
-        seekbar_max.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // Refreshes too slow
-                //Toast.makeText(getActivity(), progress + "", Toast.LENGTH_SHORT).show();
-                int min = seekBar.getMin();
-                if (progress <= min) {
-                    seekbar_max.setProgress(min + 1);
-                }
-                if (seekbar_min.getProgress() >= progress) {
-                    seekbar_min.setProgress(progress - 1);
+                if (rating_max.getProgress() <= progress) {
+                    rating_max.setProgress(progress + 1);
                 }
             }
             @Override
@@ -127,17 +129,45 @@ public class MatchFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Toast.makeText(
                         getActivity(),
-                        ((double)seekBar.getProgress()/seekBar.getMax())*DEF_RATING_MAX + "",
+                        String.format("%.1f",
+                                ((double) seekBar.getProgress() / seekBar.getMax() * DEF_RATING_MAX)),
                         Toast.LENGTH_SHORT
                 ).show();
             }
         }));
 
-        CheckBox wp_cb_0 = (CheckBox)root.findViewById(R.id.wp_button_0);
-        CheckBox wp_cb_1 = (CheckBox)root.findViewById(R.id.wp_button_1);
-        CheckBox wp_cb_2 = (CheckBox)root.findViewById(R.id.wp_button_2);
-        CheckBox wp_cb_3 = (CheckBox)root.findViewById(R.id.wp_button_3);
-        CheckBox wp_cb_4 = (CheckBox)root.findViewById(R.id.wp_button_4);
+        // Ensures that max is always greater than min.
+        rating_max.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                int min = seekBar.getMin();
+
+                if (progress <= min) {
+                    rating_max.setProgress(min + 1);
+                }
+                if (rating_min.getProgress() >= progress) {
+                    rating_min.setProgress(progress - 1);
+                }
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Toast.makeText(
+                        getActivity(),
+                        String.format("%.1f",
+                                ((double) seekBar.getProgress() /  seekBar.getMax()) * DEF_RATING_MAX),
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        }));
+
+        wp_cb_0 = (CheckBox)root.findViewById(R.id.wp_button_0);
+        wp_cb_1 = (CheckBox)root.findViewById(R.id.wp_button_1);
+        wp_cb_2 = (CheckBox)root.findViewById(R.id.wp_button_2);
+        wp_cb_3 = (CheckBox)root.findViewById(R.id.wp_button_3);
+        wp_cb_4 = (CheckBox)root.findViewById(R.id.wp_button_4);
 
         wp_cb_0.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,82 +200,19 @@ public class MatchFragment extends Fragment {
                         ((CheckBox) v).isChecked());
             }});
 
-        EditText runtime_min = root.findViewById(R.id.runtime_min);
-        EditText runtime_max = root.findViewById(R.id.runtime_max);
+        runtime_min = root.findViewById(R.id.runtime_min);
+        runtime_max = root.findViewById(R.id.runtime_max);
 
-        EditText vote_count_min = root.findViewById(R.id.vote_count_min);
-        EditText vote_count_max = root.findViewById(R.id.vote_count_max);
+        vote_count_min = root.findViewById(R.id.vote_count_min);
+        vote_count_max = root.findViewById(R.id.vote_count_max);
 
         FloatingActionButton fab = root.findViewById(R.id.match_FAB);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // SAVE ALL INFO
-                try {
-                    matchViewModel.setReleaseYear(
-                            Integer.parseInt(release_year_start.getText().toString()), true);
-                }
-                catch (Exception e) {
-                    matchViewModel.setReleaseYear(DEF_RELEASE_YEAR_MIN, true);
-                }
-                try {
-                    matchViewModel.setReleaseYear(
-                        Integer.parseInt(release_year_end.getText().toString()), false);
-                }
-                catch (Exception e) {
-                    matchViewModel.setReleaseYear(DEF_RELEASE_YEAR_MAX, false);
-                }
-                try {
-                    matchViewModel.setRating(
-                            ((double)seekbar_min.getProgress()/seekbar_min.getMax())*DEF_RATING_MAX,
-                            true);
-                }
-                catch (Exception e) {
-                    matchViewModel.setRating(DEF_RATING_MIN, true);
-                }
-                try {
-                    matchViewModel.setRating(
-                            ((double)seekbar_max.getProgress()/seekbar_max.getMax())*DEF_RATING_MAX,
-                            false);
-                }
-                catch (Exception e) {
-                    matchViewModel.setRating(DEF_RATING_MAX, false);
-                }
-                try {
-                    matchViewModel.setRuntime(
-                        Integer.parseInt(runtime_min.getText().toString()), true);
-                }
-                catch (Exception e) {
-                    matchViewModel.setRuntime(DEF_RUNTIME_MIN, true);
-                }
-                try {
-                    matchViewModel.setRuntime(
-                        Integer.parseInt(runtime_max.getText().toString()), false);
-                }
-                catch (Exception e) {
-                    matchViewModel.setRuntime(DEF_RUNTIME_MAX, false);
-                }
-                try {
-                    matchViewModel.setVoteCount(
-                        Integer.parseInt(vote_count_min.getText().toString()), true);
-                }
-                catch (Exception e) {
-                    matchViewModel.setVoteCount(DEF_VOTE_COUNT_MIN, true);
-                }
-                try {
-                    matchViewModel.setVoteCount(
-                        Integer.parseInt(vote_count_max.getText().toString()), false);
-                }
-                catch (Exception e) {
-                    matchViewModel.setVoteCount(DEF_VOTE_COUNT_MAX, false);
-                }
-
-                /*
-                Intent intent = new Intent(MainActivity.this, OrderActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, mOrderMessage);
-                startActivity(intent);
-                //*/
+                // Update info to MoviePreferences object
+                setMoviePreferences();
 
                 matchViewModel.getTMDBMovie(getActivity());
             }
@@ -269,9 +236,123 @@ public class MatchFragment extends Fragment {
         return root;
     }
 
+    // Unique tag for the intent reply
+    public static final int QR_REQUEST = 1;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Test for the right intent reply.
+        if (requestCode == QR_REQUEST && resultCode == Activity.RESULT_OK) {
+            //*
+            Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
+            MPfromQR = (MatchPreferences) data.getSerializableExtra(
+                            "com.usf_mobile_dev.filmfriend.ui.qr.NewMatchPreferencesFromQR");
+             //*/
+        }
+    }
+
+    public void setUI(MatchPreferences qrMP) {
+
+        //Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
+        Log.d("Setting Match UI", String.valueOf(qrMP.getRelease_year_start()));
+        Log.d("Setting Match UI", String.valueOf(qrMP.getRelease_year_end()));
+
+        // FIXME: error when setting ui text
+        /*
+        matchViewModel.setMP(qrMP);
+
+        release_year_start.setText(qrMP.getRelease_year_start()); // ERROR
+        release_year_end.setText(qrMP.getRelease_year_end());
+
+        rating_min.setProgress((int)(qrMP.getRating_min() * rating_min.getMax() * DEF_RATING_MAX));
+        rating_max.setProgress((int)(qrMP.getRating_max() * rating_max.getMax() * DEF_RATING_MAX));
+
+        wp_cb_0.setChecked(qrMP.getWatch_providers_to_include().get((int)0));
+        wp_cb_1.setChecked(qrMP.getWatch_providers_to_include().get((int)1));
+        wp_cb_2.setChecked(qrMP.getWatch_providers_to_include().get((int)2));
+        wp_cb_3.setChecked(qrMP.getWatch_providers_to_include().get((int)3));
+        wp_cb_4.setChecked(qrMP.getWatch_providers_to_include().get((int)4));
+
+        runtime_min.setText(qrMP.getRuntime_min());
+        runtime_max.setText(qrMP.getRuntime_max());
+
+        vote_count_min.setText(qrMP.getVote_count_min());
+        vote_count_max.setText(qrMP.getVote_count_max());
+
+         //*/
+    }
+
+    public void setMoviePreferences() {
+        // Tries to catch variables that might be blank
+        try {
+            matchViewModel.setReleaseYear(
+                    Integer.parseInt(release_year_start.getText().toString()), true);
+        }
+        catch (Exception e) {
+            matchViewModel.setReleaseYear(DEF_RELEASE_YEAR_MIN, true);
+        }
+        try {
+            matchViewModel.setReleaseYear(
+                    Integer.parseInt(release_year_end.getText().toString()), false);
+        }
+        catch (Exception e) {
+            matchViewModel.setReleaseYear(DEF_RELEASE_YEAR_MAX, false);
+        }
+        try {
+            matchViewModel.setRating(
+                    ((double) rating_min.getProgress()/ rating_min.getMax())*DEF_RATING_MAX,
+                    true);
+        }
+        catch (Exception e) {
+            matchViewModel.setRating(DEF_RATING_MIN, true);
+        }
+        try {
+            matchViewModel.setRating(
+                    ((double) rating_max.getProgress()/ rating_max.getMax())*DEF_RATING_MAX,
+                    false);
+        }
+        catch (Exception e) {
+            matchViewModel.setRating(DEF_RATING_MAX, false);
+        }
+        try {
+            matchViewModel.setRuntime(
+                    Integer.parseInt(runtime_min.getText().toString()), true);
+        }
+        catch (Exception e) {
+            matchViewModel.setRuntime(DEF_RUNTIME_MIN, true);
+        }
+        try {
+            matchViewModel.setRuntime(
+                    Integer.parseInt(runtime_max.getText().toString()), false);
+        }
+        catch (Exception e) {
+            matchViewModel.setRuntime(DEF_RUNTIME_MAX, false);
+        }
+        try {
+            matchViewModel.setVoteCount(
+                    Integer.parseInt(vote_count_min.getText().toString()), true);
+        }
+        catch (Exception e) {
+            matchViewModel.setVoteCount(DEF_VOTE_COUNT_MIN, true);
+        }
+        try {
+            matchViewModel.setVoteCount(
+                    Integer.parseInt(vote_count_max.getText().toString()), false);
+        }
+        catch (Exception e) {
+            matchViewModel.setVoteCount(DEF_VOTE_COUNT_MAX, false);
+        }
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (MPfromQR != null) {
+            setUI(MPfromQR);
+            MPfromQR = null;
+        }
 
         // Sets up the GridView for the included genres checkboxes
         includedGenresGrid = (RecyclerView)view.findViewById(R.id.included_genres_grid);
@@ -362,9 +443,12 @@ public class MatchFragment extends Fragment {
                 startActivity(intent_pref);
                 return true;
             case R.id.qr_code_menu:
-                Intent intent_qr = new Intent(getActivity(),
-                        QrActivity.class);
-                startActivity(intent_qr);
+                Intent intent_qr = new Intent(getActivity(), QrActivity.class);
+                // Pass MoviePreferences object to intent
+                setMoviePreferences();
+                intent_qr.putExtra("com.usf_mobile_dev.filmfriend.ui.match.CurrentMatchPreference",
+                        matchViewModel.getMP());
+                startActivityForResult(intent_qr, QR_REQUEST);
                 return true;
             default:
                 // Do nothing

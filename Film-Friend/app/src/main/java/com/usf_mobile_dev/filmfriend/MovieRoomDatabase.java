@@ -2,21 +2,21 @@ package com.usf_mobile_dev.filmfriend;
 
 import android.content.Context;
 import android.os.AsyncTask;
-
 import androidx.annotation.NonNull;
 import androidx.room.Dao;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
-
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 @Database(
-        entities = {Movie.class, MatchPreferences.class},
+        entities = {MovieListing.class, MatchPreferences.class},
         version = 2,
         exportSchema = false
 )
+@TypeConverters({RoomTypeConverters.class})
 public abstract class MovieRoomDatabase extends RoomDatabase {
 
     public abstract MovieDao movieDao();

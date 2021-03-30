@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.usf_mobile_dev.filmfriend.HistoryRecyclerViewAdapter;
 import com.usf_mobile_dev.filmfriend.Movie;
+import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
 
@@ -69,9 +70,9 @@ public class HistoryFragment extends Fragment {
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         historyRecyclerView.setAdapter(adapter);
 
-        historyViewModel.getAllMovies().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        historyViewModel.getAllMovies().observe(getViewLifecycleOwner(), new Observer<List<MovieListing>>() {
             @Override
-            public void onChanged(@Nullable final List<Movie> movies) {
+            public void onChanged(@Nullable final List<MovieListing> movies) {
                 // Update the cached copy of the words in the adapter.
                 adapter.setMovies(movies);
             }
@@ -81,8 +82,8 @@ public class HistoryFragment extends Fragment {
 
             @Override
             public void onItemClick(View v, int position) {
-                Movie movie = adapter.getMovieAtPosition(position);
-                launchMovieInfoActivity(movie);
+                MovieListing movieListing = adapter.getMovieAtPosition(position);
+                launchMovieInfoActivity(movieListing.getMovie());
             }
         });
     }
