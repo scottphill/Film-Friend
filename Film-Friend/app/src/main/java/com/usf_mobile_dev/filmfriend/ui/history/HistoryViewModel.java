@@ -28,7 +28,7 @@ public class HistoryViewModel extends AndroidViewModel {
 
     LiveData<List<Movie>> getAllMovies() {return mAllMovies;}
 
-    public void insert(Movie movie) {movieRepository.insert(movie);}
+    public void insert(Movie movie) {movieRepository.insertMovie(movie);}
 
     public LiveData<String> getText() { return mText;}
 }

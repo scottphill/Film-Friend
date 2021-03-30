@@ -11,11 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.HashSet;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -54,6 +52,8 @@ public class MovieRepository {
     public final static int ENABLE_COARSE_LOCATION = 2;
 
     private MovieDao mMovieDao;
+    private MatchPreferencesDao matchPreferencesDao;
+    private LiveData<List<MatchPreferences>> allMatchPreferences;
     private LiveData<List<Movie>> mAllMovies;
     private List<String> usersNearby;
     private final Executor threadExecutor;
@@ -73,6 +73,9 @@ public class MovieRepository {
         mMovieDao = db.movieDao();
         mAllMovies = mMovieDao.getAllMovies();
 
+        matchPreferencesDao = db.matchPreferencesDao();
+        allMatchPreferences = matchPreferencesDao.getAllMatchPreferences();
+
         this.threadExecutor = ((MovieApplication)application).executorService;
         this.resultHandler = ((MovieApplication)application).mainThreadHandler;
 
@@ -86,20 +89,44 @@ public class MovieRepository {
         return mAllMovies;
     }
 
-    public void insert (Movie movie) {
-        new insertAsyncTask(mMovieDao).execute(movie);
+    public void insertMovie(Movie movie) {
+        new insertMovieAsyncTask(mMovieDao).execute(movie);
     }
 
-    private static class insertAsyncTask extends android.os.AsyncTask<Movie, Void, Void> {
+    private static class insertMovieAsyncTask extends android.os.AsyncTask<Movie, Void, Void> {
 
         private MovieDao mAsyncTaskDao;
 
-        insertAsyncTask(MovieDao dao) {
+        insertMovieAsyncTask(MovieDao dao) {
             mAsyncTaskDao = dao;
         }
 
         @Override
         protected Void doInBackground(final Movie... params) {
+            mAsyncTaskDao.insert(params[0]);
+            return null;
+        }
+    }
+
+    public LiveData<List<MatchPreferences>> getAllMatchPreferences() {
+        return allMatchPreferences;
+    }
+
+    public void insertMatchPreference(MatchPreferences matchPreferences) {
+        new insertMatchPreferencesAsyncTask(matchPreferencesDao)
+                .execute(matchPreferences);
+    }
+
+    private static class insertMatchPreferencesAsyncTask extends android.os.AsyncTask<MatchPreferences, Void, Void> {
+
+        private MatchPreferencesDao mAsyncTaskDao;
+
+        insertMatchPreferencesAsyncTask(MatchPreferencesDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final MatchPreferences... params) {
             mAsyncTaskDao.insert(params[0]);
             return null;
         }
