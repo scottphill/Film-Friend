@@ -1,26 +1,33 @@
 package com.usf_mobile_dev.filmfriend.ui.match;
 
+import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
-
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.usf_mobile_dev.filmfriend.api.GenreResponse;
-
+import com.usf_mobile_dev.filmfriend.utils.IntBoolHashMapToStringConverter;
 import org.jetbrains.annotations.NotNull;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Entity(tableName = "match_preferences")
 public class MatchPreferences implements Serializable {
 
     // True = all checkboxes start as checked, False = unchecked
-    final private Boolean genre_cb_init = false;
-    final private Boolean WP_CB_INIT = false;
+    static final private Boolean genre_cb_init = false;
+    static final private Boolean WP_CB_INIT = false;
     // True = all checkboxes start as checked, False = unchecked
-    final private Boolean watch_providers_cb_init = true;
+    static final private Boolean watch_providers_cb_init = true;
 
     // The movie preferences
     private int release_year_start = 1850;
@@ -31,13 +38,21 @@ public class MatchPreferences implements Serializable {
     private int runtime_max = 500;
     private int vote_count_min = 0;
     private int vote_count_max = 10000;
+    @TypeConverters(IntBoolHashMapToStringConverter.class)
     private HashMap<Integer, Boolean> genres_to_include;
+    @TypeConverters(IntBoolHashMapToStringConverter.class)
     private HashMap<Integer, Boolean> genres_to_exclude;
+    @TypeConverters(IntBoolHashMapToStringConverter.class)
     private HashMap<Integer, Boolean> watch_providers_to_include;
     private String selected_language;
 
+    @PrimaryKey
+    @NonNull
+    private String preference_title;
+
     // Constructor
-    public MatchPreferences()
+    @Ignore
+    public MatchPreferences ()
     {
         release_year_start = 1850;
         release_year_end = 2021;
@@ -47,42 +62,52 @@ public class MatchPreferences implements Serializable {
         runtime_max = 500;
         vote_count_min = 0;
         vote_count_max = 10000;
-        // <genre_ids, if_include_in_query>
         genres_to_include = new HashMap<Integer, Boolean>();
         genres_to_exclude = new HashMap<Integer, Boolean>();
-        /*
-        genres_to_include.put(28, genre_cb_init);
-        genres_to_include.put(12, genre_cb_init);
-        genres_to_include.put(16, genre_cb_init);
-        genres_to_include.put(35, genre_cb_init);
-        genres_to_include.put(80, genre_cb_init);
-        genres_to_include.put(99, genre_cb_init);
-        genres_to_include.put(18, genre_cb_init);
-        genres_to_include.put(10751, genre_cb_init);
-        genres_to_include.put(14, genre_cb_init);
-        genres_to_include.put(36, genre_cb_init);
-        genres_to_include.put(27, genre_cb_init);
-        genres_to_include.put(10402, genre_cb_init);
-        genres_to_include.put(9648, genre_cb_init);
-        genres_to_include.put(10749, genre_cb_init);
-        genres_to_include.put(878, genre_cb_init);
-        genres_to_include.put(10770, genre_cb_init);
-        genres_to_include.put(53, genre_cb_init);
-         */
-        //genres_to_include.put(10752, genre_cb_init);
-        //genres_to_include.put(37, genre_cb_init);
-        // <watch provider ids, if_include_in_query>
         watch_providers_to_include = new HashMap<Integer, Boolean>();
         watch_providers_to_include.put(8, WP_CB_INIT);
         watch_providers_to_include.put(15, WP_CB_INIT);
         watch_providers_to_include.put(337, WP_CB_INIT);
         watch_providers_to_include.put(9, WP_CB_INIT);
         watch_providers_to_include.put(3, WP_CB_INIT);
+        preference_title = "DEFAULT_TITLE";
+    }
+
+    // Constructor used for inserting into room
+    public MatchPreferences(
+            @NonNull
+            String preference_title,
+            int release_year_start,
+            int release_year_end,
+            double rating_min,
+            double rating_max,
+            int runtime_min,
+            int runtime_max,
+            int vote_count_min,
+            int vote_count_max,
+            HashMap<Integer, Boolean> genres_to_include,
+            HashMap<Integer, Boolean> genres_to_exclude,
+            HashMap<Integer, Boolean> watch_providers_to_include,
+            String selected_language
+    ) {
+        this.preference_title = preference_title;
+        this.release_year_start = release_year_start;
+        this.release_year_end = release_year_end;
+        this.rating_min = rating_min;
+        this.rating_max = rating_max;
+        this.runtime_min = runtime_min;
+        this.runtime_max = runtime_max;
+        this.vote_count_min = vote_count_min;
+        this.vote_count_max = vote_count_max;
+        this.genres_to_include = genres_to_include;
+        this.genres_to_exclude = genres_to_exclude;
+        this.watch_providers_to_include = watch_providers_to_include;
+        this.selected_language = selected_language;
     }
 
     // Copy Constructor
     public MatchPreferences(MatchPreferences mp) {
-
+        preference_title = mp.getPreference_title();
         release_year_start = mp.getRelease_year_start();
         release_year_end = mp.getRelease_year_end();
         rating_min = mp.getRating_min();
@@ -238,4 +263,12 @@ public class MatchPreferences implements Serializable {
 
     public int getVote_count_max() { return vote_count_max; }
     public void setVote_count_max(int vote_count_max) { this.vote_count_max = vote_count_max; }
+
+    public String getPreference_title() {
+        return preference_title;
+    }
+
+    public void setPreference_title(String preference_title) {
+        this.preference_title = preference_title;
+    }
 }

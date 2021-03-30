@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <LinearLayout
+            android:id="@+id/release_years_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="Release Years" />
+
+            <TextView
+                android:id="@+id/txtViewReleaseYearStart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="6"
+                android:gravity="end"
+                android:text="1950" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="-" />
+
+            <TextView
+                android:id="@+id/txtViewReleaseYearEnd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="6"
+                android:gravity="start"
+                android:text="2021" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chosen_genres_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                android:gravity="start"
+                android:layout_height="wrap_content"
+                android:text="Chosen Genres:" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/chosen_genres_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rejected_genres_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                android:gravity="start"
+                android:layout_height="wrap_content"
+                android:text="Genres Not Wanted:" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rejected_genres_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rating_range_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="Ratings Range:" />
+
+            <TextView
+                android:id="@+id/txtViewRatingLowerBound"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="6"
+                android:gravity="end"
+                android:text="4" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="-" />
+
+            <TextView
+                android:id="@+id/txtViewRatingUpperBound"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="6"
+                android:gravity="start"
+                android:text="9" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/watch_providers_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                android:gravity="start"
+                android:layout_height="wrap_content"
+                android:text="Chosen Watch Providers:" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/watch_providers_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/runtime_range_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="Runtime Range (in minutes):" />
+
+            <TextView
+                android:id="@+id/txtViewRuntimeLowerBound"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="6"
+                android:gravity="end"
+                android:text="40" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="-" />
+
+            <TextView
+                android:id="@+id/txtViewRuntimeUpperBound"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="6"
+                android:gravity="start"
+                android:text="150" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/vote_count_range_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="Vote Count Range:" />
+
+            <TextView
+                android:id="@+id/txtViewVoteCountLowerBound"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="6"
+                android:gravity="end"
+                android:text="40" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="-" />
+
+            <TextView
+                android:id="@+id/txtViewVoteCountUpperBound"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="6"
+                android:gravity="start"
+                android:text="60000" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chosen_language_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="Chosen Language:" />
+
+            <TextView
+                android:id="@+id/txtViewChosenLanguage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="14"
+                android:gravity="center"
+                android:text="English" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
