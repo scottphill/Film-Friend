@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.usf_mobile_dev.filmfriend.GenresGridAdapter;
 import com.usf_mobile_dev.filmfriend.LanguagesGridAdapter;
@@ -42,6 +44,8 @@ import com.usf_mobile_dev.filmfriend.ui.qr.MPJSONHandling;
 import com.usf_mobile_dev.filmfriend.ui.qr.QrActivity;
 import com.usf_mobile_dev.filmfriend.ui.savedPreferences.ViewPreferencesActivity;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class MatchFragment extends Fragment {
@@ -54,7 +58,7 @@ public class MatchFragment extends Fragment {
     final private String[] genres = {
         "Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama",
         "Family", "Fantasy", "History", "Horror", "Music", "Mystery", "Romance",
-        "Sci-Fi", "TV Movie", "Thriller", "War", "Western"
+        "Science Fiction", "TV Movie", "Thriller", "War", "Western"
     };
     final private String[] watch_providers = {
         "Netflix", "Hulu", "Disney+", "Amazon Prime", "Google Play"
@@ -246,41 +250,88 @@ public class MatchFragment extends Fragment {
         if (requestCode == QR_REQUEST && resultCode == Activity.RESULT_OK) {
             //*
             Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
-            MPfromQR = (MatchPreferences) data.getSerializableExtra(
+            MatchPreferences MPfromQR = (MatchPreferences) data.getSerializableExtra(
                             "com.usf_mobile_dev.filmfriend.ui.qr.NewMatchPreferencesFromQR");
+
+            try {
+                Log.d("Setting Match UI", MPJSONHandling.mpToPrettyJSON(MPfromQR));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+            if (MPfromQR != null) {
+                setUI(MPfromQR);
+            }
              //*/
         }
     }
 
     public void setUI(MatchPreferences qrMP) {
 
-        //Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
-        Log.d("Setting Match UI", String.valueOf(qrMP.getRelease_year_start()));
-        Log.d("Setting Match UI", String.valueOf(qrMP.getRelease_year_end()));
+        // Release years
+        release_year_start.setText(String.valueOf(qrMP.getRelease_year_start()));
+        release_year_end.setText(String.valueOf(qrMP.getRelease_year_end()));
 
-        // FIXME: error when setting ui text
-        /*
+        // Genres Included
+        for (int i = 0; i < includedGenresGrid.getAdapter().getItemCount(); ++i) {
+            CheckBox cb =
+                    (CheckBox) includedGenresGrid.findViewHolderForAdapterPosition(i).itemView;
+            int id = matchViewModel.getGenreID(String.valueOf(cb.getText()));
+            Boolean cb_val = qrMP.getGenres_to_include().get(id);
+            cb.setChecked(cb_val);
+        }
+
+        // Genres Excluded
+        for (int i = 0; i < excludedGenresGrid.getAdapter().getItemCount(); ++i) {
+            CheckBox cb =
+                    (CheckBox) excludedGenresGrid.findViewHolderForAdapterPosition(i).itemView;
+            int id = matchViewModel.getGenreID(String.valueOf(cb.getText()));
+            Boolean cb_val = qrMP.getGenres_to_include().get(id);
+            cb.setChecked(cb_val);
+        }
+
+        // Ratings
+        rating_min.setProgress((int)(qrMP.getRating_min() * DEF_RATING_MAX));
+        rating_max.setProgress((int)(qrMP.getRating_max() * DEF_RATING_MAX));
+
+        // Watch Providers
+        boolean[] wp_vals = { false, false, false, false, false };
+        try {
+            HashMap<Integer, Boolean> wp = qrMP.getWatch_providers_to_include();
+            for (int i = 0; i < watch_providers.length; ++i) {
+                wp_vals[i] = wp.get(matchViewModel.getWPID(watch_providers[i]));
+            }
+        } catch (NullPointerException npe) {
+            npe.printStackTrace();
+            Arrays.fill(wp_vals, false);
+        }
+        wp_cb_0.setChecked(wp_vals[0]);
+        wp_cb_1.setChecked(wp_vals[1]);
+        wp_cb_2.setChecked(wp_vals[2]);
+        wp_cb_3.setChecked(wp_vals[3]);
+        wp_cb_4.setChecked(wp_vals[4]);
+
+        // Runtime
+        runtime_min.setText(String.valueOf(qrMP.getRuntime_min()));
+        runtime_max.setText(String.valueOf(qrMP.getRuntime_max()));
+
+        // Vote Count
+        vote_count_min.setText(String.valueOf(qrMP.getVote_count_min()));
+        vote_count_max.setText(String.valueOf(qrMP.getVote_count_max()));
+
+        // Language
+        for (int i = 0; i < languagesGrid.getAdapter().getItemCount(); ++i) {
+            RadioButton rb =
+                    (RadioButton) languagesGrid.findViewHolderForAdapterPosition(i).itemView;
+            if (String.valueOf(rb.getText()) ==
+                    matchViewModel.getLanguageFromID(qrMP.getSelected_language())) {
+                rb.setChecked(true);
+                break;
+            }
+        }
+
+        // Update ViewModel
         matchViewModel.setMP(qrMP);
-
-        release_year_start.setText(qrMP.getRelease_year_start()); // ERROR
-        release_year_end.setText(qrMP.getRelease_year_end());
-
-        rating_min.setProgress((int)(qrMP.getRating_min() * rating_min.getMax() * DEF_RATING_MAX));
-        rating_max.setProgress((int)(qrMP.getRating_max() * rating_max.getMax() * DEF_RATING_MAX));
-
-        wp_cb_0.setChecked(qrMP.getWatch_providers_to_include().get((int)0));
-        wp_cb_1.setChecked(qrMP.getWatch_providers_to_include().get((int)1));
-        wp_cb_2.setChecked(qrMP.getWatch_providers_to_include().get((int)2));
-        wp_cb_3.setChecked(qrMP.getWatch_providers_to_include().get((int)3));
-        wp_cb_4.setChecked(qrMP.getWatch_providers_to_include().get((int)4));
-
-        runtime_min.setText(qrMP.getRuntime_min());
-        runtime_max.setText(qrMP.getRuntime_max());
-
-        vote_count_min.setText(qrMP.getVote_count_min());
-        vote_count_max.setText(qrMP.getVote_count_max());
-
-         //*/
     }
 
     public void setMoviePreferences() {
@@ -301,7 +352,7 @@ public class MatchFragment extends Fragment {
         }
         try {
             matchViewModel.setRating(
-                    ((double) rating_min.getProgress()/ rating_min.getMax())*DEF_RATING_MAX,
+                    ((double) rating_min.getProgress() / rating_min.getMax()) * DEF_RATING_MAX,
                     true);
         }
         catch (Exception e) {
@@ -309,7 +360,7 @@ public class MatchFragment extends Fragment {
         }
         try {
             matchViewModel.setRating(
-                    ((double) rating_max.getProgress()/ rating_max.getMax())*DEF_RATING_MAX,
+                    ((double) rating_max.getProgress() / rating_max.getMax()) * DEF_RATING_MAX,
                     false);
         }
         catch (Exception e) {
@@ -348,11 +399,6 @@ public class MatchFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (MPfromQR != null) {
-            setUI(MPfromQR);
-            MPfromQR = null;
-        }
 
         // Sets up the GridView for the included genres checkboxes
         includedGenresGrid = (RecyclerView)view.findViewById(R.id.included_genres_grid);

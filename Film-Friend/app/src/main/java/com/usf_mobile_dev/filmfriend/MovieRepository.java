@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Application;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 
@@ -53,9 +54,13 @@ public class MovieRepository {
 
     private MovieDao mMovieDao;
     private LiveData<List<MovieListing>> mAllMovies;
+
+    private LiveData<List<MovieListing>> mWatchList;
+
     private MatchPreferencesDao matchPreferencesDao;
     private LiveData<List<MatchPreferences>> allMatchPreferences;
     //private LiveData<List<Movie>> mAllMovies;
+
     private List<String> usersNearby;
     private final Executor threadExecutor;
     private final Handler resultHandler;
@@ -73,6 +78,7 @@ public class MovieRepository {
         MovieRoomDatabase db = MovieRoomDatabase.getDatabase(application);
         mMovieDao = db.movieDao();
         mAllMovies = mMovieDao.getAllMovies();
+        mWatchList = mMovieDao.getWatchList();
 
         matchPreferencesDao = db.matchPreferencesDao();
         allMatchPreferences = matchPreferencesDao.getAllMatchPreferences();
@@ -86,50 +92,50 @@ public class MovieRepository {
         usersNearby = new ArrayList<>();
     }
 
-    public LiveData<List<MovieListing>> getAllMovies() {
-        return mAllMovies;
+    public LiveData<List<MovieListing>> getAllMovies() { return mAllMovies;}
+
+    public void getMovie(int id, final RoomCallback callback) {
+        threadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    MovieListing movieListing;
+                    movieListing =  mMovieDao.getMovie(id);
+
+                    callback.onComplete(movieListing);
+                } catch (Exception e){
+                    Log.e("ALLMOVIES", String.valueOf(e));
+                }
+            }
+        });
     }
 
-    public void insertMovie(Movie movie) {
-        new insertMovieAsyncTask(mMovieDao).execute(movie);
+    public LiveData<List<MovieListing>> getWatchList() {return mWatchList; }
+
+    public void insert (MovieListing movieListing) {
+        threadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mMovieDao.insert(movieListing);
+                } catch (Exception e){
+                    Log.e("WATCHLIST", String.valueOf(e));
+                }
+            }
+        });
     }
 
-    private static class insertMovieAsyncTask extends android.os.AsyncTask<Movie, Void, Void> {
-        private MovieDao mAsyncTaskDao;
-
-        insertMovieAsyncTask(MovieDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final MovieListing... params) {
-            mAsyncTaskDao.insert(params[0]);
-            return null;
-        }
-    }
-
-    public LiveData<List<MatchPreferences>> getAllMatchPreferences() {
-        return allMatchPreferences;
-    }
-
-    public void insertMatchPreference(MatchPreferences matchPreferences) {
-        new insertMatchPreferencesAsyncTask(matchPreferencesDao)
-                .execute(matchPreferences);
-    }
-
-    private static class insertMatchPreferencesAsyncTask extends android.os.AsyncTask<MatchPreferences, Void, Void> {
-
-        private MatchPreferencesDao mAsyncTaskDao;
-
-        insertMatchPreferencesAsyncTask(MatchPreferencesDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final MatchPreferences... params) {
-            mAsyncTaskDao.insert(params[0]);
-            return null;
-        }
+    public void update(MovieListing movieListing) {
+        threadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mMovieDao.update(movieListing);
+                } catch (Exception e){
+                    Log.e("WATCHLIST", String.valueOf(e));
+                }
+            }
+        });
     }
 
     public LiveData<List<MatchPreferences>> getAllMatchPreferences() {

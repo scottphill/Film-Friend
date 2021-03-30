@@ -38,6 +38,7 @@ import com.usf_mobile_dev.filmfriend.DiscoverRecyclerAdapter;
 import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
+import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,6 +127,9 @@ public class DiscoverFragment extends Fragment {
         movieActivityIntent.putExtra(
                 MovieInfoActivity.INTENT_EXTRAS_MOVIE_DATA,
                 movie);
+        movieActivityIntent.putExtra(
+                MovieInfoViewModel.INTENT_EXTRAS_ACTIVITY_MODE,
+                MovieInfoViewModel.ACTIVITY_MODE_DISCOVER);
         if (context != null) {
             context.startActivity(movieActivityIntent);
         }
