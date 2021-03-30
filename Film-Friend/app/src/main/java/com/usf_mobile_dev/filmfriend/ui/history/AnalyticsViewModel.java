@@ -6,10 +6,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.MovieRepository;
+import com.usf_mobile_dev.filmfriend.RoomCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,9 +34,10 @@ public class AnalyticsViewModel extends AndroidViewModel {
 
         movieRepository = new MovieRepository(application);
         mAllMovies = movieRepository.getAllMovies();
+        mAllMovies = movieRepository.getAllMovies();
     }
 
-    LiveData<List<MovieListing>> getAllMovies() {return mAllMovies;}
+    LiveData<List<MovieListing>> getMovieList() {return mAllMovies;}
 
     public void setStatistics(List<MovieListing> movies){
         int count = 0;
