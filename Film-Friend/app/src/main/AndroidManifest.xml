@@ -33,7 +33,7 @@
 
         </activity>
         <activity
-            android:name=".ui.savedPreferences.PreferencesActivity"
+            android:name=".ui.savedPreferences.ViewPreferencesActivity"
             android:label="Preference Activity"
             android:parentActivityName=".MainActivity">
             <meta-data
@@ -67,6 +67,14 @@
         <activity
             android:name=".ui.history.AnalyticsActivity"
             android:label="Analytics Activity">
+        </activity>
+        <activity>
+            android:name=".SavePreferencesActivity"
+            android:label="Save Your Match Preferences!"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
     </application>
 

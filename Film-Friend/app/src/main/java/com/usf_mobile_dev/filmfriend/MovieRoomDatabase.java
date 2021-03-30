@@ -2,7 +2,6 @@ package com.usf_mobile_dev.filmfriend;
 
 import android.content.Context;
 import android.os.AsyncTask;
-
 import androidx.annotation.NonNull;
 import androidx.room.Dao;
 import androidx.room.Database;
@@ -10,12 +9,18 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
-@Database(entities = {MovieListing.class}, version = 1, exportSchema = false)
+@Database(
+        entities = {MovieListing.class, MatchPreferences.class},
+        version = 2,
+        exportSchema = false
+)
 @TypeConverters({RoomTypeConverters.class})
 public abstract class MovieRoomDatabase extends RoomDatabase {
 
     public abstract MovieDao movieDao();
+    public abstract MatchPreferencesDao matchPreferencesDao();
     private static MovieRoomDatabase INSTANCE;
 
     static MovieRoomDatabase getDatabase(final Context context) {
@@ -51,17 +56,22 @@ public abstract class MovieRoomDatabase extends RoomDatabase {
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private final MovieDao mDao;
+        private final MatchPreferencesDao matchPreferencesDao;
         /*String [] titles = {"Shrek", "Shrek 2", "The Lighthouse", "Soul", "Breach", "Ava",
                 "Tom & Jerry", "Jumanji", "Monster Hunter", "Grand Isle", "Shutter Island",
                 "Crisis", "The Vigil", "Burn It All"};*/
 
-        PopulateDbAsync(MovieRoomDatabase db) { mDao = db.movieDao(); }
+        PopulateDbAsync(MovieRoomDatabase db) {
+            mDao = db.movieDao();
+            matchPreferencesDao = db.matchPreferencesDao();
+        }
 
         @Override
         protected Void doInBackground(final Void... params) {
             // Start the app with a clean database every time.
             // Not needed if you only populate on creation.
             mDao.deleteAll();
+            matchPreferencesDao.deleteAll();
 
             /*
             for( int i = 0; i <= titles.length - 1; i++) {
