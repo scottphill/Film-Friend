@@ -9,8 +9,11 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.usf_mobile_dev.filmfriend.api.GenreResponse;
 import com.usf_mobile_dev.filmfriend.utils.IntBoolHashMapToStringConverter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(tableName = "match_preferences")
 public class MatchPreferences implements Serializable {
 
@@ -101,6 +105,30 @@ public class MatchPreferences implements Serializable {
         this.genres_to_exclude = genres_to_exclude;
         this.watch_providers_to_include = watch_providers_to_include;
         this.selected_language = selected_language;
+    }
+
+    // Copy Constructor
+    public MatchPreferences(MatchPreferences mp) {
+
+        release_year_start = mp.getRelease_year_start();
+        release_year_end = mp.getRelease_year_end();
+        rating_min = mp.getRating_min();
+        rating_max = mp.getRating_max();
+        runtime_min = mp.getRuntime_min();
+        runtime_max = mp.getRuntime_max();
+        vote_count_min = mp.getVote_count_min();
+        vote_count_max = mp.getVote_count_max();
+        genres_to_include = mp.getGenres_to_include();
+        genres_to_exclude = mp.getGenres_to_exclude();
+        watch_providers_to_include = mp.getWatch_providers_to_include();
+        /*
+        watch_providers_to_include.put(8, WP_CB_INIT);
+        watch_providers_to_include.put(15, WP_CB_INIT);
+        watch_providers_to_include.put(337, WP_CB_INIT);
+        watch_providers_to_include.put(9, WP_CB_INIT);
+        watch_providers_to_include.put(3, WP_CB_INIT);
+        // */
+        selected_language = mp.getSelected_language();
     }
 
     public String getIncludedGenresString() {

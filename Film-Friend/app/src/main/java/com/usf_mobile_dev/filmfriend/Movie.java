@@ -7,11 +7,8 @@ import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
-@Entity(tableName = "movies_history")
 public class Movie implements Serializable {
 
-
-    @NonNull
     private String title;
 
     private String overview;
@@ -19,13 +16,11 @@ public class Movie implements Serializable {
     private Double rating;
     private int voteCount;
 
-    @PrimaryKey
     private int tmdbMovieId;
 
     private String posterPath;
     private String backdropPath;
 
-    @Ignore
     public Movie() {
         this.title = "title";
         this.overview = "lorem ipsum";

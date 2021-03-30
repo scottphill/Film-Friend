@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.usf_mobile_dev.filmfriend.Movie;
+import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.MovieRepository;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class HistoryViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> mText;
     private MovieRepository movieRepository;
-    private LiveData<List<Movie>> mAllMovies;
+    private LiveData<List<MovieListing>> mAllMovies;
 
     public HistoryViewModel(Application application) {
         super(application);
@@ -26,9 +27,9 @@ public class HistoryViewModel extends AndroidViewModel {
 
     }
 
-    LiveData<List<Movie>> getAllMovies() {return mAllMovies;}
+    LiveData<List<MovieListing>> getAllMovies() {return mAllMovies;}
 
-    public void insert(Movie movie) {movieRepository.insertMovie(movie);}
+    public void insert(MovieListing movieListing) {movieRepository.insert(movieListing);}
 
     public LiveData<String> getText() { return mText;}
 }
