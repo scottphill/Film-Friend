@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.usf_mobile_dev.filmfriend.ui.qr.QrActivity;
-import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
+//import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
 import com.usf_mobile_dev.filmfriend.ui.settings.Settings;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;

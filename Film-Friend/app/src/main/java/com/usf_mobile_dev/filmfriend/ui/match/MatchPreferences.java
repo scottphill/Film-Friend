@@ -25,9 +25,9 @@ public class MatchPreferences implements Serializable {
 
     // True = all checkboxes start as checked, False = unchecked
 
-    final private Boolean genre_cb_init = false;
+    static final private Boolean genre_cb_init = false;
     // True = all checkboxes start as checked, False = unchecked
-    final private Boolean WP_CB_INIT = false;
+    static final private Boolean WP_CB_INIT = false;
     //static final private Boolean watch_providers_cb_init = true;
 
     // The movie preferences
