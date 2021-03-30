@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -25,11 +26,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.usf_mobile_dev.filmfriend.GenresGridAdapter;
 import com.usf_mobile_dev.filmfriend.LanguagesGridAdapter;
+import com.usf_mobile_dev.filmfriend.MainActivity;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.SavePreferencesActivity;
+import com.usf_mobile_dev.filmfriend.SavePreferencesViewModel;
 import com.usf_mobile_dev.filmfriend.api.GenreResponse;
 import com.usf_mobile_dev.filmfriend.api.LanguageResponse;
 import com.usf_mobile_dev.filmfriend.ui.qr.QrActivity;
-import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
+import com.usf_mobile_dev.filmfriend.ui.savedPreferences.ViewPreferencesActivity;
 
 import java.util.List;
 
@@ -247,6 +251,21 @@ public class MatchFragment extends Fragment {
             }
         });
 
+        ((ImageButton)root.findViewById(R.id.imageButton))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent savePreferencesIntent = new Intent(
+                                getActivity(),
+                                SavePreferencesActivity.class
+                        );
+                        savePreferencesIntent.putExtra(
+                                SavePreferencesViewModel.INTENT_EXTRAS_MOVIE_PREFERENCES,
+                                matchViewModel.getMP());
+                        startActivity(savePreferencesIntent);
+                    }
+                });
+
         return root;
     }
 
@@ -339,7 +358,7 @@ public class MatchFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.preferences_menu:
                 Intent intent_pref = new Intent(getActivity(),
-                        PreferencesActivity.class);
+                        ViewPreferencesActivity.class);
                 startActivity(intent_pref);
                 return true;
             case R.id.qr_code_menu:

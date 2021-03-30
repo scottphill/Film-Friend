@@ -10,8 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
-import com.usf_mobile_dev.filmfriend.ui.savedPreferences.SavedPreference;
+import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 import java.util.List;
 
@@ -19,11 +18,16 @@ public class PreferenceRecyclerViewAdapter extends RecyclerView.Adapter
         <PreferenceRecyclerViewAdapter.PreferenceViewHolder>{
 
     Context mContext;
-    List<SavedPreference> mSavedPreferences;
+    List<MatchPreferences> mMatchPreferences;
 
-    public PreferenceRecyclerViewAdapter(Context mContext, List<SavedPreference> preferences) {
+    public PreferenceRecyclerViewAdapter(Context mContext) {
         this.mContext = mContext;
-        this.mSavedPreferences = preferences;
+    }
+
+    // Changes the list of MatchPreferences objects and updates the recyclerview
+    public void setmMatchPreferences(List<MatchPreferences> matchPreferences) {
+        this.mMatchPreferences = matchPreferences;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -39,19 +43,19 @@ public class PreferenceRecyclerViewAdapter extends RecyclerView.Adapter
 
     @Override
     public void onBindViewHolder(@NonNull PreferenceViewHolder holder, int position) {
-        if (mSavedPreferences != null) {
-            SavedPreference current = mSavedPreferences.get(position);
-            holder.preferenceItemView.setText(current.getName());
+        if (mMatchPreferences != null) {
+            MatchPreferences current = mMatchPreferences.get(position);
+            holder.preferenceItemView.setText(current.getPreference_title());
         } else {
             // Covers the case of data not being ready yet.
-            holder.preferenceItemView.setText("No Word");
+            holder.preferenceItemView.setText("No Preferences atm");
         }
     }
 
     @Override
     public int getItemCount() {
-        if (mSavedPreferences != null)
-            return mSavedPreferences.size();
+        if (mMatchPreferences != null)
+            return mMatchPreferences.size();
         else return 0;
     }
 
