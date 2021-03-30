@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import retrofit2.Call;
@@ -104,6 +106,16 @@ public class MatchViewModel extends AndroidViewModel {
     {
         Integer id = genres_to_api_id.get(name);
         MP.setExcludedGenre(id, new_val);
+    }
+
+    final public int getGenreID(String name) {
+
+        return genres_to_api_id.get(name);
+    }
+
+    final public int getWPID(String name) {
+
+        return watch_providers_to_api_id.get(name);
     }
 
     public void setWPVal (String name, Boolean new_val)
@@ -305,13 +317,21 @@ public class MatchViewModel extends AndroidViewModel {
         this.MP = mp;
     }
 
-
     public MutableLiveData<List<LanguageResponse>> getLanguages() {
         return this.languages;
     }
 
     public MutableLiveData<String> getSelectedLanguage() {
         return this.selectedLanguage;
+    }
+
+    public String getLanguageFromID(String id) {
+        for (String o : languages_to_iso_id.keySet()) {
+            if (languages_to_iso_id.get(o).equals(id)) {
+                return o;
+            }
+        }
+        return null;
     }
 
     public void setSelectedLanguage(String language) {
