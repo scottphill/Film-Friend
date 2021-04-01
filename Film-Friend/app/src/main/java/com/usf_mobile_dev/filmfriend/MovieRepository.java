@@ -14,6 +14,10 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.sql.Date;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -247,14 +251,22 @@ public class MovieRepository {
 
     public void findUserMatches(List<String> usersNearby, DataSnapshot snapshot)
     {
-        List<Movie> movieList = new ArrayList<>();
+        List<MovieListing> movieListings = new ArrayList<>();
         List<String> movieIDs = new ArrayList<>();
+        String tmdbMovieID;
+        String timeViewed;
+        HashMap<String, String> movieMap = new HashMap<String, String>();
         usersNearby.remove(FID);
 
         //Grab the recentMatch of all nearby users
         for(String FID: usersNearby)
         {
-            movieIDs.add(Objects.requireNonNull(snapshot.child(FID).child("recentMatch").getValue()).toString());
+            tmdbMovieID = Objects.requireNonNull(snapshot.child(FID).child("recentMatch").getValue()).toString();
+            //Log.d("DisccoverFB", tmdbMovieID);
+            timeViewed = Objects.requireNonNull(snapshot.child(FID).child("time").getValue()).toString();
+            //movieMap.putIfAbsent(tmdbMovieID, 1);
+            if(movieMap.putIfAbsent(tmdbMovieID, timeViewed) == null)
+                movieIDs.add(tmdbMovieID);
         }
         Log.d("movieIDs", String.valueOf(movieIDs));
 
@@ -268,10 +280,15 @@ public class MovieRepository {
                     Log.d("firebase", String.valueOf(task.getResult().getValue()));
                     for(String movieID: movieIDs)
                     {
-                        movieList.add(task.getResult().child(movieID).getValue(Movie.class));
+                        movieListings.add(new MovieListing(Integer.parseInt(movieID),
+                                new Date(Long.parseLong(movieMap.get(movieID))),
+                                task.getResult().child(movieID).getValue(Movie.class),
+                                0));
                         Log.d("movieTitle", String.valueOf(task.getResult().child(movieID).getValue(Movie.class).getTitle()));
                     }
-                    discoverViewModel.getDiscoverMovieList().postValue(movieList);
+
+                    movieListings.sort(Comparator.comparing(MovieListing::getDateViewed));
+                    discoverViewModel.getDiscoverMovieList().postValue(movieListings);
                 }
             }
         });

@@ -328,6 +328,7 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                         if (task.isSuccessful()) {
                             FID = task.getResult();
                             ref_user.child(FID).child("recentMatch").setValue(newMovie.getTmdbMovieId());
+                            ref_user.child(FID).child("time").setValue(new java.util.Date().getTime());
                             ref_movies.child(newMovie.getTmdbMovieIdAsStr()).setValue(newMovie);
                             if(loc != null) {
                                 geoFire.setLocation(FID, new GeoLocation(loc.getLatitude(), loc.getLongitude()));
