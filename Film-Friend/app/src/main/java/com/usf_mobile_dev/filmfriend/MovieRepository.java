@@ -287,7 +287,7 @@ public class MovieRepository {
                         Log.d("movieTitle", String.valueOf(task.getResult().child(movieID).getValue(Movie.class).getTitle()));
                     }
 
-                    movieListings.sort(Comparator.comparing(MovieListing::getDateViewed));
+                    movieListings.sort(Comparator.comparing(MovieListing::getDateViewed).reversed());
                     discoverViewModel.getDiscoverMovieList().postValue(movieListings);
                 }
             }
