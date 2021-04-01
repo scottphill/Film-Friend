@@ -23,6 +23,7 @@ import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
+import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoViewModel;
 
 import java.util.List;
 
@@ -107,6 +108,10 @@ public class HistoryFragment extends Fragment {
         movieActivityIntent.putExtra(
                 MovieInfoActivity.INTENT_EXTRAS_MOVIE_DATA,
                 movie);
+        movieActivityIntent.putExtra(
+                MovieInfoViewModel.INTENT_EXTRAS_ACTIVITY_MODE,
+                MovieInfoViewModel.ACTIVITY_MODE_HISTORY
+        );
         if (context != null) {
             context.startActivity(movieActivityIntent);
         }

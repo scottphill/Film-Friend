@@ -6,14 +6,15 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
-public class SavePreferencesViewModel extends AndroidViewModel {
+public class SaveMatchPreferencesViewModel extends AndroidViewModel
+{
 
     public static final String INTENT_EXTRAS_MOVIE_PREFERENCES = "com.usf_mobile_dev.filmfriend.intent.extras.movie_preferences";
 
     private MovieRepository movieRepository;
     private MatchPreferences matchPreferences;
 
-    public SavePreferencesViewModel(@NonNull Application application) {
+    public SaveMatchPreferencesViewModel(@NonNull Application application) {
         super(application);
 
         matchPreferences = new MatchPreferences();
@@ -22,7 +23,7 @@ public class SavePreferencesViewModel extends AndroidViewModel {
 
     public void saveMatchPreferences(String preferencesTitle) {
         this.matchPreferences.setPreference_title(preferencesTitle);
-        this.movieRepository.insertMatchPreference(matchPreferences);
+        this.movieRepository.insertMatchPreferences(matchPreferences);
     }
 
     public void setMatchPreferences(MatchPreferences matchPreferences){

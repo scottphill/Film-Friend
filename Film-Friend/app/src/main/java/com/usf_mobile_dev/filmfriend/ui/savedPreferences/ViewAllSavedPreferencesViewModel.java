@@ -5,19 +5,18 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.usf_mobile_dev.filmfriend.MovieRepository;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 import java.util.List;
 
-public class ViewPreferencesViewModel extends AndroidViewModel {
+public class ViewAllSavedPreferencesViewModel extends AndroidViewModel {
 
     private MovieRepository movieRepository;
     private LiveData<List<MatchPreferences>> allMatchPreferences;
 
-    public ViewPreferencesViewModel(@NonNull Application application) {
+    public ViewAllSavedPreferencesViewModel(@NonNull Application application) {
         super(application);
         movieRepository = new MovieRepository(application);
         allMatchPreferences = movieRepository.getAllMatchPreferences();
@@ -25,12 +24,11 @@ public class ViewPreferencesViewModel extends AndroidViewModel {
 
 
     public void insertMatchPreferences(MatchPreferences matchPreferences) {
-        movieRepository.insertMatchPreference(matchPreferences);
+        movieRepository.insertMatchPreferences(matchPreferences);
     }
 
-    public void deleteMatchPreferences(String matchPreferencesTitle) {
-        // TODO:
-        // does nothing yet
+    public void deleteMatchPreferences(MatchPreferences matchPreferences) {
+        movieRepository.deleteMatchPreferences(matchPreferences);
     }
 
     LiveData<List<MatchPreferences>> getAllMatchPreferences() {

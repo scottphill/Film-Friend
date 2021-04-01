@@ -2,7 +2,6 @@ package com.usf_mobile_dev.filmfriend.ui.match;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,9 +17,6 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -32,15 +28,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.usf_mobile_dev.filmfriend.GenresGridAdapter;
 import com.usf_mobile_dev.filmfriend.LanguagesGridAdapter;
-import com.usf_mobile_dev.filmfriend.MainActivity;
 import com.usf_mobile_dev.filmfriend.R;
-import com.usf_mobile_dev.filmfriend.SavePreferencesActivity;
-import com.usf_mobile_dev.filmfriend.SavePreferencesViewModel;
+import com.usf_mobile_dev.filmfriend.SaveMatchPreferencesActivity;
+import com.usf_mobile_dev.filmfriend.SaveMatchPreferencesViewModel;
 import com.usf_mobile_dev.filmfriend.api.GenreResponse;
 import com.usf_mobile_dev.filmfriend.api.LanguageResponse;
-import com.usf_mobile_dev.filmfriend.ui.qr.MPJSONHandling;
-import com.usf_mobile_dev.filmfriend.ui.qr.QrActivity;
-import com.usf_mobile_dev.filmfriend.ui.savedPreferences.ViewPreferencesActivity;
+import com.usf_mobile_dev.filmfriend.ui.qr.QRCameraActivity;
+import com.usf_mobile_dev.filmfriend.ui.qr.QRGenerateActivity;
+import com.usf_mobile_dev.filmfriend.ui.savedPreferences.ViewAllSavedPreferencesActivity;
 
 import java.util.List;
 
@@ -218,16 +213,36 @@ public class MatchFragment extends Fragment {
             }
         });
 
-        ((ImageButton)root.findViewById(R.id.imageButton))
+        FloatingActionButton qr_code_fab = root.findViewById(R.id.match_qr_FAB);
+        qr_code_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(
+                        view.getContext(),
+                        "Generating Code...",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                Intent intent = new Intent(view.getContext(), QRGenerateActivity.class);
+
+                intent.putExtra(
+                        "com.usf_mobile_dev.filmfriend.ui.qr.CurrentMatchPreference",
+                        matchViewModel.getMP());
+
+                startActivity(intent);
+            }
+        });
+
+        ((ImageButton)root.findViewById(R.id.match_save_btn))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent savePreferencesIntent = new Intent(
                                 getActivity(),
-                                SavePreferencesActivity.class
+                                SaveMatchPreferencesActivity.class
                         );
                         savePreferencesIntent.putExtra(
-                                SavePreferencesViewModel.INTENT_EXTRAS_MOVIE_PREFERENCES,
+                                SaveMatchPreferencesViewModel.INTENT_EXTRAS_MOVIE_PREFERENCES,
                                 matchViewModel.getMP());
                         startActivity(savePreferencesIntent);
                     }
@@ -248,6 +263,8 @@ public class MatchFragment extends Fragment {
             Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
             MPfromQR = (MatchPreferences) data.getSerializableExtra(
                             "com.usf_mobile_dev.filmfriend.ui.qr.NewMatchPreferencesFromQR");
+            matchViewModel.setMP(MPfromQR);
+            setUI(MPfromQR);
              //*/
         }
     }
@@ -349,11 +366,6 @@ public class MatchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (MPfromQR != null) {
-            setUI(MPfromQR);
-            MPfromQR = null;
-        }
-
         // Sets up the GridView for the included genres checkboxes
         includedGenresGrid = (RecyclerView)view.findViewById(R.id.included_genres_grid);
         GenresGridAdapter genresIncludedGridAdapter = new GenresGridAdapter(
@@ -439,16 +451,17 @@ public class MatchFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.preferences_menu:
                 Intent intent_pref = new Intent(getActivity(),
-                        ViewPreferencesActivity.class);
+                        ViewAllSavedPreferencesActivity.class);
                 startActivity(intent_pref);
                 return true;
             case R.id.qr_code_menu:
-                Intent intent_qr = new Intent(getActivity(), QrActivity.class);
-                // Pass MoviePreferences object to intent
-                setMoviePreferences();
-                intent_qr.putExtra("com.usf_mobile_dev.filmfriend.ui.match.CurrentMatchPreference",
-                        matchViewModel.getMP());
-                startActivityForResult(intent_qr, QR_REQUEST);
+                Toast.makeText(
+                        this.getContext(),
+                        "Opening Camera...",
+                        Toast.LENGTH_SHORT
+                ).show();
+                Intent intent = new Intent(getActivity(), QRCameraActivity.class);
+                startActivityForResult(intent, QR_REQUEST);
                 return true;
             default:
                 // Do nothing

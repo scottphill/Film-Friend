@@ -66,11 +66,11 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
     private ImageView mMoviePoster;
     private Button newMovieBtn;
     private Button watchMovieBtn;
-  
 
     private HistoryViewModel historyViewModel;
     private Movie newMovie;
     private MovieListing newMovieListing;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,8 +98,6 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                     .getStringExtra(MovieInfoViewModel.INTENT_EXTRAS_ACTIVITY_MODE));
             movieInfoViewModel.setCurMatchPreferences((MatchPreferences)getIntent()
                     .getSerializableExtra(MovieInfoViewModel.INTENT_EXTRAS_MOVIE_PREFERENCES));
-
-            //historyViewModel.insert(newMovieListing);
 
             //Set up firebase instance/references
             rootNode = FirebaseDatabase.getInstance();
@@ -142,10 +140,18 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                 }
         );
 
+        // Sets the click handler and visibility for the new movie button
         newMovieBtn.setOnClickListener(movieInfoViewModel
                 .getNewMovieBtnOnClickListener());
+        newMovieBtn.setVisibility(movieInfoViewModel
+                .getNewMovieBtnVisibility());
+
+        // Sets the click handler and visibility for the watch movie button
         watchMovieBtn.setOnClickListener(movieInfoViewModel
-                .getWatchMovieOnClickListener());
+                .getWatchMovieBtnOnClickListener());
+        watchMovieBtn.setVisibility(movieInfoViewModel
+                .getWatchMovieBtnVisibility());
+
     }
 
   

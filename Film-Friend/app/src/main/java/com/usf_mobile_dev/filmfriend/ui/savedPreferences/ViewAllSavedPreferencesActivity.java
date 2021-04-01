@@ -1,5 +1,7 @@
 package com.usf_mobile_dev.filmfriend.ui.savedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,12 +16,12 @@ import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 import java.util.List;
 
-public class ViewPreferencesActivity extends AppCompatActivity
+public class ViewAllSavedPreferencesActivity extends AppCompatActivity
 {
 
     private RecyclerView mRecyclerView;
     private PreferenceRecyclerViewAdapter mAdapter;
-    private ViewPreferencesViewModel viewModel;
+    private ViewAllSavedPreferencesViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +29,35 @@ public class ViewPreferencesActivity extends AppCompatActivity
         setContentView(R.layout.activity_preferences);
 
         // Gets the viewmodel for this activity
-        viewModel = new ViewModelProvider(this).get(ViewPreferencesViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ViewAllSavedPreferencesViewModel.class);
 
         // Create recycler view.
         mRecyclerView = findViewById(R.id.preferences_recyclerview);
         // Create an adapter and supply the data to be displayed.
-        mAdapter = new PreferenceRecyclerViewAdapter(this);
+        mAdapter = new PreferenceRecyclerViewAdapter(
+                this,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                },
+                new View.OnClickListener() {
+                    // Gets the match preferences from the view and deletes the
+                    //   match preferences from the room database.
+                    @Override
+                    public void onClick(View v) {
+                        viewModel.deleteMatchPreferences(
+                                (MatchPreferences) (v.getTag())
+                        );
+                        Toast.makeText(
+                                v.getContext(),
+                                "Match Preferences Deleted!",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
+        );
         // Connect the adapter with the recycler view.
         mRecyclerView.setAdapter(mAdapter);
         // Give the recycler view a default layout manager.

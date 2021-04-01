@@ -27,6 +27,8 @@ import java.io.UnsupportedEncodingException;
 
 public class QRGenerateActivity extends AppCompatActivity {
 
+    public static final String INTENT_EXTRAS_MATCH_PREFERENCES = "com.usf_mobile_dev.filmfriend.ui.qr.CurrentMatchPreference";
+
     private MatchPreferences MP = null;
     private String json = null;
 
@@ -40,7 +42,8 @@ public class QRGenerateActivity extends AppCompatActivity {
         // Convert MatchPreferences object to JSON string
         try {
             MP = (MatchPreferences) getIntent().getSerializableExtra(
-                    "com.usf_mobile_dev.filmfriend.ui.qr.CurrentMatchPreference");
+                    INTENT_EXTRAS_MATCH_PREFERENCES
+            );
             json = MPJSONHandling.mpToJSON(MP);
         } catch (JsonProcessingException e) {
             e.printStackTrace();

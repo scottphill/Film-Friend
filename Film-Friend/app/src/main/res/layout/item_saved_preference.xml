@@ -25,11 +25,21 @@
 
         <ImageButton
             style="@style/Widget.AppCompat.ActionButton"
-            android:id="@+id/preference_edit_btn"
+            android:id="@+id/preference_open_btn"
             android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_preference_edit_24dp"
+            android:src="@drawable/ic_open_in_new_black"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+        <ImageButton
+            style="@style/Widget.AppCompat.ActionButton"
+            android:id="@+id/preference_qr_gen_btn"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_qr_code_black"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"/>
 
@@ -42,16 +52,6 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:src="@drawable/ic_preference_delete_24dp" />
-
-        <ImageButton
-            style="@style/Widget.AppCompat.ActionButton"
-            android:id="@+id/preference_load_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:src="@drawable/ic_preference_load_24dp" />
 
     </LinearLayout>
 

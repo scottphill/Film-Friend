@@ -4,12 +4,18 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.usf_mobile_dev.filmfriend.Movie;
+import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.MovieRepository;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
@@ -21,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +36,8 @@ import retrofit2.Response;
 
 public class MovieInfoViewModel extends AndroidViewModel {
     public static final String ACTIVITY_MODE_MATCH = "movie_info_mode_match";
+    public static final String ACTIVITY_MODE_HISTORY = "movie_info_mode_history";
+    public static final String ACTIVITY_MODE_DISCOVER = "movie_info_mode_discover";
     public static final String INTENT_ACTION_LAUNCH_WITH_MOVIE_DATA = "com.usf_mobile_dev.filmfriend.intent.action.launch_with_movie_data";
     public static final String INTENT_EXTRAS_MOVIE_DATA = "com.usf_mobile_dev.filmfriend.intent.extras.movie_data";
     public static final String INTENT_EXTRAS_ACTIVITY_MODE = "com.usf_mobile_dev.filmfriend.intent.extras.movie_info_activity_mode";
@@ -39,6 +48,8 @@ public class MovieInfoViewModel extends AndroidViewModel {
     private HashSet<Integer> viewedMovieIds;
     private HashSet<Integer> viewedPages;
     private MutableLiveData<Movie> currentMovie;
+    private MutableLiveData<HashSet<Integer>> watchedMovies;
+    private Observer<List<MovieListing>> allMoviesObserver;
     private List<DiscoverResponse.MovieData> currentMoviePage;
     private MatchPreferences curMatchPreferences;
     private String activityMode;
@@ -57,6 +68,22 @@ public class MovieInfoViewModel extends AndroidViewModel {
         activityMode = "";
         currentMovie = new MutableLiveData<Movie>();
         movieRepository = new MovieRepository(application);
+        watchedMovies = new MutableLiveData<>();
+
+        // Updates the watched movies hashset when the observed data changes
+        allMoviesObserver = new Observer<List<MovieListing>>() {
+            @Override
+            public void onChanged(List<MovieListing> movieListings) {
+                watchedMovies.postValue(
+                        movieListings
+                                .stream()
+                                .mapToInt(MovieListing::getMovieID)
+                                .boxed()
+                                .collect(Collectors.toCollection(HashSet::new))
+                );
+            }
+        };
+        movieRepository.getAllMovies().observeForever(allMoviesObserver);
     }
 
     public void setCurrentMovie(Movie currentMovie) {
@@ -98,45 +125,6 @@ public class MovieInfoViewModel extends AndroidViewModel {
     ) {
         this.currentMoviePage = newMoviePage;
         this.viewedPages.add(page);
-    }
-
-    public View.OnClickListener getNewMovieBtnOnClickListener() {
-        if (ACTIVITY_MODE_MATCH.equals(activityMode)) {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("newMovieBtnClickTester", "IN NEW MOVIE CLICK LISTENER");
-                    getNextMovie(v.getContext());
-                }
-            };
-        }
-        else {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            };
-        }
-    }
-
-    public View.OnClickListener getWatchMovieOnClickListener() {
-        if (ACTIVITY_MODE_MATCH.equals(activityMode)) {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            };
-        }
-        else {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            };
-        }
     }
 
     private void getNextMovie(Context context) {
@@ -216,5 +204,93 @@ public class MovieInfoViewModel extends AndroidViewModel {
                 getNextMovie(context);
 
         }
+    }
+
+    public View.OnClickListener getNewMovieBtnOnClickListener() {
+        if (ACTIVITY_MODE_MATCH.equals(activityMode)) {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("newMovieBtnClickTester", "IN NEW MOVIE CLICK LISTENER");
+                    getNextMovie(v.getContext());
+                }
+            };
+        }
+        else if (ACTIVITY_MODE_HISTORY.equals(activityMode)) {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            };
+        }
+        else {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            };
+        }
+    }
+
+    public View.OnClickListener getWatchMovieBtnOnClickListener() {
+        if (ACTIVITY_MODE_MATCH.equals(activityMode)) {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            };
+        }
+        else if (ACTIVITY_MODE_HISTORY.equals(activityMode)) {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            };
+        }
+        else {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            };
+        }
+    }
+
+    public int getNewMovieBtnVisibility() {
+        if (ACTIVITY_MODE_MATCH.equals(activityMode)) {
+            return Button.VISIBLE;
+        }
+        else if (ACTIVITY_MODE_HISTORY.equals(activityMode)) {
+            return Button.GONE;
+        }
+        else {
+            return Button.GONE;
+        }
+    }
+
+    public int getWatchMovieBtnVisibility() {
+        if (ACTIVITY_MODE_MATCH.equals(activityMode)) {
+            return Button.VISIBLE;
+        }
+        else if (ACTIVITY_MODE_HISTORY.equals(activityMode)) {
+            return Button.VISIBLE;
+        }
+        else {
+            return Button.VISIBLE;
+        }
+    }
+
+    // Removes the LiveData observers on the repository before this
+    //   ViewModel is destroyed.
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+
+        movieRepository.getAllMovies().removeObserver(allMoviesObserver);
     }
 }

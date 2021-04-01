@@ -24,7 +24,6 @@ public class HistoryViewModel extends AndroidViewModel {
         mText.setValue("This is the History fragment");
         movieRepository = new MovieRepository(application);
         mAllMovies = movieRepository.getAllMovies();
-
     }
 
     LiveData<List<MovieListing>> getAllMovies() {return mAllMovies;}

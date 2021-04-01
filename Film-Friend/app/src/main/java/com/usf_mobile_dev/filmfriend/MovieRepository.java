@@ -46,7 +46,8 @@ import retrofit2.Callback;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class MovieRepository {
+public class MovieRepository
+{
 
     public final static int ENABLE_FINE_LOCATION = 1;
     public final static int ENABLE_COARSE_LOCATION = 2;
@@ -71,6 +72,7 @@ public class MovieRepository {
 
     public MovieRepository(Application application){
         MovieRoomDatabase db = MovieRoomDatabase.getDatabase(application);
+
         mMovieDao = db.movieDao();
         mAllMovies = mMovieDao.getAllMovies();
 
@@ -108,16 +110,16 @@ public class MovieRepository {
         }
     }
 
-    public void insertMatchPreference(MatchPreferences matchPreferences) {
-        new insertMatchPreferencesAsyncTask(matchPreferencesDao)
+    public void insertMatchPreferences(MatchPreferences matchPreferences) {
+        new InsertMatchPreferencesAsyncTask(matchPreferencesDao)
                 .execute(matchPreferences);
     }
 
-    private static class insertMatchPreferencesAsyncTask extends android.os.AsyncTask<MatchPreferences, Void, Void> {
+    private static class InsertMatchPreferencesAsyncTask extends android.os.AsyncTask<MatchPreferences, Void, Void> {
 
         private MatchPreferencesDao mAsyncTaskDao;
 
-        insertMatchPreferencesAsyncTask(MatchPreferencesDao dao) {
+        InsertMatchPreferencesAsyncTask(MatchPreferencesDao dao) {
             mAsyncTaskDao = dao;
         }
 
@@ -130,6 +132,26 @@ public class MovieRepository {
 
     public LiveData<List<MatchPreferences>> getAllMatchPreferences() {
         return allMatchPreferences;
+    }
+
+    public void deleteMatchPreferences(MatchPreferences matchPreferences) {
+        new DeleteMatchPreferencesAsyncTask(matchPreferencesDao)
+                .execute(matchPreferences);
+    }
+
+    private static class DeleteMatchPreferencesAsyncTask extends android.os.AsyncTask<MatchPreferences, Void, Void> {
+
+        private MatchPreferencesDao mAsyncTaskDao;
+
+        DeleteMatchPreferencesAsyncTask(MatchPreferencesDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final MatchPreferences... params) {
+            mAsyncTaskDao.deleteMatchPreferences(params[0]);
+            return null;
+        }
     }
 
     public void getAllMoviesNearby(double radius, FragmentActivity discoverActivity)

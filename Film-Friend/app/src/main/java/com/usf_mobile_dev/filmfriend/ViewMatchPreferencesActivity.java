@@ -5,27 +5,26 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
-public class SavePreferencesActivity extends AppCompatActivity {
 
-    private SavePreferencesViewModel viewModel;
+public class ViewMatchPreferencesActivity extends AppCompatActivity
+{
+
+    private ViewMatchPreferencesViewModel viewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_save_match_preferences);
+        setContentView(R.layout.activity_view_match_preferences);
 
         // Gets the viewmodel for this activity
-        viewModel = new ViewModelProvider(this).get(SavePreferencesViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ViewMatchPreferencesViewModel.class);
 
         // Sets the MatchPreferences and the UI if the intent is not null
         Intent intent = getIntent();
@@ -33,7 +32,7 @@ public class SavePreferencesActivity extends AppCompatActivity {
             // Gets the MatchPreferences from the intent and passes it to the viewmodel
             viewModel.setMatchPreferences(
                     (MatchPreferences) intent.getSerializableExtra(
-                            SavePreferencesViewModel.INTENT_EXTRAS_MOVIE_PREFERENCES
+                            ViewMatchPreferencesViewModel.INTENT_EXTRAS_MOVIE_PREFERENCES
                     )
             );
 
@@ -61,12 +60,28 @@ public class SavePreferencesActivity extends AppCompatActivity {
             ((TextView)findViewById(R.id.txtViewChosenLanguage))
                     .setText(mp.getSelected_language());
 
-            // Adds functionality to the button to save the match preferences
-            ((Button)findViewById(R.id.btnSaveMatchPreferences)).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) { saveMatchPreference(); }
-                });
+            // Adds functionality to the button to send the match preferences back
+            //   to be displayed in the match fragment
+            ((Button)findViewById(R.id.btnSendBack)).setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // TODO: Add code to send the current match preferences
+                            //   back to be displayed in the match fragment
+                        }
+                    });
+
+            // Opens an activity to edit the match preferences
+            ((Button)findViewById(R.id.btnEdit)).setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // TODO: Add code to open the modify match preferences
+                            //   activity, send the current MatchPreferences, and
+                            //   receive a modified MatchPreferences as a result.
+                        }
+                    }
+            );
         }
         /*
         Exits the Activity if the intent passed in is null and the Match Preferences
@@ -81,25 +96,5 @@ public class SavePreferencesActivity extends AppCompatActivity {
             ).show();
             this.finish();  // Exits the activity
         }
-    }
-
-    public void saveMatchPreference() {
-        // Saves the MatchPreferences to the room database
-        viewModel.saveMatchPreferences(
-                // Gets the preferences title entered by the user
-                ((EditText)findViewById(R.id.preferences_name_edit_text))
-                        .getText()
-                        .toString()
-        );
-
-        // Tells the user that the preference was saved
-        Toast.makeText(
-                this,
-                "Saved the Match Preferences to the database!",
-                Toast.LENGTH_SHORT
-        ).show();
-
-        // Closes the Activity
-        this.finish();
     }
 }

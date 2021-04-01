@@ -6,10 +6,30 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/match_save_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_save_24dp"
+        app:layout_constraintBottom_toTopOf="@id/match_qr_FAB"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/match_qr_FAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_qr_code_black"
+        app:layout_constraintBottom_toTopOf="@id/match_FAB"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/match_FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="64dp"
         android:src="@android:drawable/ic_menu_search"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,19 +51,9 @@
             android:paddingBottom="100dp"
             tools:context=".ui.match.MatchFragment">
 
-            <include layout="@layout/modify_match_preferences"
-                android:id="@+id/modify_match_preferences_layout_inclusion"/>
-
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="71dp"
-                android:layout_height="54dp"
-                android:layout_marginTop="32dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/modify_match_preferences_layout_inclusion"
-                app:srcCompat="@drawable/ic_save_24dp" />
-
+            <include
+                android:id="@+id/modify_match_preferences_layout_inclusion"
+                layout="@layout/modify_match_preferences" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
