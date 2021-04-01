@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.usf_mobile_dev.filmfriend.Movie;
+import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.MovieRepository;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class DiscoverViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> mText;
     private MovieRepository movieRepository;
-    private MutableLiveData<List<Movie>> mAllMovies;
+    private MutableLiveData<List<MovieListing>> mAllMovies;
 
     public DiscoverViewModel(Application application) {
         super(application);
@@ -32,7 +33,7 @@ public class DiscoverViewModel extends AndroidViewModel {
         movieRepository.getAllMoviesNearby(radius, discoverActivity);
     }
 
-    public MutableLiveData<List<Movie>> getDiscoverMovieList() {
+    public MutableLiveData<List<MovieListing>> getDiscoverMovieList() {
         return mAllMovies;
     }
 

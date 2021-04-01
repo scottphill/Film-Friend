@@ -36,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.usf_mobile_dev.filmfriend.DiscoverRecyclerAdapter;
 import com.usf_mobile_dev.filmfriend.Movie;
+import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoViewModel;
@@ -68,9 +69,9 @@ public class DiscoverFragment extends Fragment {
         discoverRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         discoverRecyclerView.setAdapter(adapter);
 
-        final Observer<List<Movie>> movieListObserver = new Observer<List<Movie>>() {
+        final Observer<List<MovieListing>> movieListObserver = new Observer<List<MovieListing>>() {
             @Override
-            public void onChanged(List<Movie> movies) {
+            public void onChanged(List<MovieListing> movies) {
                 Log.d("onChanged:", "Movie list has changed");
                 adapter.setMovies(movies);
                 Log.d("onChanged:", "Adapter set");
@@ -110,8 +111,8 @@ public class DiscoverFragment extends Fragment {
 
             @Override
             public void onItemClick(View v, int position) {
-                Movie movie = adapter.getMovieAtPosition(position);
-                launchMovieInfoActivity(movie);
+                MovieListing movie = adapter.getMovieAtPosition(position);
+                launchMovieInfoActivity(movie.getMovie());
             }
         });
     }
