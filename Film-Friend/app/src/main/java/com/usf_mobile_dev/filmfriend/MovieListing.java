@@ -14,6 +14,7 @@ public class MovieListing {
     private int movieID;
 
     private Date dateViewed;
+    private int willWatch;
 
     @Embedded
     private Movie movie;
@@ -23,13 +24,15 @@ public class MovieListing {
         this.movieID = 0;
         this.dateViewed = null;
         this.movie = null;
+        this.willWatch = 0;
     }
 
-    public MovieListing(int movieID, Date dateViewed, Movie movie)
+    public MovieListing(int movieID, Date dateViewed, Movie movie, int willWatch)
     {
         this.movieID = movieID;
         this.dateViewed = dateViewed;
         this.movie = movie;
+        this.willWatch = willWatch;
     }
 
     public int getMovieID() {
@@ -55,4 +58,8 @@ public class MovieListing {
     public void setMovie(Movie movie) {
         this.movie = movie;
     }
+
+    public int getWillWatch() { return willWatch; }
+
+    public void setWillWatch(int willWatch) { this.willWatch = willWatch; }
 }

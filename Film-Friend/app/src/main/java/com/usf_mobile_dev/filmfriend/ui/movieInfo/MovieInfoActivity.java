@@ -1,6 +1,8 @@
 package com.usf_mobile_dev.filmfriend.ui.movieInfo;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,11 +32,13 @@ import com.google.firebase.installations.FirebaseInstallations;
 import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.RoomCallback;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 import com.usf_mobile_dev.filmfriend.ui.history.HistoryViewModel;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Date;
+import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -64,6 +69,7 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
     private TextView mMovieOverview;
     private ImageView mMovieBanner;
     private ImageView mMoviePoster;
+    private int mWillWatch;
     private Button newMovieBtn;
     private Button watchMovieBtn;
 
@@ -98,6 +104,26 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                     .getStringExtra(MovieInfoViewModel.INTENT_EXTRAS_ACTIVITY_MODE));
             movieInfoViewModel.setCurMatchPreferences((MatchPreferences)getIntent()
                     .getSerializableExtra(MovieInfoViewModel.INTENT_EXTRAS_MOVIE_PREFERENCES));
+
+            getMovie(newMovie.getTmdbMovieId());
+
+            String mode = movieInfoViewModel.getActivityMode();
+            Log.d("ACTIVITY_MODE",String.valueOf(mode));
+            switch(mode){
+                case MovieInfoViewModel.ACTIVITY_MODE_MATCH:
+                    break;
+                case MovieInfoViewModel.ACTIVITY_MODE_HISTORY:
+                case MovieInfoViewModel.ACTIVITY_MODE_DISCOVER:
+                    newMovieBtn.setVisibility(View.GONE);
+                    getSupportActionBar().setTitle(newMovie.getTitle());
+                    //watchMovieBtn.setVisibility(View.GONE);
+                    break;
+                default:
+                    Log.e("ACTIVITY_MODE","Invalid activity mode");
+                    break;
+            }
+
+            //historyViewModel.insert(newMovieListing);
 
             //Set up firebase instance/references
             rootNode = FirebaseDatabase.getInstance();
@@ -147,6 +173,83 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                 .getNewMovieBtnVisibility());
 
         // Sets the click handler and visibility for the watch movie button
+        watchMovieBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Movie movie = movieInfoViewModel.getCurrentMovie().getValue();
+                if(movie != null) {
+                    if(mWillWatch == 0)//Not in watchlist
+                    {
+                        long millis = System.currentTimeMillis();
+                        MovieListing newMovieListing = new MovieListing(
+                                movie.getTmdbMovieId(),
+                                new Date(millis),
+                                movie,
+                                1);
+                        Log.d("WATCHLIST", "Inserting to watchlist");
+                        movieInfoViewModel.updateMovieDatabase(newMovieListing);
+                        watchMovieBtn.setText(R.string.remove_from_watchlist);
+                        mWillWatch = 1;
+                        watchToast(1);
+                    }
+                    else if(mWillWatch == 1)
+                    {
+                        long millis = System.currentTimeMillis();
+                        MovieListing newMovieListing = new MovieListing(
+                                movie.getTmdbMovieId(),
+                                new Date(millis),
+                                movie,
+                                0);
+                        Log.d("WATCHLIST", "Removing from watch list");
+                        movieInfoViewModel.updateMovieDatabase(newMovieListing);
+                        watchMovieBtn.setText(R.string.watch_this_movie);
+                        mWillWatch = 0;
+                        watchToast(0);
+                    }
+                }
+            }
+        });
+        watchMovieBtn.setVisibility(movieInfoViewModel
+                .getWatchMovieBtnVisibility());
+    }
+
+    public void watchToast(int type)
+    {
+        Context context = getApplicationContext();
+        CharSequence text;
+        if(type == 1)
+            text = "Added to Watchlist";
+        else
+            text = "Removed from Watchlist";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
+    public void getMovie(int id)
+    {
+        movieInfoViewModel.getMovie(id , new RoomCallback() {
+            @Override
+            public void onComplete(List<MovieListing> result) {
+
+            }
+
+            @Override
+            public void onComplete(MovieListing result) {
+                if(result != null) {
+                    mWillWatch = result.getWillWatch();
+                    Log.d("WATCHLIST", String.valueOf(mWillWatch));
+                    if (mWillWatch == 1) {
+                        watchMovieBtn.setText("Remove from Watchlist");
+                    }
+                }
+            }
+        });
+        newMovieBtn.setVisibility(movieInfoViewModel
+                .getNewMovieBtnVisibility());
+
+        // Sets the click handler and visibility for the watch movie button
         watchMovieBtn.setOnClickListener(movieInfoViewModel
                 .getWatchMovieBtnOnClickListener());
         watchMovieBtn.setVisibility(movieInfoViewModel
@@ -159,7 +262,7 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
     public void setMovieDetails(Movie newMovie) {
 
         long millis = System.currentTimeMillis();
-        newMovieListing = new MovieListing(newMovie.getTmdbMovieId(), new Date(millis), newMovie);
+        newMovieListing = new MovieListing(newMovie.getTmdbMovieId(), new Date(millis), newMovie, 0);
         historyViewModel.insert(newMovieListing);
         this.newMovie = newMovie;
 
@@ -239,6 +342,7 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
                         if (task.isSuccessful()) {
                             FID = task.getResult();
                             ref_user.child(FID).child("recentMatch").setValue(newMovie.getTmdbMovieId());
+                            ref_user.child(FID).child("time").setValue(new java.util.Date().getTime());
                             ref_movies.child(newMovie.getTmdbMovieIdAsStr()).setValue(newMovie);
                             if(loc != null) {
                                 geoFire.setLocation(FID, new GeoLocation(loc.getLatitude(), loc.getLongitude()));

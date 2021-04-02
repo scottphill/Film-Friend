@@ -3,12 +3,16 @@ package com.usf_mobile_dev.filmfriend.ui.history;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,19 +35,14 @@ public class HistoryFragment extends Fragment {
 
     private HistoryViewModel historyViewModel;
     private RecyclerView historyRecyclerView;
+    String[] filters;
+    Spinner spinnerFilters;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+        Log.d("MOVIELIST", "onCreateView");
         View root = inflater.inflate(R.layout.fragment_history, container, false);
-        //final TextView textView = root.findViewById(R.id.text_history);
-
-        /*historyViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });*/
 
         return root;
     }
@@ -62,6 +61,7 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("MOVIELIST", "onViewCreated");
 
         historyViewModel =
                 new ViewModelProvider(this).get(HistoryViewModel.class);
@@ -70,12 +70,29 @@ public class HistoryFragment extends Fragment {
         HistoryRecyclerViewAdapter adapter  = new HistoryRecyclerViewAdapter(getContext());
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         historyRecyclerView.setAdapter(adapter);
+        spinnerFilters = view.findViewById(R.id.spinner_filters);
+        populateSpinnerFilters();
+        historyViewModel.setCurrentFilter(spinnerFilters.getSelectedItem().toString());
 
         historyViewModel.getAllMovies().observe(getViewLifecycleOwner(), new Observer<List<MovieListing>>() {
             @Override
             public void onChanged(@Nullable final List<MovieListing> movies) {
+                //Log.d("MOVIELIST", "All list changed");
+                Log.d("MOVIELIST", historyViewModel.getCurrentFilter());
                 // Update the cached copy of the words in the adapter.
-                adapter.setMovies(movies);
+                if(historyViewModel.getCurrentFilter().equals("All Movies"))
+                    adapter.setMovies(movies);
+            }
+        });
+
+        historyViewModel.getWatchList().observe(getViewLifecycleOwner(), new Observer<List<MovieListing>>() {
+            @Override
+            public void onChanged(@Nullable final List<MovieListing> movies) {
+                //Log.d("MOVIELIST", "Watch list changed");
+                Log.d("MOVIELIST", historyViewModel.getCurrentFilter());
+                // Update the cached copy of the words in the adapter.
+                if(historyViewModel.getCurrentFilter().equals("Watch List"))
+                    adapter.setMovies(movies);
             }
         });
 
@@ -85,6 +102,28 @@ public class HistoryFragment extends Fragment {
             public void onItemClick(View v, int position) {
                 MovieListing movieListing = adapter.getMovieAtPosition(position);
                 launchMovieInfoActivity(movieListing.getMovie());
+            }
+        });
+
+        spinnerFilters.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String selected = (String) adapterView.getItemAtPosition(i);
+                historyViewModel.setCurrentFilter(selected);
+
+                if(selected.equals("All Movies")){
+                    adapter.setMovies(historyViewModel.getAllMovies().getValue());
+                }
+                if(selected.equals("Watch List")){
+                    adapter.setMovies(historyViewModel.getWatchList().getValue());
+                }
+                //Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
+                //Log.d("hasObserver", String.valueOf(discoverViewModel.getDiscoverMovieList().hasObservers()));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
     }
@@ -110,11 +149,18 @@ public class HistoryFragment extends Fragment {
                 movie);
         movieActivityIntent.putExtra(
                 MovieInfoViewModel.INTENT_EXTRAS_ACTIVITY_MODE,
-                MovieInfoViewModel.ACTIVITY_MODE_HISTORY
-        );
+                MovieInfoViewModel.ACTIVITY_MODE_HISTORY);
         if (context != null) {
             context.startActivity(movieActivityIntent);
         }
+    }
+
+    private void populateSpinnerFilters() {
+        filters = new String[]{"All Movies", "Watch List"};
+        ArrayAdapter<String> rangeAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, filters);
+        rangeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerFilters.setAdapter(rangeAdapter);
+
     }
 
 }

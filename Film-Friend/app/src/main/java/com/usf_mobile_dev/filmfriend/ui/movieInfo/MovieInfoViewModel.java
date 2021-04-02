@@ -18,9 +18,11 @@ import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.MovieRepository;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.RoomCallback;
 import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -55,6 +57,7 @@ public class MovieInfoViewModel extends AndroidViewModel {
     private String activityMode;
     private MovieRepository movieRepository;
     private String api_key;
+    private int willWatch;
 
     public MovieInfoViewModel(Application application) {
         super(application);
@@ -118,6 +121,7 @@ public class MovieInfoViewModel extends AndroidViewModel {
     public void setActivityMode(String activityMode) {
         this.activityMode = activityMode;
     }
+    public String getActivityMode() {return activityMode;}
 
     public void setCurrentMoviePage(
             List<DiscoverResponse.MovieData> newMoviePage,
@@ -126,6 +130,43 @@ public class MovieInfoViewModel extends AndroidViewModel {
         this.currentMoviePage = newMoviePage;
         this.viewedPages.add(page);
     }
+
+    public void updateMovieDatabase(MovieListing movieListing) {
+        movieRepository.update(movieListing);
+    }
+
+    public void getMovie(int id , final RoomCallback callback)
+    {
+        movieRepository.getMovie(id, callback);
+    }
+
+    /*public View.OnClickListener getWatchMovieOnClickListener() {
+        if (ACTIVITY_MODE_MATCH.equals(activityMode)) {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(currentMovie.getValue() != null) {
+                        long millis = System.currentTimeMillis();
+                        MovieListing newMovieListing = new MovieListing(
+                                currentMovie.getValue().getTmdbMovieId(),
+                                new Date(millis),
+                                currentMovie.getValue(),
+                                1);
+                        Log.d("WATCHLIST", "Inserting with willWatch value");
+                        movieRepository.update(newMovieListing);
+                    }
+                }
+            };
+        }
+        else {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            };
+        }
+    }*/
 
     private void getNextMovie(Context context) {
 

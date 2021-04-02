@@ -18,7 +18,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter
         <DiscoverRecyclerAdapter.MyViewHolder> {
 
     Context mContext;
-    List<Movie> mMovies;
+    List<MovieListing> mMovies;
     private static DiscoverRecyclerAdapter.ClickListener clickListener;
 
     public DiscoverRecyclerAdapter(Context mContext) {
@@ -39,12 +39,13 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter
     @Override
     public void onBindViewHolder(@NonNull DiscoverRecyclerAdapter.MyViewHolder holder, int position) {
         if (mMovies != null) {
-            Movie current = mMovies.get(position);
-            holder.movieItemName.setText(current.getTitle());
-            holder.movieItemRelease.setText((String.valueOf(current.getReleaseYear())));
+            MovieListing current = mMovies.get(position);
+            holder.movieItemName.setText(current.getMovie().getTitle());
+            holder.movieItemRelease.setText((String.valueOf(current.getMovie().getReleaseYear())));
+            holder.listingDate.setText(String.valueOf(current.getDateViewed()));
 
             String posterUrl = "https://image.tmdb.org/t/p/w342"
-                    + current.getPosterPath();
+                    + current.getMovie().getPosterPath();
             Glide.with(mContext)
                     .load(posterUrl)
                     .into(holder.movieItemPoster);
@@ -54,7 +55,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter
         }
     }
 
-    public void setMovies(List<Movie> movies){
+    public void setMovies(List<MovieListing> movies){
         mMovies = movies;
         notifyDataSetChanged();
     }
@@ -66,7 +67,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter
         else return 0;
     }
 
-    public Movie getMovieAtPosition(int position) {
+    public MovieListing getMovieAtPosition(int position) {
         return mMovies.get(position);
     }
 
@@ -74,6 +75,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter
 
         private TextView movieItemName;
         private TextView movieItemRelease;
+        private TextView listingDate;
         private ImageView movieItemPoster;
 
         public MyViewHolder(View itemView) {
@@ -82,6 +84,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter
             movieItemName = itemView.findViewById(R.id.movieListingName);
             movieItemRelease = itemView.findViewById(R.id.movieListingRelease);
             movieItemPoster = itemView.findViewById(R.id.movieListingPoster);
+            listingDate = itemView.findViewById(R.id.listingDate);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
