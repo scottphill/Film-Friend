@@ -228,7 +228,8 @@ public class MatchFragment extends Fragment {
                         Toast.LENGTH_SHORT
                 ).show();
 
-                Intent intent = new Intent(view.getContext(), QRGenerateActivity.class);
+                Intent intent = new Intent(view.getContext(),
+                        QRGenerateActivity.class);
 
                 intent.putExtra(
                         "com.usf_mobile_dev.filmfriend.ui.qr.CurrentMatchPreference",

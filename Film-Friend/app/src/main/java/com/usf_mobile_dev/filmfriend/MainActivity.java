@@ -112,7 +112,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         switch (nav_id) {
             case R.id.settings_about:
-                Toast.makeText(getApplicationContext(), "About pressed!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "About pressed!",
+                        Toast.LENGTH_SHORT).show();
                 drawer.closeDrawer(GravityCompat.START);
 
                 Settings.openPopUp(this, (String) item.getTitle());
@@ -120,8 +121,8 @@ public class MainActivity extends AppCompatActivity
                 return true;
 
             case R.id.settings_credit:
-                Toast.makeText(getApplicationContext(), "Credit pressed!", Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(getApplicationContext(), "Credit pressed!",
+                        Toast.LENGTH_SHORT).show();
                 drawer.closeDrawer(GravityCompat.START);
 
                 Settings.openPopUp(this, (String) item.getTitle());
@@ -134,5 +135,10 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer(GravityCompat.START);
         return super.onOptionsItemSelected(item);
+    }
+
+    public void launchTutorial(View view) {
+        Tutorial t = new Tutorial();
+        t.launchTutorial(view);
     }
 }
