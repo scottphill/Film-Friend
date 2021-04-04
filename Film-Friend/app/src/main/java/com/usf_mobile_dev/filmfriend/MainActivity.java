@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,13 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.usf_mobile_dev.filmfriend.ui.qr.QRCameraActivity;
 import com.usf_mobile_dev.filmfriend.ui.qr.QrActivity;
 //import com.usf_mobile_dev.filmfriend.ui.savedPreferences.PreferencesActivity;
+import com.usf_mobile_dev.filmfriend.ui.savedPreferences.ViewAllSavedPreferencesActivity;
 import com.usf_mobile_dev.filmfriend.ui.settings.Settings;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -29,6 +33,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import static com.usf_mobile_dev.filmfriend.ui.settings.Settings.*;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -107,38 +113,33 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        int nav_id = item.getItemId();
+        //int nav_id = item.getItemId();
 
         // Handle navigation view item clicks here.
+        /*
         switch (nav_id) {
             case R.id.settings_about:
-                Toast.makeText(getApplicationContext(), "About pressed!",
-                        Toast.LENGTH_SHORT).show();
-                drawer.closeDrawer(GravityCompat.START);
-
-                Settings.openPopUp(this, (String) item.getTitle());
-
-                return true;
-
             case R.id.settings_credit:
-                Toast.makeText(getApplicationContext(), "Credit pressed!",
-                        Toast.LENGTH_SHORT).show();
                 drawer.closeDrawer(GravityCompat.START);
 
-                Settings.openPopUp(this, (String) item.getTitle());
 
                 return true;
 
             default:
-                // do nothing
+                Toast.makeText(this, "ERROR: invalid selection.",
+                        Toast.LENGTH_SHORT).show();
+                break;
         }
+         */
 
         drawer.closeDrawer(GravityCompat.START);
+        Settings.openPopUp((View) item);
         return super.onOptionsItemSelected(item);
     }
 
+    // For Tutorial PopUps! Needed to be in a parent class
     public void launchTutorial(View view) {
         Tutorial t = new Tutorial();
-        t.launchTutorial(view);
+        t.launchMatchFilterTutorial(view);
     }
 }

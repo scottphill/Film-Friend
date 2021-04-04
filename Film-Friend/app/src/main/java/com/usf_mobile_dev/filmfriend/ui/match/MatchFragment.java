@@ -1,5 +1,6 @@
 package com.usf_mobile_dev.filmfriend.ui.match;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import com.usf_mobile_dev.filmfriend.LanguagesGridAdapter;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.SaveMatchPreferencesActivity;
 import com.usf_mobile_dev.filmfriend.SaveMatchPreferencesViewModel;
+import com.usf_mobile_dev.filmfriend.Tutorial;
 import com.usf_mobile_dev.filmfriend.api.GenreResponse;
 import com.usf_mobile_dev.filmfriend.api.LanguageResponse;
 import com.usf_mobile_dev.filmfriend.ui.qr.MPJSONHandling;
@@ -95,6 +97,7 @@ public class MatchFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.match_nav_menu, menu);
+        inflater.inflate(R.menu.tutorial_menu, menu);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -519,8 +522,10 @@ public class MatchFragment extends Fragment {
         );
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.preferences_menu:
                 Intent intent_pref = new Intent(getActivity(),
@@ -535,6 +540,11 @@ public class MatchFragment extends Fragment {
                 ).show();
                 Intent intent = new Intent(getActivity(), QRCameraActivity.class);
                 startActivityForResult(intent, QR_REQUEST);
+                return true;
+            case R.id.tutorial:
+                Tutorial t = new Tutorial();
+                t.launchPageTutorial(this.getContext(),
+                        getResources().getString(R.string.title_match), item);
                 return true;
             default:
                 // Do nothing

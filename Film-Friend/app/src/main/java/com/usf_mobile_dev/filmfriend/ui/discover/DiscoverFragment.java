@@ -1,6 +1,7 @@
 package com.usf_mobile_dev.filmfriend.ui.discover;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,11 +9,15 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
@@ -38,8 +43,11 @@ import com.usf_mobile_dev.filmfriend.DiscoverRecyclerAdapter;
 import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.Tutorial;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoViewModel;
+import com.usf_mobile_dev.filmfriend.ui.qr.QRCameraActivity;
+import com.usf_mobile_dev.filmfriend.ui.savedPreferences.ViewAllSavedPreferencesActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +87,8 @@ public class DiscoverFragment extends Fragment {
         };
 
         discoverViewModel.getDiscoverMovieList().observe(getViewLifecycleOwner(), movieListObserver);
+
+        setHasOptionsMenu(true);
 
         return root;
     }
@@ -145,5 +155,24 @@ public class DiscoverFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.tutorial_menu, menu);
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // Do nothing
+        if (item.getItemId() == R.id.tutorial) {
+            Tutorial t = new Tutorial();
+            t.launchPageTutorial(this.getContext(),
+                    getResources().getString(R.string.title_discover), item);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
 }

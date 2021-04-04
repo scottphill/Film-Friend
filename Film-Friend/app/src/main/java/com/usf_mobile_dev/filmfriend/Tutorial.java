@@ -1,20 +1,51 @@
 package com.usf_mobile_dev.filmfriend;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.usf_mobile_dev.filmfriend.ui.pop_up_window.PopUp;
 
 public class Tutorial {
+    
+    public void launchPageTutorial(Context context, String title, MenuItem item)
+    {
+        PopUp popUp = new PopUp(context);
+        Log.d("PageTutorial", String.format("%s", title));
 
-    private PopUp popUp;
+        switch (title) {
+            case "Match":
+                popUp.setHeading(title);
+                popUp.setText("Match!");
+                break;
+            case "History":
+                popUp.setHeading(title);
+                popUp.setText("History!");
+                break;
+            case "Discover":
+                popUp.setHeading(title);
+                popUp.setText("Discover!");
+                break;
+            default:
+                popUp.setHeading("ERROR");
+                popUp.setText("Invalid selection.");
+                break;
+        }
+        popUp.openPopUp();
+    }
 
     @SuppressLint("NonConstantResourceId")
-    public void launchTutorial(View view) {
+    public void launchMatchFilterTutorial(View view) {
 
-        popUp = new PopUp(view.getContext());
+        PopUp popUp = new PopUp(view.getContext());
 
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.tut_button_release_date:
                 popUp.setHeading("Release Date Range");
                 popUp.setText(

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.usf_mobile_dev.filmfriend">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -68,14 +69,6 @@
         <activity
             android:name=".ui.history.AnalyticsActivity"
             android:label="Analytics Activity">
-        </activity>
-        <activity
-            android:name=".ui.settings.Settings"
-            android:theme="@android:style/Theme.Dialog">
-            <intent-filter>
-                <action android:name="transparent.text.SETTINGS"/>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".SaveMatchPreferencesActivity"

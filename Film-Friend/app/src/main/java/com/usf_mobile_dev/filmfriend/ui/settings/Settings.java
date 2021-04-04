@@ -1,33 +1,32 @@
 package com.usf_mobile_dev.filmfriend.ui.settings;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
+import android.view.View;
 
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.ui.pop_up_window.PopUp;
 
 public class Settings {
 
-    private static PopUp popup;
+    @SuppressLint("NonConstantResourceId")
+    public static void openPopUp(View view) {
 
-    public static void openPopUp(Activity main, String type) {
+        PopUp popup = new PopUp(view.getContext());
 
-        popup = new PopUp(main);
-
-        switch (type) {
-            case "About":
-                popup.setHeading(type);
-                popup.setText(main.getString(R.string.settings_about_body));
+        switch (view.getId()) {
+            case R.id.settings_about:
+                popup.setHeading("About");
+                popup.setText(view.getContext().getString(R.string.settings_about_body));
                 break;
-            case "Credits":
-                popup.setHeading(type);
-                popup.setText(main.getString(R.string.settings_credits_body));
+            case R.id.settings_credit:
+                popup.setHeading("Credits");
+                popup.setText(view.getContext().getString(R.string.settings_credits_body));
                 break;
             default:
                 popup.setHeading("ERROR:");
-                popup.setText("Incorrect selection");
+                popup.setText("Invalid selection");
                 break;
         }
-
         popup.openPopUp();
     }
 }
