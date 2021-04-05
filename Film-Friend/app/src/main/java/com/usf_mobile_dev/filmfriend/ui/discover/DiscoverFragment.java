@@ -167,8 +167,7 @@ public class DiscoverFragment extends Fragment {
         // Do nothing
         if (item.getItemId() == R.id.tutorial) {
             Tutorial t = new Tutorial();
-            t.launchPageTutorial(this.getContext(),
-                    getResources().getString(R.string.title_discover), item);
+            t.launchPageTutorial(this.getContext(), "Discover");
             return true;
         }
 

@@ -543,8 +543,7 @@ public class MatchFragment extends Fragment {
                 return true;
             case R.id.tutorial:
                 Tutorial t = new Tutorial();
-                t.launchPageTutorial(this.getContext(),
-                        getResources().getString(R.string.title_match), item);
+                t.launchPageTutorial(this.getContext(), "Match");
                 return true;
             default:
                 // Do nothing

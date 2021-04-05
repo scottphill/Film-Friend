@@ -13,7 +13,7 @@ public class Settings {
     @SuppressLint("NonConstantResourceId")
     public static void openPopUp(Context context, MenuItem item) {
 
-        PopUp popup = new PopUp(view.getContext(), .8, .4);
+        PopUp popup = new PopUp(context, .4, .8);
 
         switch (item.getTitle().toString()) {
             case "About":

@@ -144,8 +144,7 @@ public class HistoryFragment extends Fragment {
 
             case R.id.tutorial:
                 Tutorial t = new Tutorial();
-                t.launchPageTutorial(this.getContext(),
-                        getResources().getString(R.string.title_history), item);
+                t.launchPageTutorial(this.getContext(), "History");
                 return true;
             default:
                 // do nothing.
