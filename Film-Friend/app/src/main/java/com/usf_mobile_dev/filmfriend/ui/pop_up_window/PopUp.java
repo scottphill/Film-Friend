@@ -10,8 +10,8 @@ import com.usf_mobile_dev.filmfriend.R;
 
 public class PopUp {
 
-    final private double WIDTH = .8;
-    final private double HEIGHT = .4;
+    private double WIDTH;
+    private double HEIGHT;
 
     private Dialog dialog;
     private String text;
@@ -21,11 +21,13 @@ public class PopUp {
     private TextView heading_TextView;
     private ImageButton cancel_button;
 
-    public PopUp(Context context) {
+    public PopUp(Context context, double h, double w ) {
 
         dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_pop_up);
         dialog.setCancelable(true);
+        HEIGHT = h;
+        WIDTH = w;
 
         double width = context.getResources().getDisplayMetrics().widthPixels * WIDTH;
         double height = context.getResources().getDisplayMetrics().heightPixels * HEIGHT;

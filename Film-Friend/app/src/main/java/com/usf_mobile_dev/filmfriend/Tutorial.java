@@ -14,15 +14,25 @@ import com.usf_mobile_dev.filmfriend.ui.pop_up_window.PopUp;
 
 public class Tutorial {
     
-    public void launchPageTutorial(Context context, String title, MenuItem item)
+    public void launchPageTutorial(Context context, String title)
     {
-        PopUp popUp = new PopUp(context);
+        PopUp popUp = new PopUp(context, .7, .8);
         Log.d("PageTutorial", String.format("%s", title));
 
         switch (title) {
             case "Match":
                 popUp.setHeading(title);
-                popUp.setText("Match!");
+                popUp.setText("This page offers will match \n" +
+                        "There are a number major buttons:\n\n" +
+                        "Camera Icon (Top Right): This opens your phones camera for scanning QR codes\n\n" +
+                        "List Icon (Next to Camera): This takes you to your saved preferences.\n" +
+                        "More info on preferences page.\n\n" +
+                        "Save Icon (Bottom Right): This button allows you to save your current filters\n" +
+                        "as a Preference and is added to your Preference List.\n\n" +
+                        "QR button (Below Save Icon): This will generate a QR code based on your current " +
+                        "filters so that anyone can scan it. More info on the QR page.\n\n" +
+                        "Search Button (Below QR): This will find you the perfect movie based on your\n" +
+                        "filters!\n");
                 break;
             case "History":
                 popUp.setHeading(title);
@@ -43,7 +53,7 @@ public class Tutorial {
     @SuppressLint("NonConstantResourceId")
     public void launchMatchFilterTutorial(View view) {
 
-        PopUp popUp = new PopUp(view.getContext());
+        PopUp popUp = new PopUp(view.getContext(), .4, .8);
 
         switch (view.getId()) {
             case R.id.tut_button_release_date:

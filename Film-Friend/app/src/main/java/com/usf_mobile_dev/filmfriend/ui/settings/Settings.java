@@ -11,7 +11,7 @@ public class Settings {
     @SuppressLint("NonConstantResourceId")
     public static void openPopUp(View view) {
 
-        PopUp popup = new PopUp(view.getContext());
+        PopUp popup = new PopUp(view.getContext(), .8, .4);
 
         switch (view.getId()) {
             case R.id.settings_about:
