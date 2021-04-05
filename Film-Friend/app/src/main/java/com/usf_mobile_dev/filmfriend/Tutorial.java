@@ -36,11 +36,14 @@ public class Tutorial {
                 break;
             case "History":
                 popUp.setHeading(title);
-                popUp.setText("History!");
+                popUp.setText("Each time you view a movie, you can see that movie here.\n" +
+                        "By changing the filter, you can show all of the movies, or just" +
+                        "the movies in your Watch List.\n");
                 break;
             case "Discover":
                 popUp.setHeading(title);
-                popUp.setText("Discover!");
+                popUp.setText("Movies that other users have added to their Watch List appear here.\n" +
+                        "You can increase the search range by changing the drop down at the top of the page.\n");
                 break;
             default:
                 popUp.setHeading("ERROR");
