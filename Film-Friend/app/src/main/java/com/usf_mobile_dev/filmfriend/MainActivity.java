@@ -113,27 +113,10 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //int nav_id = item.getItemId();
-
-        // Handle navigation view item clicks here.
-        /*
-        switch (nav_id) {
-            case R.id.settings_about:
-            case R.id.settings_credit:
-                drawer.closeDrawer(GravityCompat.START);
-
-
-                return true;
-
-            default:
-                Toast.makeText(this, "ERROR: invalid selection.",
-                        Toast.LENGTH_SHORT).show();
-                break;
-        }
-         */
-
         drawer.closeDrawer(GravityCompat.START);
+
         Settings.openPopUp(this, item);
+
         return super.onOptionsItemSelected(item);
     }
 

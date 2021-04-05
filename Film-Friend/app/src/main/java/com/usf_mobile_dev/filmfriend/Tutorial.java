@@ -42,6 +42,10 @@ public class Tutorial {
                 popUp.setHeading(title);
                 popUp.setText("Discover!");
                 break;
+            case "Preferences List":
+                popUp.setHeading(title);
+                popUp.setText("Preferences List!!");
+                break;
             default:
                 popUp.setHeading("ERROR");
                 popUp.setText("Invalid selection.");
