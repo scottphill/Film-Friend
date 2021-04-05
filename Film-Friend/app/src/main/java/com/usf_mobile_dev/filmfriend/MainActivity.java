@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity
          */
 
         drawer.closeDrawer(GravityCompat.START);
-        Settings.openPopUp((View) item);
+        Settings.openPopUp(this, item);
         return super.onOptionsItemSelected(item);
     }
 

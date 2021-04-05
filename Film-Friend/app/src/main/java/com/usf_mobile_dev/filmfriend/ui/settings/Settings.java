@@ -1,6 +1,8 @@
 package com.usf_mobile_dev.filmfriend.ui.settings;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.usf_mobile_dev.filmfriend.R;
@@ -9,18 +11,18 @@ import com.usf_mobile_dev.filmfriend.ui.pop_up_window.PopUp;
 public class Settings {
 
     @SuppressLint("NonConstantResourceId")
-    public static void openPopUp(View view) {
+    public static void openPopUp(Context context, MenuItem item) {
 
-        PopUp popup = new PopUp(view.getContext());
+        PopUp popup = new PopUp(context);
 
-        switch (view.getId()) {
-            case R.id.settings_about:
+        switch (item.getTitle().toString()) {
+            case "About":
                 popup.setHeading("About");
-                popup.setText(view.getContext().getString(R.string.settings_about_body));
+                popup.setText(context.getString(R.string.settings_about_body));
                 break;
-            case R.id.settings_credit:
+            case "Credits":
                 popup.setHeading("Credits");
-                popup.setText(view.getContext().getString(R.string.settings_credits_body));
+                popup.setText(context.getString(R.string.settings_credits_body));
                 break;
             default:
                 popup.setHeading("ERROR:");
