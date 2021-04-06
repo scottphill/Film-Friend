@@ -1,11 +1,14 @@
 package com.usf_mobile_dev.filmfriend.ui.qr;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +29,7 @@ import com.google.zxing.Result;
 
 import com.usf_mobile_dev.filmfriend.MainActivity;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.Tutorial;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 import org.jetbrains.annotations.NotNull;
@@ -142,5 +146,24 @@ public class QRCameraActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.tutorial_menu, menu);
+        return true;
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.tutorial) {
+            Tutorial t = new Tutorial();
+        t.launchPageTutorial(this, "QR Camera");
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

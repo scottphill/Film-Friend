@@ -1,14 +1,18 @@
 package com.usf_mobile_dev.filmfriend.ui.qr;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,6 +22,7 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.Tutorial;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +32,8 @@ import java.io.UnsupportedEncodingException;
 
 public class QRGenerateActivity extends AppCompatActivity {
 
-    public static final String INTENT_EXTRAS_MATCH_PREFERENCES = "com.usf_mobile_dev.filmfriend.ui.qr.CurrentMatchPreference";
+    public static final String INTENT_EXTRAS_MATCH_PREFERENCES =
+            "com.usf_mobile_dev.filmfriend.ui.qr.CurrentMatchPreference";
 
     private MatchPreferences MP = null;
     private String json = null;
@@ -101,5 +107,24 @@ public class QRGenerateActivity extends AppCompatActivity {
             }
         }
         return bmp;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.tutorial_menu, menu);
+        return true;
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.tutorial) {
+            Tutorial t = new Tutorial();
+            t.launchPageTutorial(this, "QR Code Generation");
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

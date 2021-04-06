@@ -90,7 +90,6 @@ public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // Do nothing
         if (item.getItemId() == R.id.tutorial) {
             Tutorial t = new Tutorial();
             t.launchPageTutorial(this, "Preferences List");
