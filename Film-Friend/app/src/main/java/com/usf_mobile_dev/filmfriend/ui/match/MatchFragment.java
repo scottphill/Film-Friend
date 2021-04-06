@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -85,6 +86,9 @@ public class MatchFragment extends Fragment {
     private EditText vote_count_min;
     private EditText vote_count_max;
 
+    private TextView label_rating_min;
+    private TextView label_rating_max;
+
     private static MatchPreferences MPfromQR;
 
     @Override
@@ -112,8 +116,11 @@ public class MatchFragment extends Fragment {
         rating_min = root.findViewById(R.id.seekBar_rating_min);
         rating_max = root.findViewById(R.id.seekBar_rating_max);
 
+        label_rating_min = root.findViewById(R.id.label_rating_min);
         // Ensures that min is always less than max.
         rating_min.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
+
+            @SuppressLint("DefaultLocale")
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -125,22 +132,31 @@ public class MatchFragment extends Fragment {
                 if (rating_max.getProgress() <= progress) {
                     rating_max.setProgress(progress + 1);
                 }
+
+                label_rating_min.setText(String.format("%.1f",
+                        ((double) seekBar.getProgress() / seekBar.getMax() * DEF_RATING_MAX)));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                /*
                 Toast.makeText(
                         getActivity(),
                         String.format("%.1f",
                                 ((double) seekBar.getProgress() / seekBar.getMax() * DEF_RATING_MAX)),
                         Toast.LENGTH_SHORT
                 ).show();
+
+                 */
             }
         }));
 
+        label_rating_max = root.findViewById(R.id.label_rating_max);
         // Ensures that max is always greater than min.
         rating_max.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
+
+            @SuppressLint("DefaultLocale")
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -152,17 +168,23 @@ public class MatchFragment extends Fragment {
                 if (rating_min.getProgress() >= progress) {
                     rating_min.setProgress(progress - 1);
                 }
+
+                label_rating_max.setText(String.format("%.1f",
+                        ((double) seekBar.getProgress() /  seekBar.getMax()) * DEF_RATING_MAX));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                /*
                 Toast.makeText(
                         getActivity(),
                         String.format("%.1f",
                                 ((double) seekBar.getProgress() /  seekBar.getMax()) * DEF_RATING_MAX),
                         Toast.LENGTH_SHORT
                 ).show();
+
+                 */
             }
         }));
 

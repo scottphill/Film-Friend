@@ -176,7 +176,7 @@
         android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="64dp"
         android:max="100"
         android:min="0"
         android:progress="0"
@@ -184,6 +184,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/match_header_rating_min"
         app:layout_constraintTop_toTopOf="@+id/match_header_rating_min" />
+
+    <TextView
+        android:id="@+id/label_rating_min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/seekBar_rating_min"
+        app:layout_constraintBottom_toBottomOf="@id/seekBar_rating_min"
+        app:layout_constraintLeft_toRightOf="@id/seekBar_rating_min"
+        android:layout_marginStart="16dp"
+        android:text="0.0"
+        />
 
     <TextView
         android:id="@+id/match_header_rating_max"
@@ -201,7 +212,7 @@
         android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="64dp"
         android:max="100"
         android:min="0"
         android:progress="100"
@@ -209,6 +220,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/match_header_rating_max"
         app:layout_constraintTop_toTopOf="@+id/match_header_rating_max" />
+
+    <TextView
+        android:id="@+id/label_rating_max"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/seekBar_rating_max"
+        app:layout_constraintBottom_toBottomOf="@id/seekBar_rating_max"
+        app:layout_constraintRight_toRightOf="@id/label_rating_min"
+        android:text="10.0"
+        />
 
     <ImageButton
         android:id="@+id/tut_button_watch_providers"
