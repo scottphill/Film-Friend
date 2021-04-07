@@ -53,7 +53,7 @@
     <string name="_0">0</string>
     <string name="viewed_movies_by_decade">Viewed Movies By Decade:</string>
     <string name="total_movies">Total Movies:</string>
-    <string name="waiting_for_qr_code">Waiting for QR code...</string>
+    <string name="waiting_for_qr_code">Waiting for QR code…</string>
     <string name="movie_title">Movie Title</string>
     <string name="release_year">Release year</string>
     <string name="rating_label">Rating:</string>

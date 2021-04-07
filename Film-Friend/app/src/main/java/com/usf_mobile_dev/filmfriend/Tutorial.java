@@ -144,8 +144,7 @@ public class Tutorial {
                 popUp.setLayout( .4, .8);
                 popUp.setHeading("Language");
                 popUp.setText(
-                        "Select what language you would like your movie in.\n" +
-                        "Leave option unselected if you do not wish to have this affect your results.");
+                        "Select what language you would like your movie in.\n");
                 break;
             default:
                 popUp.setLayout( .4, .8);

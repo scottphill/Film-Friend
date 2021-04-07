@@ -141,7 +141,7 @@ public class MatchFragment extends Fragment {
 
                 // Updates the label for rating_min so the user can see where the bar is at.
                 label_rating_min.setText(String.format("%.1f",
-                        ((double) seekBar.getProgress() / seekBar.getMax() * DEF_RATING_MAX)));
+                        ((double) seekBar.getProgress() / seekBar.getMax() * DEF_HIGHEST_RATING)));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
@@ -169,7 +169,7 @@ public class MatchFragment extends Fragment {
 
                 // Updates the label for rating_max so the user can see where the bar is at.
                 label_rating_max.setText(String.format("%.1f",
-                        ((double) seekBar.getProgress() /  seekBar.getMax()) * DEF_RATING_MAX));
+                        ((double) seekBar.getProgress() /  seekBar.getMax()) * DEF_HIGHEST_RATING));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
@@ -321,12 +321,12 @@ public class MatchFragment extends Fragment {
             setUI(MPfromQR);
 
             try {
-                Log.d("Setting Match UI", MPJSONHandling.mpToPrettyJSON(MP_from_QR));
+                Log.d("Setting Match UI", MPJSONHandling.mpToPrettyJSON(MPfromQR));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
 
-            setUI(MP_from_QR);
+            setUI(MPfromQR);
         }
         else if (requestCode == MP_REQUEST && resultCode == Activity.RESULT_OK) {
             //*
