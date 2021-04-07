@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,6 +27,8 @@ import com.google.zxing.Result;
 
 import com.usf_mobile_dev.filmfriend.MainActivity;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.SaveMatchPreferencesActivity;
+import com.usf_mobile_dev.filmfriend.SaveMatchPreferencesViewModel;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 public class QRCameraActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST_CODE = 101;
+    public static final String INTENT_EXTRAS_QR_MP = "com.usf_mobile_dev.filmfriend.ui.qr.NewMatchPreferencesFromQR";
     private CodeScanner mCodeScanner;
 
     @Override
@@ -67,16 +71,9 @@ public class QRCameraActivity extends AppCompatActivity {
                             MatchPreferences mp = MPJSONHandling.JSONToMP(result.getText());
                             text_view.setText("QR code found!");
 
+                            startSaveActivity(mp);
                             // Return to match page
                             //Intent intent = getParentActivityIntent();
-                            Intent intent = new Intent();
-                            intent.putExtra(
-                                    "com.usf_mobile_dev.filmfriend.ui.qr.NewMatchPreferencesFromQR",
-                                    mp);
-
-                            setResult(Activity.RESULT_OK, intent);
-                            finish();
-
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                             text_view.setText("Invalid QR code, please scan again.");
@@ -115,6 +112,16 @@ public class QRCameraActivity extends AppCompatActivity {
     protected void onPause() {
         mCodeScanner.releaseResources();
         super.onPause();
+    }
+
+    public void startSaveActivity(MatchPreferences matchPreferences) {
+        Intent intent = new Intent(this, SaveMatchPreferencesActivity.class);
+        intent.putExtra(
+                SaveMatchPreferencesViewModel.INTENT_EXTRAS_MOVIE_PREFERENCES,
+                matchPreferences);
+        startActivity(intent);
+
+        this.finish();
     }
 
     private void setUpPermissions() {

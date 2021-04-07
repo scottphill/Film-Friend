@@ -1,5 +1,6 @@
 package com.usf_mobile_dev.filmfriend;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -63,3 +64,4 @@ public class MovieListing {
 
     public void setWillWatch(int willWatch) { this.willWatch = willWatch; }
 }
+

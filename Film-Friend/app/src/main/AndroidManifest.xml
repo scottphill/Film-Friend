@@ -70,20 +70,16 @@
             android:label="Analytics Activity">
         </activity>
         <activity
-            android:name=".ui.settings.Settings"
-            android:theme="@android:style/Theme.Dialog">
-            <intent-filter>
-                <action android:name="transparent.text.SETTINGS"/>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".SaveMatchPreferencesActivity"
             android:label="Save Your Match Preferences!"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".ViewMatchPreferencesActivity"
+            android:label="Match Preferences">
         </activity>
     </application>
 

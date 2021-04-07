@@ -59,7 +59,7 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            android:text="@string/watch_this_movie" />
+            android:text="@string/empty_string" />
 
     </LinearLayout>
 

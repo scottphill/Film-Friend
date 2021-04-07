@@ -62,7 +62,10 @@ public class LanguagesGridAdapter
 
     @Override
     public int getItemCount() {
-        return languages.size();
+        if(languages != null)
+            return languages.size();
+        else
+            return 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

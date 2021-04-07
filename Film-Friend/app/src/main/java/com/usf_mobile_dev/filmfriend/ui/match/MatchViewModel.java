@@ -18,13 +18,10 @@ import com.usf_mobile_dev.filmfriend.api.LanguageResponse;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoViewModel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 
 import retrofit2.Call;
@@ -61,6 +58,7 @@ public class MatchViewModel extends AndroidViewModel {
         selectedLanguage.postValue("");
         this.refreshLanguages(application);
     }
+
 
     /*
     // https://api.themoviedb.org/3/genre/movie/list?api_key=25ace50f784640868b88295ea133e67e&language=en-US
@@ -336,6 +334,7 @@ public class MatchViewModel extends AndroidViewModel {
 
     public void setSelectedLanguage(String language) {
         this.selectedLanguage.postValue(language);
-        this.MP.setSelected_language(languages_to_iso_id.get(language));
+        this.MP.setSelected_language_code(languages_to_iso_id.get(language));
+        this.MP.setSelected_language_name(language);
     }
 }

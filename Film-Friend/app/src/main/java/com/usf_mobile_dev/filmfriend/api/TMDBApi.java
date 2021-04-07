@@ -3,7 +3,6 @@ package com.usf_mobile_dev.filmfriend.api;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -53,7 +52,7 @@ public class TMDBApi {
         if(preferences.getNumSelectedWatchProviders() == 0)
             watchProvidersStr = null;
 
-        String selectedLanguage = preferences.getSelected_language();
+        String selectedLanguage = preferences.getSelected_language_code();
         if(selectedLanguage == null || selectedLanguage.equals(""))
             selectedLanguage = null;
 
@@ -120,7 +119,7 @@ public class TMDBApi {
                 if(preferences.getNumSelectedWatchProviders() == 0)
                     watchProvidersStr = null;
 
-                String selectedLanguage = preferences.getSelected_language();
+                String selectedLanguage = preferences.getSelected_language_code();
                 if(selectedLanguage == null || selectedLanguage.equals(""))
                     selectedLanguage = null;
 

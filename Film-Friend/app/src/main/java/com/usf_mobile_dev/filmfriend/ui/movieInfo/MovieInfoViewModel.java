@@ -1,19 +1,34 @@
 package com.usf_mobile_dev.filmfriend.ui.movieInfo;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.installations.FirebaseInstallations;
 import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.MovieRepository;
@@ -21,6 +36,8 @@ import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.RoomCallback;
 import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -35,6 +52,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.usf_mobile_dev.filmfriend.R.string.watch_this_movie;
+
 
 public class MovieInfoViewModel extends AndroidViewModel {
     public static final String ACTIVITY_MODE_MATCH = "movie_info_mode_match";
@@ -44,6 +65,8 @@ public class MovieInfoViewModel extends AndroidViewModel {
     public static final String INTENT_EXTRAS_MOVIE_DATA = "com.usf_mobile_dev.filmfriend.intent.extras.movie_data";
     public static final String INTENT_EXTRAS_ACTIVITY_MODE = "com.usf_mobile_dev.filmfriend.intent.extras.movie_info_activity_mode";
     public static final String INTENT_EXTRAS_MOVIE_PREFERENCES = "com.usf_mobile_dev.filmfriend.intent.extras.movie_preferences";
+    public final static int ENABLE_FINE_LOCATION = 1;
+    public final static int ENABLE_COARSE_LOCATION = 2;
 
     private Stack<Movie> previousMovies;
     private Stack<Movie> nextMovies;
@@ -58,6 +81,17 @@ public class MovieInfoViewModel extends AndroidViewModel {
     private MovieRepository movieRepository;
     private String api_key;
     private int willWatch;
+
+    FirebaseDatabase rootNode;
+    DatabaseReference ref_user;
+    DatabaseReference ref_movies;
+    DatabaseReference ref_geoFire;
+    GeoFire geoFire;
+    String FID;
+    Task<String> firebaseInstallation;
+
+    private FusedLocationProviderClient fusedLocationClient;
+    private Location loc;
 
     public MovieInfoViewModel(Application application) {
         super(application);
@@ -77,7 +111,7 @@ public class MovieInfoViewModel extends AndroidViewModel {
         allMoviesObserver = new Observer<List<MovieListing>>() {
             @Override
             public void onChanged(List<MovieListing> movieListings) {
-                watchedMovies.postValue(
+                watchedMovies.setValue(
                         movieListings
                                 .stream()
                                 .mapToInt(MovieListing::getMovieID)
@@ -86,11 +120,21 @@ public class MovieInfoViewModel extends AndroidViewModel {
                 );
             }
         };
-        movieRepository.getAllMovies().observeForever(allMoviesObserver);
+        movieRepository.getWatchList().observeForever(allMoviesObserver);
+
+        //Set up firebase instance/references
+        rootNode = FirebaseDatabase.getInstance();
+        ref_user = rootNode.getReference("users");
+        ref_movies = rootNode.getReference("movies");
+        ref_geoFire = rootNode.getReference("geoFire");
+        geoFire = new GeoFire(ref_geoFire);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(application);
     }
 
     public void setCurrentMovie(Movie currentMovie) {
         viewedMovieIds.add(currentMovie.getTmdbMovieId());
+        updateMovieHistory(currentMovie);
         this.currentMovie.postValue(currentMovie);
     }
     public void setCurrentMovie(DiscoverResponse.MovieData currentMovieData) {
@@ -112,6 +156,10 @@ public class MovieInfoViewModel extends AndroidViewModel {
 
     public MutableLiveData<Movie> getCurrentMovie() {
         return currentMovie;
+    }
+
+    public MutableLiveData<HashSet<Integer>> getWatchedMovies() {
+        return watchedMovies;
     }
 
     public void setCurMatchPreferences(MatchPreferences curMatchPreferences) {
@@ -138,6 +186,110 @@ public class MovieInfoViewModel extends AndroidViewModel {
     public void getMovie(int id , final RoomCallback callback)
     {
         movieRepository.getMovie(id, callback);
+    }
+
+    public void updateMovieHistory(Movie movie) {
+
+            // Inserts the movie into the top of the history table
+            long millis = System.currentTimeMillis();
+            MovieListing newMovieListing = new MovieListing(
+                    movie.getTmdbMovieId(),
+                    new Date(millis),
+                    movie,
+                    0
+            );
+            movieRepository.insertOrUpdateMovie(newMovieListing);
+    }
+
+    public void setupFirebasePermissions(Activity context) {
+        if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(context, new String[] {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, ENABLE_FINE_LOCATION);
+            ActivityCompat.requestPermissions(context, new String[] {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, ENABLE_COARSE_LOCATION);
+        }
+        else if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(context, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                loc = location;
+                                Log.d("MovieInfo", "DEBUG1");
+                                addDataToFirebase();
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void permissionResultHandler(int requestCode, @NotNull String[] permissions,
+                                        @NotNull int[] grantResults, Activity context) {
+        switch (requestCode) {
+            case MovieInfoViewModel.ENABLE_FINE_LOCATION:
+            case MovieInfoViewModel.ENABLE_COARSE_LOCATION:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is granted. Continue the action or workflow
+                    // in your app.
+                    if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        fusedLocationClient.getLastLocation()
+                                .addOnSuccessListener(context, new OnSuccessListener<Location>() {
+                                    @Override
+                                    public void onSuccess(Location location) {
+                                        // Got last known location. In some rare situations this can be null.
+                                        if (location != null) {
+                                            loc = location;
+                                            Log.d("MovieInfo", "DEBUG1");
+                                            addDataToFirebase();
+                                        }
+                                    }
+                                });
+                    }
+                }
+                else
+                {
+                    // Explain to the user that the feature is unavailable because
+                    // the features requires a permission that the user has denied.
+                    // At the same time, respect the user's decision. Don't link to
+                    // system settings in an effort to convince the user to change
+                    // their decision.
+                    Log.d("MovieInfo", "DEBUG2");
+                    addDataToFirebase();//adds without location.
+                }
+        }
+        // Other 'case' lines to check for other
+        // permissions this app might request.
+    }
+
+    public void addDataToFirebase() {
+        firebaseInstallation = FirebaseInstallations.getInstance().getId()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (task.isSuccessful()) {
+                            FID = task.getResult();
+                            ref_user.child(FID).child("recentMatch").setValue(currentMovie.getValue().getTmdbMovieId());
+                            ref_user.child(FID).child("time").setValue(new java.util.Date().getTime());
+                            ref_movies.child(currentMovie.getValue().getTmdbMovieIdAsStr()).setValue(currentMovie.getValue());
+                            if(loc != null) {
+                                geoFire.setLocation(FID, new GeoLocation(loc.getLatitude(), loc.getLongitude()));
+                                Log.d("Location", "Added location");
+                            }
+                            else
+                                Log.d("Location", "Added without location");
+                        }
+                        else
+                        {
+                            Log.e("Installations", "Unable to get Installation ID");
+                        }
+                    }
+                });
     }
 
     /*public View.OnClickListener getWatchMovieOnClickListener() {
@@ -247,6 +399,19 @@ public class MovieInfoViewModel extends AndroidViewModel {
         }
     }
 
+    public void watchToast(int type, Context context)
+    {
+        CharSequence text;
+        if(type == 1)
+            text = "Added to Watchlist";
+        else
+            text = "Removed from Watchlist";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
     public View.OnClickListener getNewMovieBtnOnClickListener() {
         if (ACTIVITY_MODE_MATCH.equals(activityMode)) {
             return new View.OnClickListener() {
@@ -280,7 +445,38 @@ public class MovieInfoViewModel extends AndroidViewModel {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    if(currentMovie.getValue() != null) {
+                        if (watchedMovies.getValue().contains(
+                                currentMovie.getValue().getTmdbMovieId()
+                        )) // In watchlist
+                        {
+                            long millis = System.currentTimeMillis();
+                            MovieListing newMovieListing = new MovieListing(
+                                    currentMovie.getValue().getTmdbMovieId(),
+                                    new Date(millis),
+                                    currentMovie.getValue(),
+                                    0);
+                            Log.d("WATCHLIST", "Removing from watch list");
+                            updateMovieDatabase(newMovieListing);
+                            ((Button) v).setText(R.string.empty_string);
+                            ((Button) v).setClickable(false);
+                            watchToast(0, v.getContext());
+                        }
+                        // Not in watchList
+                        else {
+                            long millis = System.currentTimeMillis();
+                            MovieListing newMovieListing = new MovieListing(
+                                    currentMovie.getValue().getTmdbMovieId(),
+                                    new Date(millis),
+                                    currentMovie.getValue(),
+                                    1);
+                            Log.d("WATCHLIST", "Inserting to watchlist");
+                            updateMovieDatabase(newMovieListing);
+                            ((Button) v).setText(R.string.empty_string);
+                            ((Button) v).setClickable(false);
+                            watchToast(1, v.getContext());
+                        }
+                    }
                 }
             };
         }
@@ -288,7 +484,38 @@ public class MovieInfoViewModel extends AndroidViewModel {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    if(currentMovie.getValue() != null) {
+                        if (watchedMovies.getValue().contains(
+                                currentMovie.getValue().getTmdbMovieId()
+                        )) // In watchlist
+                        {
+                            long millis = System.currentTimeMillis();
+                            MovieListing newMovieListing = new MovieListing(
+                                    currentMovie.getValue().getTmdbMovieId(),
+                                    new Date(millis),
+                                    currentMovie.getValue(),
+                                    0);
+                            Log.d("WATCHLIST", "Removing from watch list");
+                            updateMovieDatabase(newMovieListing);
+                            ((Button) v).setText(R.string.empty_string);
+                            ((Button) v).setClickable(false);
+                            watchToast(0, v.getContext());
+                        }
+                        // Not in watchList
+                        else {
+                            long millis = System.currentTimeMillis();
+                            MovieListing newMovieListing = new MovieListing(
+                                    currentMovie.getValue().getTmdbMovieId(),
+                                    new Date(millis),
+                                    currentMovie.getValue(),
+                                    1);
+                            Log.d("WATCHLIST", "Inserting to watchlist");
+                            updateMovieDatabase(newMovieListing);
+                            ((Button) v).setText(R.string.empty_string);
+                            ((Button) v).setClickable(false);
+                            watchToast(1, v.getContext());
+                        }
+                    }
                 }
             };
         }
@@ -296,7 +523,38 @@ public class MovieInfoViewModel extends AndroidViewModel {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    if(currentMovie.getValue() != null) {
+                        if (watchedMovies.getValue().contains(
+                                currentMovie.getValue().getTmdbMovieId()
+                        )) // In watchlist
+                        {
+                            long millis = System.currentTimeMillis();
+                            MovieListing newMovieListing = new MovieListing(
+                                    currentMovie.getValue().getTmdbMovieId(),
+                                    new Date(millis),
+                                    currentMovie.getValue(),
+                                    0);
+                            Log.d("WATCHLIST", "Removing from watch list");
+                            updateMovieDatabase(newMovieListing);
+                            ((Button) v).setText(R.string.empty_string);
+                            ((Button) v).setClickable(false);
+                            watchToast(0, v.getContext());
+                        }
+                        // Not in watchList
+                        else {
+                            long millis = System.currentTimeMillis();
+                            MovieListing newMovieListing = new MovieListing(
+                                    currentMovie.getValue().getTmdbMovieId(),
+                                    new Date(millis),
+                                    currentMovie.getValue(),
+                                    1);
+                            Log.d("WATCHLIST", "Inserting to watchlist");
+                            updateMovieDatabase(newMovieListing);
+                            ((Button) v).setText(R.string.empty_string);
+                            ((Button) v).setClickable(false);
+                            watchToast(1, v.getContext());
+                        }
+                    }
                 }
             };
         }
@@ -324,6 +582,20 @@ public class MovieInfoViewModel extends AndroidViewModel {
         else {
             return Button.VISIBLE;
         }
+    }
+
+    public int getWatchMovieBtnText() {
+        if(currentMovie.getValue() != null
+                && watchedMovies.getValue() != null) {
+            if (watchedMovies.getValue().contains(
+                    currentMovie.getValue().getTmdbMovieId())
+            )
+                return R.string.remove_from_watchlist;
+            else
+                return watch_this_movie;
+        }
+        else
+            return R.string.empty_string;
     }
 
     // Removes the LiveData observers on the repository before this
