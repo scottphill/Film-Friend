@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
@@ -48,7 +49,7 @@ public class ViewMatchPreferencesActivity extends AppCompatActivity
 
             // Adjusts the UI to display the data from the MatchPreferences
             MatchPreferences mp = viewModel.getMatchPreferences();
-            ((TextView)findViewById(R.id.match_preferences_title_txt_view))
+            ((EditText)findViewById(R.id.preferences_name_edit_text))
                     .setText(mp.getPreference_title());
             ((TextView)findViewById(R.id.txtViewReleaseYearStart))
                     .setText(String.valueOf(mp.getRelease_year_start()));
@@ -59,9 +60,9 @@ public class ViewMatchPreferencesActivity extends AppCompatActivity
             excludedGenresRecyclerView = ((RecyclerView)
                     findViewById(R.id.rejected_genres_recyclerview));
             ((TextView)findViewById(R.id.txtViewRatingLowerBound))
-                    .setText(String.valueOf(mp.getRating_min()));
+                    .setText(String.format("%.1f", mp.getRating_min()));
             ((TextView)findViewById(R.id.txtViewRatingUpperBound))
-                    .setText(String.valueOf(mp.getRating_max()));
+                    .setText(String.format("%.1f", mp.getRating_max()));
             watchProvidersRecyclerView = ((RecyclerView)
                     findViewById(R.id.watch_providers_recyclerview));
             ((TextView)findViewById(R.id.txtViewRuntimeLowerBound))

@@ -68,8 +68,8 @@ public class MatchPreferences implements Serializable {
         rating_max = 10;
         runtime_min = 0;
         runtime_max = 500;
-        vote_count_min = 0;
-        vote_count_max = 10000000;
+        vote_count_min = 20;
+        vote_count_max = 1000000;
         genres_to_include = new HashMap<Integer, Boolean>();
         genres_to_exclude = new HashMap<Integer, Boolean>();
         watch_providers_to_include = new HashMap<Integer, Boolean>();

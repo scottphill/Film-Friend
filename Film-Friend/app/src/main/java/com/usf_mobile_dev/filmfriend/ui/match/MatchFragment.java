@@ -608,9 +608,9 @@ public class MatchFragment extends Fragment {
                 }
         );
 
-        // Sets the UI to its former or default state
-        if(matchViewModel.getMP() != null)
-            setUI(matchViewModel.getMP());
+        // Sets the UI to its default state
+        matchViewModel.setMP(new MatchPreferences());
+        setUI(matchViewModel.getMP());
     }
 
     @SuppressLint("NonConstantResourceId")

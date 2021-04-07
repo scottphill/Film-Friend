@@ -22,6 +22,7 @@ import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class SaveMatchPreferencesActivity extends AppCompatActivity
 {
@@ -63,9 +64,9 @@ public class SaveMatchPreferencesActivity extends AppCompatActivity
             excludedGenresRecyclerView = ((RecyclerView)
                     findViewById(R.id.rejected_genres_recyclerview));
             ((TextView)findViewById(R.id.txtViewRatingLowerBound))
-                    .setText(String.valueOf(mp.getRating_min()));
+                    .setText(String.format("%.1f", mp.getRating_min()));
             ((TextView)findViewById(R.id.txtViewRatingUpperBound))
-                    .setText(String.valueOf(mp.getRating_max()));
+                    .setText(String.format("%.1f", mp.getRating_max()));
             watchProvidersRecyclerView = ((RecyclerView)
                     findViewById(R.id.watch_providers_recyclerview));
             ((TextView)findViewById(R.id.txtViewRuntimeLowerBound))
