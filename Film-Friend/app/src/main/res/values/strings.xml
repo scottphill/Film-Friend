@@ -48,7 +48,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="settings_about_body">FilmFriend is an application that recommends you movies based on your preferences. This app chooses an ideal movie for you and your friends. That way, you won\'t have to spend hours searching for a movie that everyone can enjoy! Additionally, this app encourages community engagement, and allows you to view popular movies in your area from the comfort of your smart phone!</string>
-    <string name="settings_credits_body">App Creators:\nBrandon Poirier\nScott Hill\nAl Allums\n\nCredits To:\nTMDB \nJackson Project \nMPAndroidChart by Philipp Jahoda \nyCode Scanner by Yuriy Budiyev \nZXing </string>
+    <string name="settings_credits_body">App Creators:\nBrandon Poirier\nScott Hill\nAl Allums\n\nCredits To:\nTMDB \nJackson Project \nMPAndroidChart by Philipp Jahoda \nCode Scanner by Yuriy Budiyev \nZXing </string>
     <string name="average_rating">Average Rating:</string>
     <string name="_0">0</string>
     <string name="viewed_movies_by_decade">Viewed Movies By Decade:</string>
