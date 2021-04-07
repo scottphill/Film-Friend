@@ -510,6 +510,7 @@ public class MovieInfoViewModel extends AndroidViewModel {
                         }
                         // Not in watchList
                         else {
+                            setupFirebasePermissions(activity);
                             long millis = System.currentTimeMillis();
                             MovieListing newMovieListing = new MovieListing(
                                     currentMovie.getValue().getTmdbMovieId(),
@@ -549,6 +550,7 @@ public class MovieInfoViewModel extends AndroidViewModel {
                         }
                         // Not in watchList
                         else {
+                            setupFirebasePermissions(activity);
                             long millis = System.currentTimeMillis();
                             MovieListing newMovieListing = new MovieListing(
                                     currentMovie.getValue().getTmdbMovieId(),
