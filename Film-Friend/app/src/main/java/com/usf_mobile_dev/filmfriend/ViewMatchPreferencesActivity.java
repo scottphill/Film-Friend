@@ -49,7 +49,7 @@ public class ViewMatchPreferencesActivity extends AppCompatActivity
 
             // Adjusts the UI to display the data from the MatchPreferences
             MatchPreferences mp = viewModel.getMatchPreferences();
-            ((EditText)findViewById(R.id.preferences_name_edit_text))
+            ((TextView)findViewById(R.id.match_preferences_title_txt_view))
                     .setText(mp.getPreference_title());
             ((TextView)findViewById(R.id.txtViewReleaseYearStart))
                     .setText(String.valueOf(mp.getRelease_year_start()));
