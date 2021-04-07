@@ -81,6 +81,7 @@ public class MovieInfoViewModel extends AndroidViewModel {
     private MovieRepository movieRepository;
     private String api_key;
     private int willWatch;
+    private Activity activity;
 
     FirebaseDatabase rootNode;
     DatabaseReference ref_user;
@@ -130,6 +131,10 @@ public class MovieInfoViewModel extends AndroidViewModel {
         geoFire = new GeoFire(ref_geoFire);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(application);
+    }
+
+    public void setActivity(Activity a){
+        activity = a;
     }
 
     public void setCurrentMovie(Movie currentMovie) {
@@ -260,7 +265,7 @@ public class MovieInfoViewModel extends AndroidViewModel {
                     // system settings in an effort to convince the user to change
                     // their decision.
                     Log.d("MovieInfo", "DEBUG2");
-                    addDataToFirebase();//adds without location.
+                    //addDataToFirebase();//adds without location.
                 }
         }
         // Other 'case' lines to check for other
@@ -464,6 +469,8 @@ public class MovieInfoViewModel extends AndroidViewModel {
                         }
                         // Not in watchList
                         else {
+                            //addDataToFirebase();
+                            setupFirebasePermissions(activity);
                             long millis = System.currentTimeMillis();
                             MovieListing newMovieListing = new MovieListing(
                                     currentMovie.getValue().getTmdbMovieId(),
@@ -606,4 +613,6 @@ public class MovieInfoViewModel extends AndroidViewModel {
 
         movieRepository.getAllMovies().removeObserver(allMoviesObserver);
     }
+
+
 }

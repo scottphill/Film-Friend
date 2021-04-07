@@ -49,6 +49,7 @@ public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Gets the viewmodel for this activity
         viewModel = new ViewModelProvider(this).get(ViewAllSavedPreferencesViewModel.class);
@@ -104,6 +105,11 @@ public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        if (item.getItemId() == android.R.id.home) {
+                this.finish();
+                return true;
+        }
+
         if (item.getItemId() == R.id.tutorial) {
             Tutorial t = new Tutorial();
             t.launchPageTutorial(this, "Preferences List");
@@ -144,4 +150,6 @@ public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
             this.finish();
         }
     }
+
+
 }

@@ -42,6 +42,7 @@ public class QRGenerateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_generate);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ImageView image = findViewById(R.id.qr_image);
 
@@ -122,6 +123,11 @@ public class QRGenerateActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.tutorial) {
             Tutorial t = new Tutorial();
             t.launchPageTutorial(this, "QR Code Generation");
+            return true;
+        }
+
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
             return true;
         }
 

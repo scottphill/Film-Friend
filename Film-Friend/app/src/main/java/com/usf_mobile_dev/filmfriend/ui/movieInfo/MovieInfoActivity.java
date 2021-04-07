@@ -2,6 +2,7 @@ package com.usf_mobile_dev.filmfriend.ui.movieInfo;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.Manifest;
@@ -64,6 +65,7 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_movie_info);
 
         movieInfoViewModel = new ViewModelProvider(this).get(MovieInfoViewModel.class);
@@ -107,7 +109,8 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
             //historyViewModel.insert(newMovieListing);
         }
 
-        movieInfoViewModel.setupFirebasePermissions(this);
+        //movieInfoViewModel.setupFirebasePermissions(this);
+        movieInfoViewModel.setActivity(this);
 
         // Changes the movie in the UI whenever the movie in the ViewModel changes
         movieInfoViewModel.getCurrentMovie().observe(
@@ -214,5 +217,15 @@ public class MovieInfoActivity extends AppCompatActivity implements ActivityComp
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         movieInfoViewModel.permissionResultHandler(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
