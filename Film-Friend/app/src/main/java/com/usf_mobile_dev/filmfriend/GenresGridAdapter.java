@@ -52,7 +52,10 @@ public class GenresGridAdapter
 
     @Override
     public int getItemCount() {
-        return genres.size();
+        if(genres != null)
+            return genres.size();
+        else
+            return 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

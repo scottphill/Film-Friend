@@ -5,11 +5,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
-
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -18,16 +21,24 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.usf_mobile_dev.filmfriend.PreferenceRecyclerViewAdapter;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.Tutorial;
 import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
 import com.usf_mobile_dev.filmfriend.ui.settings.Settings;
-
+import com.usf_mobile_dev.filmfriend.ViewMatchPreferencesActivity;
+import com.usf_mobile_dev.filmfriend.ViewMatchPreferencesViewModel;
+import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
+import com.usf_mobile_dev.filmfriend.ui.qr.MPJSONHandling;
+import com.usf_mobile_dev.filmfriend.ui.qr.QRGenerateActivity;
 import java.util.List;
 
+
 public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
+
+    public static final int VIEW_MP_REQUEST = 45;
+    public static final String INTENT_EXTRAS_MP = "com.usf_mobile_dev.filmfriend.ui.savedPreferences.ViewAllSavedPreferencesActivity.intent_extras_mp";
 
     private RecyclerView mRecyclerView;
     private PreferenceRecyclerViewAdapter mAdapter;
@@ -46,11 +57,14 @@ public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.preferences_recyclerview);
         // Create an adapter and supply the data to be displayed.
         mAdapter = new PreferenceRecyclerViewAdapter(
-                this, new View.OnClickListener() {
+                this, 
+                new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                    }}, new View.OnClickListener() {
+                        startViewMPActivity((MatchPreferences) v.getTag());
+                    }
+                },
+                new View.OnClickListener() {
                     // Gets the match preferences from the view and deletes the
                     //   match preferences from the room database.
                     @Override
@@ -97,5 +111,37 @@ public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void startViewMPActivity(MatchPreferences matchPreferences) {
+        Intent intent_view_mp = new Intent(
+                this,
+                ViewMatchPreferencesActivity.class
+        );
+        // Pass MoviePreferences object to intent
+        intent_view_mp.putExtra(
+                INTENT_EXTRAS_MP,
+                matchPreferences
+        );
+        startActivityForResult(intent_view_mp, VIEW_MP_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Test for the right intent reply.
+        if (requestCode == VIEW_MP_REQUEST && resultCode == Activity.RESULT_OK) {
+            //*
+            Toast.makeText(this, "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
+            MatchPreferences mp = (MatchPreferences) data.getSerializableExtra(
+                    INTENT_EXTRAS_MP);
+
+            Intent intent = new Intent();
+            intent.putExtra(INTENT_EXTRAS_MP, mp);
+
+            setResult(Activity.RESULT_OK, intent);
+            this.finish();
+        }
     }
 }

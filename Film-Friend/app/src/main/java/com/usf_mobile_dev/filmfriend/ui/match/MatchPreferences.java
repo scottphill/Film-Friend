@@ -1,8 +1,6 @@
 package com.usf_mobile_dev.filmfriend.ui.match;
 
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -11,8 +9,10 @@ import androidx.room.TypeConverters;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.usf_mobile_dev.filmfriend.api.GenreResponse;
 import com.usf_mobile_dev.filmfriend.utils.IntBoolHashMapToStringConverter;
-import org.jetbrains.annotations.NotNull;
+import com.usf_mobile_dev.filmfriend.utils.StringListToStringConverter;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,11 +41,18 @@ public class MatchPreferences implements Serializable {
     private int vote_count_max = 10000;
     @TypeConverters(IntBoolHashMapToStringConverter.class)
     private HashMap<Integer, Boolean> genres_to_include;
+    @TypeConverters(StringListToStringConverter.class)
+    private ArrayList<String> included_genres_list;
     @TypeConverters(IntBoolHashMapToStringConverter.class)
     private HashMap<Integer, Boolean> genres_to_exclude;
+    @TypeConverters(StringListToStringConverter.class)
+    private ArrayList<String> excluded_genres_list;
     @TypeConverters(IntBoolHashMapToStringConverter.class)
     private HashMap<Integer, Boolean> watch_providers_to_include;
-    private String selected_language;
+    @TypeConverters(StringListToStringConverter.class)
+    private ArrayList<String> watch_providers_list;
+    private String selected_language_code;
+    private String selected_language_name;
 
     @PrimaryKey
     @NonNull
@@ -62,16 +69,21 @@ public class MatchPreferences implements Serializable {
         runtime_min = 0;
         runtime_max = 500;
         vote_count_min = 0;
-        vote_count_max = 10000;
+        vote_count_max = 10000000;
         genres_to_include = new HashMap<Integer, Boolean>();
         genres_to_exclude = new HashMap<Integer, Boolean>();
         watch_providers_to_include = new HashMap<Integer, Boolean>();
+        included_genres_list = new ArrayList<>();
+        excluded_genres_list = new ArrayList<>();
+        watch_providers_list = new ArrayList<>();
         watch_providers_to_include.put(8, WP_CB_INIT);
         watch_providers_to_include.put(15, WP_CB_INIT);
         watch_providers_to_include.put(337, WP_CB_INIT);
         watch_providers_to_include.put(9, WP_CB_INIT);
         watch_providers_to_include.put(3, WP_CB_INIT);
-        preference_title = "DEFAULT_TITLE";
+        selected_language_code = "en";
+        selected_language_name = "English";
+        preference_title = "EXAMPLE TITLE";
     }
 
     // Constructor used for inserting into room
@@ -89,7 +101,11 @@ public class MatchPreferences implements Serializable {
             HashMap<Integer, Boolean> genres_to_include,
             HashMap<Integer, Boolean> genres_to_exclude,
             HashMap<Integer, Boolean> watch_providers_to_include,
-            String selected_language
+            ArrayList<String> included_genres_list,
+            ArrayList<String> excluded_genres_list,
+            ArrayList<String> watch_providers_list,
+            String selected_language_code,
+            String selected_language_name
     ) {
         this.preference_title = preference_title;
         this.release_year_start = release_year_start;
@@ -103,7 +119,11 @@ public class MatchPreferences implements Serializable {
         this.genres_to_include = genres_to_include;
         this.genres_to_exclude = genres_to_exclude;
         this.watch_providers_to_include = watch_providers_to_include;
-        this.selected_language = selected_language;
+        this.included_genres_list = included_genres_list;
+        this.excluded_genres_list = excluded_genres_list;
+        this.watch_providers_list = watch_providers_list;
+        this.selected_language_code = selected_language_code;
+        this.selected_language_name = selected_language_name;
     }
 
     // Copy Constructor
@@ -120,6 +140,9 @@ public class MatchPreferences implements Serializable {
         genres_to_include = mp.getGenres_to_include();
         genres_to_exclude = mp.getGenres_to_exclude();
         watch_providers_to_include = mp.getWatch_providers_to_include();
+        included_genres_list = mp.getIncluded_genres_list();
+        excluded_genres_list = mp.getExcluded_genres_list();
+        watch_providers_list = mp.getWatch_providers_list();
         /*
         watch_providers_to_include.put(8, WP_CB_INIT);
         watch_providers_to_include.put(15, WP_CB_INIT);
@@ -127,7 +150,8 @@ public class MatchPreferences implements Serializable {
         watch_providers_to_include.put(9, WP_CB_INIT);
         watch_providers_to_include.put(3, WP_CB_INIT);
         // */
-        selected_language = mp.getSelected_language();
+        selected_language_code = mp.getSelected_language_code();
+        selected_language_name = mp.getSelected_language_name();
     }
 
     public String getIncludedGenresString() {
@@ -244,12 +268,12 @@ public class MatchPreferences implements Serializable {
         this.watch_providers_to_include.replace(id, new_val);
     }
 
-    public void setSelected_language(String selected_language) {
-        this.selected_language = selected_language;
+    public void setSelected_language_code(String selected_language_code) {
+        this.selected_language_code = selected_language_code;
     }
 
-    public String getSelected_language() {
-        return this.selected_language;
+    public String getSelected_language_code() {
+        return this.selected_language_code;
     }
 
     public int getRuntime_min() { return runtime_min; }
@@ -270,5 +294,61 @@ public class MatchPreferences implements Serializable {
 
     public void setPreference_title(String preference_title) {
         this.preference_title = preference_title;
+    }
+
+    public String getSelected_language_name() {
+        return selected_language_name;
+    }
+
+    public void setSelected_language_name(String selected_language_name) {
+        this.selected_language_name = selected_language_name;
+    }
+
+    public ArrayList<String> getIncluded_genres_list() {
+        return included_genres_list;
+    }
+
+    public void setIncluded_genres_list(ArrayList<String> included_genres_list) {
+        this.included_genres_list = included_genres_list;
+    }
+
+    public void addIncludedGenreToList(String genre) {
+        this.included_genres_list.add(genre);
+    }
+
+    public void removeIncludedGenreFromList(String genre) {
+        this.included_genres_list.remove(genre);
+    }
+
+    public ArrayList<String> getExcluded_genres_list() {
+        return excluded_genres_list;
+    }
+
+    public void setExcluded_genres_list(ArrayList<String> excluded_genres_list) {
+        this.excluded_genres_list = excluded_genres_list;
+    }
+
+    public void addExcludedGenreToList(String genre) {
+        this.excluded_genres_list.add(genre);
+    }
+
+    public void removeExcludedGenreFromList(String genre) {
+        this.excluded_genres_list.remove(genre);
+    }
+
+    public ArrayList<String> getWatch_providers_list() {
+        return watch_providers_list;
+    }
+
+    public void setWatch_providers_list(ArrayList<String> watch_providers_list) {
+        this.watch_providers_list = watch_providers_list;
+    }
+
+    public void addWatchProviderToList(String watch_provider) {
+        this.watch_providers_list.add(watch_provider);
+    }
+
+    public void removeWatchProviderFromList(String watch_provider) {
+        this.watch_providers_list.remove(watch_provider);
     }
 }

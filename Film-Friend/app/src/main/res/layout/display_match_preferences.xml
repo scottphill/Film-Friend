@@ -48,49 +48,31 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/chosen_genres_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:orientation="vertical">
-
-            <TextView
+        <TextView
                 android:layout_width="match_parent"
                 android:layout_margin="8dp"
                 android:gravity="start"
                 android:layout_height="wrap_content"
                 android:text="@string/chosen_genres" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/chosen_genres_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_margin="8dp"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/rejected_genres_layout"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chosen_genres_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:orientation="vertical">
+            android:layout_height="wrap_content" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_margin="8dp"
-                android:gravity="start"
-                android:layout_height="wrap_content"
-                android:text="@string/genres_not_wanted" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_margin="8dp"
+            android:gravity="start"
+            android:layout_height="wrap_content"
+            android:text="@string/genres_not_wanted" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rejected_genres_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_margin="8dp"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rejected_genres_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_margin="8dp"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:id="@+id/rating_range_layout"
@@ -133,27 +115,18 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/watch_providers_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:orientation="vertical">
-
-            <TextView
+        <TextView
                 android:layout_width="match_parent"
                 android:layout_margin="8dp"
                 android:gravity="start"
                 android:layout_height="wrap_content"
                 android:text="@string/chosen_watch_providers" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/watch_providers_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_margin="8dp"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/watch_providers_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_margin="8dp"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:id="@+id/runtime_range_layout"

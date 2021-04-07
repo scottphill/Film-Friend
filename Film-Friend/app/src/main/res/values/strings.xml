@@ -98,4 +98,5 @@
     <string name="runtime_mins">Runtime (mins):</string>
     <string name="vote_count_label_2">Vote Count:</string>
     <string name="language_label">Language:</string>
+    <string name="empty_string" />
 </resources>

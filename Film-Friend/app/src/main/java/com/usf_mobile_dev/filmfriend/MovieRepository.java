@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.sql.Date;
@@ -108,7 +109,7 @@ public class MovieRepository
             public void run() {
                 try {
                     MovieListing movieListing;
-                    movieListing = mMovieDao.getMovie(id);
+                    movieListing = mMovieDao.getMovie(id).get(0);
 
                     callback.onComplete(movieListing);
                 } catch (Exception e) {
@@ -164,6 +165,56 @@ public class MovieRepository
                 }
             }
         });
+    }
+
+    public void updateMovieHistory(MovieListing movieListing) {
+        threadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mMovieDao.updateDate(new MovieListingDate(
+                            movieListing.getMovieID(),
+                            movieListing.getDateViewed()
+                    ));
+                } catch (Exception e){
+                    Log.e("WATCHLIST", String.valueOf(e));
+                }
+            }
+        });
+    }
+
+    public void insertOrUpdateMovie(MovieListing movieListing) {
+        threadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<MovieListing> movieListings
+                        = mMovieDao.getMovie(movieListing.getMovieID());
+
+                if(movieListings.isEmpty())
+                    insertMovie(movieListing);
+                else
+                    updateMovieHistory(movieListing);
+            }
+        });
+
+        /*
+        LiveData<List<MovieListing>> listings
+                = mMovieDao.getMovie(movieListing.getMovieID());
+
+        Observer<List<MovieListing>> movieObserver
+                = new Observer<List<MovieListing>>()
+        {
+            @Override
+            public void onChanged(List<MovieListing> movieListings) {
+                if(movieListings.isEmpty())
+                    insertMovie(movieListing);
+                else
+                    update(movieListing);
+                listings.removeObserver(this);
+            }
+        };
+        listings.observeForever(movieObserver);
+         */
     }
 
     public LiveData<List<MatchPreferences>> getAllMatchPreferences() {

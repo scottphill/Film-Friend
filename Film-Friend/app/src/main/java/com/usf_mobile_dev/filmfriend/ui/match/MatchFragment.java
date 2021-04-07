@@ -64,8 +64,8 @@ public class MatchFragment extends Fragment {
     };
     final private int DEF_RELEASE_YEAR_MIN = 1850;
     final private int DEF_RELEASE_YEAR_MAX = 2021;
-    final private int DEF_RATING_MIN = 0;
-    final private int DEF_RATING_MAX = 10;
+    final private int DEF_LOWEST_RATING = 0;
+    final private int DEF_HIGHEST_RATING = 10;
     final private int DEF_RUNTIME_MIN = 0;
     final private int DEF_RUNTIME_MAX = 500;
     final private int DEF_VOTE_COUNT_MIN = 0;
@@ -75,7 +75,11 @@ public class MatchFragment extends Fragment {
             "com.usf_mobile_dev.filmfriend.ui.qr.CurrentMatchPreference";
     final private String Intent_QR_NewMatchPreferencesFromQR =
             "com.usf_mobile_dev.filmfriend.ui.qr.NewMatchPreferencesFromQR";
-
+  
+    // Unique tag for the intent reply
+    public static final int QR_REQUEST = 1;
+    public static final int MP_REQUEST = 2;
+  
     // Made these private variables so they can be put into an intent for QR
     private EditText release_year_start;
     private EditText release_year_end;
@@ -109,7 +113,7 @@ public class MatchFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
-        matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
+        matchViewModel = new ViewModelProvider(getActivity()).get(MatchViewModel.class);
         View root = inflater.inflate(R.layout.fragment_match, container, false);
 
         release_year_start = root.findViewById(R.id.release_date_start);
@@ -143,6 +147,7 @@ public class MatchFragment extends Fragment {
             public void onStartTrackingTouch(SeekBar seekBar) { }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar)  { }
+
         }));
 
         label_rating_max = root.findViewById(R.id.label_rating_max);
@@ -170,6 +175,7 @@ public class MatchFragment extends Fragment {
             public void onStartTrackingTouch(SeekBar seekBar) { }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { }
+          
         }));
 
         wp_cb_0 = (CheckBox)root.findViewById(R.id.wp_button_0);
@@ -183,30 +189,61 @@ public class MatchFragment extends Fragment {
             public void onClick(View v) {
                 matchViewModel.setWPVal(watch_providers[0],
                         ((CheckBox) v).isChecked());
+                String watchProvider = watch_providers[0];
+                boolean isChecked = ((CheckBox) v).isChecked();
+                if(isChecked)
+                    matchViewModel.getMP().addWatchProviderToList(watchProvider);
+                else
+                    matchViewModel.getMP().removeWatchProviderFromList(watchProvider);
             }});
         wp_cb_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 matchViewModel.setWPVal(watch_providers[1],
                         ((CheckBox) v).isChecked());
+                String watchProvider = watch_providers[1];
+                boolean isChecked = ((CheckBox) v).isChecked();
+                if(isChecked)
+                    matchViewModel.getMP().addWatchProviderToList(watchProvider);
+                else
+                    matchViewModel.getMP().removeWatchProviderFromList(watchProvider);
             }});
         wp_cb_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 matchViewModel.setWPVal(watch_providers[2],
                         ((CheckBox) v).isChecked());
+                String watchProvider = watch_providers[2];
+                boolean isChecked = ((CheckBox) v).isChecked();
+                if(isChecked)
+                    matchViewModel.getMP().addWatchProviderToList(watchProvider);
+                else
+                    matchViewModel.getMP().removeWatchProviderFromList(watchProvider);
             }});
         wp_cb_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 matchViewModel.setWPVal(watch_providers[3],
                         ((CheckBox) v).isChecked());
+                String watchProvider = watch_providers[3];
+                boolean isChecked = ((CheckBox) v).isChecked();
+                if(isChecked)
+                    matchViewModel.getMP().addWatchProviderToList(watchProvider);
+                else
+                    matchViewModel.getMP().removeWatchProviderFromList(watchProvider);
             }});
         wp_cb_4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 matchViewModel.setWPVal(watch_providers[4],
                         ((CheckBox) v).isChecked());
+                String watchProvider = watch_providers[4];
+                boolean isChecked = ((CheckBox) v).isChecked();
+                if(isChecked)
+                    matchViewModel.getMP().addWatchProviderToList(watchProvider);
+                else
+                    matchViewModel.getMP().removeWatchProviderFromList(watchProvider);
             }});
 
         runtime_min = root.findViewById(R.id.runtime_min);
@@ -231,6 +268,8 @@ public class MatchFragment extends Fragment {
         qr_code_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setMoviePreferences();
+
                 Toast.makeText(
                         view.getContext(),
                         "Generating Code...",
@@ -252,6 +291,8 @@ public class MatchFragment extends Fragment {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        setMoviePreferences();
+
                         Intent savePreferencesIntent = new Intent(
                                 getActivity(),
                                 SaveMatchPreferencesActivity.class
@@ -266,8 +307,6 @@ public class MatchFragment extends Fragment {
         return root;
     }
 
-    // Unique tag for the intent reply
-    public static final int QR_REQUEST = 1;
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -276,11 +315,10 @@ public class MatchFragment extends Fragment {
         if (requestCode == QR_REQUEST && resultCode == Activity.RESULT_OK) {
 
             //Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
-            assert data != null;
-            MatchPreferences MP_from_QR = (MatchPreferences) data
-                    .getSerializableExtra(Intent_QR_NewMatchPreferencesFromQR);
-            matchViewModel.setMP(MP_from_QR);
-            setUI(MP_from_QR);
+            MatchPreferences MPfromQR = (MatchPreferences) data.getSerializableExtra(
+                    QRCameraActivity.INTENT_EXTRAS_QR_MP);
+            matchViewModel.setMP(MPfromQR);
+            setUI(MPfromQR);
 
             try {
                 Log.d("Setting Match UI", MPJSONHandling.mpToPrettyJSON(MP_from_QR));
@@ -290,15 +328,33 @@ public class MatchFragment extends Fragment {
 
             setUI(MP_from_QR);
         }
+        else if (requestCode == MP_REQUEST && resultCode == Activity.RESULT_OK) {
+            //*
+            //Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
+            MatchPreferences MPfromQR = (MatchPreferences) data.getSerializableExtra(
+                    ViewAllSavedPreferencesActivity.INTENT_EXTRAS_MP);
+            matchViewModel.setMP(MPfromQR);
+            setUI(MPfromQR);
+
+            try {
+                Log.d("Setting Match UI", MPJSONHandling.mpToPrettyJSON(MPfromQR));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+            if (MPfromQR != null) {
+                setUI(MPfromQR);
+            }
+            //*/
+        }
     }
 
     public void setUI(MatchPreferences qrMP) {
-
-        // Release years
+        // Sets the release years
         release_year_start.setText(String.valueOf(qrMP.getRelease_year_start()));
         release_year_end.setText(String.valueOf(qrMP.getRelease_year_end()));
 
-        // Genres Included
+        // Sets the Included Genres
         for (int i = 0; i < includedGenresGrid.getAdapter().getItemCount(); ++i) {
             CheckBox cb =
                     (CheckBox) includedGenresGrid.findViewHolderForAdapterPosition(i).itemView;
@@ -307,20 +363,24 @@ public class MatchFragment extends Fragment {
             cb.setChecked(cb_val);
         }
 
-        // Genres Excluded
+        // Sets the Excluded Genres
         for (int i = 0; i < excludedGenresGrid.getAdapter().getItemCount(); ++i) {
             CheckBox cb =
                     (CheckBox) excludedGenresGrid.findViewHolderForAdapterPosition(i).itemView;
             int id = matchViewModel.getGenreID(String.valueOf(cb.getText()));
-            Boolean cb_val = qrMP.getGenres_to_include().get(id);
+            Boolean cb_val = qrMP.getGenres_to_exclude().get(id);
             cb.setChecked(cb_val);
         }
 
-        // Ratings
-        rating_min.setProgress((int)(qrMP.getRating_min() * DEF_RATING_MAX));
-        rating_max.setProgress((int)(qrMP.getRating_max() * DEF_RATING_MAX));
+        // Sets the rating bars
+        rating_min.setProgress((int)
+                ((qrMP.getRating_min() / DEF_HIGHEST_RATING) * rating_min.getMax())
+        );
+        rating_max.setProgress((int)
+                ((qrMP.getRating_max() / DEF_HIGHEST_RATING) * rating_max.getMax())
+        );
 
-        // Watch Providers
+        // Sets the Watch Providers
         boolean[] wp_vals = { false, false, false, false, false };
         try {
             HashMap<Integer, Boolean> wp = qrMP.getWatch_providers_to_include();
@@ -337,47 +397,30 @@ public class MatchFragment extends Fragment {
         wp_cb_3.setChecked(wp_vals[3]);
         wp_cb_4.setChecked(wp_vals[4]);
 
-        // Runtime
+        // Sets the runtime
         runtime_min.setText(String.valueOf(qrMP.getRuntime_min()));
         runtime_max.setText(String.valueOf(qrMP.getRuntime_max()));
 
-        // Vote Count
+        // Sets the Vote Count
         vote_count_min.setText(String.valueOf(qrMP.getVote_count_min()));
         vote_count_max.setText(String.valueOf(qrMP.getVote_count_max()));
 
-        // Language
+        // Sets the Language
+        boolean languageFound = false;
         for (int i = 0; i < languagesGrid.getAdapter().getItemCount(); ++i) {
             RadioButton rb =
                     (RadioButton) languagesGrid.findViewHolderForAdapterPosition(i).itemView;
-            if (String.valueOf(rb.getText()) ==
-                    matchViewModel.getLanguageFromID(qrMP.getSelected_language())) {
+            if (String.valueOf(rb.getText()).equals(
+                    matchViewModel.getLanguageFromID(qrMP.getSelected_language_code()))
+            ) {
                 rb.setChecked(true);
+                languageFound = true;
                 break;
             }
         }
-
-        // Update ViewModel
-        matchViewModel.setMP(qrMP);
-
-        release_year_start.setText(qrMP.getRelease_year_start()); // ERROR
-        release_year_end.setText(qrMP.getRelease_year_end());
-
-        rating_min.setProgress((int)(qrMP.getRating_min() * rating_min.getMax() * DEF_RATING_MAX));
-        rating_max.setProgress((int)(qrMP.getRating_max() * rating_max.getMax() * DEF_RATING_MAX));
-
-        wp_cb_0.setChecked(qrMP.getWatch_providers_to_include().get((int)0));
-        wp_cb_1.setChecked(qrMP.getWatch_providers_to_include().get((int)1));
-        wp_cb_2.setChecked(qrMP.getWatch_providers_to_include().get((int)2));
-        wp_cb_3.setChecked(qrMP.getWatch_providers_to_include().get((int)3));
-        wp_cb_4.setChecked(qrMP.getWatch_providers_to_include().get((int)4));
-
-        runtime_min.setText(qrMP.getRuntime_min());
-        runtime_max.setText(qrMP.getRuntime_max());
-
-        vote_count_min.setText(qrMP.getVote_count_min());
-        vote_count_max.setText(qrMP.getVote_count_max());
-
-         //*/
+        if(!languageFound){
+            matchViewModel.setSelectedLanguage("English");
+        }
     }
 
     public void setMoviePreferences() {
@@ -398,19 +441,19 @@ public class MatchFragment extends Fragment {
         }
         try {
             matchViewModel.setRating(
-                    ((double) rating_min.getProgress()/ rating_min.getMax())*DEF_RATING_MAX,
+                    ((double) rating_min.getProgress()/ rating_min.getMax())* DEF_HIGHEST_RATING,
                     true);
         }
         catch (Exception e) {
-            matchViewModel.setRating(DEF_RATING_MIN, true);
+            matchViewModel.setRating(DEF_LOWEST_RATING, true);
         }
         try {
             matchViewModel.setRating(
-                    ((double) rating_max.getProgress()/ rating_max.getMax())*DEF_RATING_MAX,
+                    ((double) rating_max.getProgress()/ rating_max.getMax())* DEF_HIGHEST_RATING,
                     false);
         }
         catch (Exception e) {
-            matchViewModel.setRating(DEF_RATING_MAX, false);
+            matchViewModel.setRating(DEF_HIGHEST_RATING, false);
         }
         try {
             matchViewModel.setRuntime(
@@ -440,6 +483,38 @@ public class MatchFragment extends Fragment {
         catch (Exception e) {
             matchViewModel.setVoteCount(DEF_VOTE_COUNT_MAX, false);
         }
+        /*
+        try {
+            matchViewModel.setWPVal(watch_providers[0], wp_cb_0.isChecked());
+        }
+        catch (Exception e) {
+            matchViewModel.setWPVal(watch_providers[0], false);
+        }
+        try {
+            matchViewModel.setWPVal(watch_providers[1], wp_cb_1.isChecked());
+        }
+        catch (Exception e) {
+            matchViewModel.setWPVal(watch_providers[1], false);
+        }
+        try {
+            matchViewModel.setWPVal(watch_providers[2], wp_cb_2.isChecked());
+        }
+        catch (Exception e) {
+            matchViewModel.setWPVal(watch_providers[2], false);
+        }
+        try {
+            matchViewModel.setWPVal(watch_providers[3], wp_cb_3.isChecked());
+        }
+        catch (Exception e) {
+            matchViewModel.setWPVal(watch_providers[3], false);
+        }
+        try {
+            matchViewModel.setWPVal(watch_providers[4], wp_cb_4.isChecked());
+        }
+        catch (Exception e) {
+            matchViewModel.setWPVal(watch_providers[4], false);
+        }
+         */
     }
 
     @Override
@@ -457,6 +532,10 @@ public class MatchFragment extends Fragment {
                             boolean isChecked) {
                         String genre = buttonView.getText().toString();
                         matchViewModel.setIncludedGenreVal(genre, isChecked);
+                        if(isChecked)
+                            matchViewModel.getMP().addIncludedGenreToList(genre);
+                        else
+                            matchViewModel.getMP().removeIncludedGenreFromList(genre);
                     }
                 });
         includedGenresGrid.setLayoutManager(new GridLayoutManager(getActivity(), 3));
@@ -472,6 +551,10 @@ public class MatchFragment extends Fragment {
                             boolean isChecked) {
                         String genre = buttonView.getText().toString();
                         matchViewModel.setExcludedGenreVal(genre, isChecked);
+                        if(isChecked)
+                            matchViewModel.getMP().addExcludedGenreToList(genre);
+                        else
+                            matchViewModel.getMP().removeExcludedGenreFromList(genre);
                     }
                 }
         );
@@ -524,6 +607,10 @@ public class MatchFragment extends Fragment {
                     }
                 }
         );
+
+        // Sets the UI to its former or default state
+        if(matchViewModel.getMP() != null)
+            setUI(matchViewModel.getMP());
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -534,7 +621,7 @@ public class MatchFragment extends Fragment {
             case R.id.preferences_menu:
                 Intent intent_pref = new Intent(getActivity(),
                         ViewAllSavedPreferencesActivity.class);
-                startActivity(intent_pref);
+                startActivityForResult(intent_pref, MP_REQUEST);
                 return true;
             case R.id.qr_code_menu:
                 Toast.makeText(
