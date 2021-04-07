@@ -25,7 +25,7 @@ public class AnalyticsViewModel extends AndroidViewModel {
     private MovieRepository movieRepository;
     private LiveData<List<MovieListing>> mAllMovies;
     private int totalMovies = 0;
-    private double averageRating = 0;
+    private double averageRating = 0.0;
     private List<Integer> decadeList = new ArrayList<>();
     private Map<Integer, Integer> decadeCounts = new HashMap<Integer, Integer>();
 
@@ -65,7 +65,8 @@ public class AnalyticsViewModel extends AndroidViewModel {
             }
         }
         totalMovies = count;
-        averageRating = ratingTotal/(double)count;
+        if(ratingTotal > 0)
+            averageRating = ratingTotal/(double)count;
     }
 
     public double getAverageRating() {

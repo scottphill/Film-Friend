@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:text="Release Year: "
+        android:text="@string/release_year_label"
         app:layout_constraintBottom_toTopOf="@id/match_header_included_genre"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="40dp"
-        android:text="Genre(s) I Want To See:"
+        android:text="@string/genre_s_i_want_to_see"
         app:layout_constraintBottom_toTopOf="@+id/included_genres_rellayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/match_header_release_date" />
@@ -115,7 +115,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="40dp"
-        android:text="Genre(s) I DON'T Want To See:"
+        android:text="@string/genres_i_dont_want_to_see"
         app:layout_constraintBottom_toTopOf="@+id/excluded_genres_rellayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/included_genres_rellayout" />
@@ -156,7 +156,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="Rating:"
+        android:text="@string/rating_label"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/excluded_genres_rellayout" />
 
@@ -165,7 +165,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Min"
+        android:text="@string/min"
         app:layout_constraintEnd_toEndOf="@+id/match_header_rating"
         app:layout_constraintStart_toStartOf="@+id/match_header_rating"
         app:layout_constraintTop_toBottomOf="@+id/match_header_rating" />
@@ -201,7 +201,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Max"
+        android:text="@string/max"
         app:layout_constraintEnd_toEndOf="@+id/match_header_rating"
         app:layout_constraintStart_toStartOf="@+id/match_header_rating"
         app:layout_constraintTop_toBottomOf="@+id/match_header_rating_min" />
@@ -249,7 +249,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:text="Watch Providers:"
+        android:text="@string/watch_providers"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/match_header_rating_max" />
 
@@ -271,21 +271,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="32dp"
-                android:text="Netflix" />
+                android:text="@string/netflix" />
 
             <CheckBox
                 android:id="@+id/wp_button_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="32dp"
-                android:text="Hulu" />
+                android:text="@string/hulu" />
 
             <CheckBox
                 android:id="@+id/wp_button_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="32dp"
-                android:text="Disney+" />
+                android:text="@string/disney" />
 
         </LinearLayout>
 
@@ -299,14 +299,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="32dp"
-                android:text="Prime Video" />
+                android:text="@string/prime_video" />
 
             <CheckBox
                 android:id="@+id/wp_button_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="32dp"
-                android:text="Google Play" />
+                android:text="@string/google_play" />
         </LinearLayout>
     </LinearLayout>
 
@@ -329,7 +329,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="72dp"
-        android:text="Runtime (mins): "
+        android:text="@string/runtime_mins"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/match_header_watch_providers" />
 
@@ -339,7 +339,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:ems="10"
-        android:hint="Min"
+        android:hint="@string/min"
         android:inputType="number"
         android:maxLength="3"
         app:layout_constraintBottom_toBottomOf="@+id/match_header_runtime"
@@ -352,7 +352,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:ems="10"
-        android:hint="Max"
+        android:hint="@string/max"
         android:inputType="number"
         android:maxLength="3"
         app:layout_constraintBottom_toBottomOf="@+id/runtime_min"
@@ -378,7 +378,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="48dp"
-        android:text="Vote Count: "
+        android:text="@string/vote_count_label_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/match_header_runtime"
         />
@@ -389,7 +389,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:ems="10"
-        android:hint="Min"
+        android:hint="@string/min"
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/match_header_vote_count"
         app:layout_constraintStart_toEndOf="@+id/match_header_vote_count"
@@ -401,7 +401,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:ems="10"
-        android:hint="Max"
+        android:hint="@string/max"
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/vote_count_min"
         app:layout_constraintStart_toEndOf="@+id/vote_count_min"
@@ -424,7 +424,7 @@
         android:id="@+id/match_header_languages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Language:"
+        android:text="@string/language_label"
         android:layout_marginStart="16dp"
         android:layout_marginTop="48dp"
         app:layout_constraintStart_toStartOf="parent"

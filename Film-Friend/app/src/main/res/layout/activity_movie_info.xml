@@ -62,7 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxEms="10"
-                    android:text="A Clockwork Orange"
+                    android:text="@string/movie_title"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -73,7 +73,7 @@
                     android:id="@+id/movie_info_release"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1971"
+                    android:text="@string/release_year"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/movie_info_title" />
 
@@ -81,7 +81,7 @@
                     android:id="@+id/rating_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rating:"
+                    android:text="@string/rating_label"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/movie_info_release" />
 
@@ -89,8 +89,8 @@
                     android:id="@+id/rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="4.1/5"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/rating"
                     app:layout_constraintStart_toEndOf="@+id/rating_label"
                     app:layout_constraintBaseline_toBaselineOf="@+id/rating_label"/>
 
@@ -98,7 +98,7 @@
                     android:id="@+id/vote_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Votes:"
+                    android:text="@string/votes_label"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/rating_label" />
@@ -107,8 +107,8 @@
                     android:id="@+id/vote_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="123"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/vote_count"
                     app:layout_constraintStart_toEndOf="@+id/vote_label"
                     app:layout_constraintBaseline_toBaselineOf="@+id/vote_label"/>
 

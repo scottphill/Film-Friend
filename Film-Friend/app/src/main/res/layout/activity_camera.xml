@@ -30,7 +30,7 @@
         android:layout_below="@+id/scanner_view"
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
-        android:text="Waiting for QR code..."
+        android:text="@string/waiting_for_qr_code"
         android:textColor="@android:color/black"
         />
 </RelativeLayout>

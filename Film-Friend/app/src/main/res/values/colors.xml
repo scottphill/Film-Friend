@@ -8,6 +8,14 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!--Film Friend Branding -->
+    <color name="FF_yellow">#F6D73F</color>
+    <color name="FF_yellowDark">#debf2a</color>
+    <color name="FF_orange">#F56529</color>
+    <color name="FF_orangeDark">#d64509</color>
+    <color name="FF_blue">#1669B5</color>
+    <color name="FF_black">#231f20</color>
+
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryLight">#64b5f6</color>
     <color name="colorPrimaryDark">#1976D2</color>

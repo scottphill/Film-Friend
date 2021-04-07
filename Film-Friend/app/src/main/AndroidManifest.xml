@@ -13,9 +13,9 @@
     <application
         android:name=".MovieApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_film_friend_round"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_film_friend_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FilmFriend">
         <activity

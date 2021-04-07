@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
             android:layout_gravity="center_vertical"
-            android:text="Find movies within:" />
+            android:text="@string/find_movies_within" />
 
         <Spinner
             android:id="@+id/spinner_miles"
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Kilometers" />
+            android:text="@string/kilometers" />
     </LinearLayout>
 
     <!--<TextView
