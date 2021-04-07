@@ -235,7 +235,7 @@ public class MatchViewModel extends AndroidViewModel {
                                 genres_to_api_id.put(genre.name, genre.id);
 
                             // Resets the genres in the current Match Preference
-                            MP.clearGenres();
+                            //MP.clearGenres();
                             MP.setGenres(results.genres);
                             genres.setValue(results.genres);
                         }

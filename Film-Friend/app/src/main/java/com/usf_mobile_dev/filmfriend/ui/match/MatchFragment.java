@@ -102,6 +102,7 @@ public class MatchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        matchViewModel = new ViewModelProvider(getActivity()).get(MatchViewModel.class);
     }
 
     @Override
@@ -113,7 +114,6 @@ public class MatchFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
-        matchViewModel = new ViewModelProvider(getActivity()).get(MatchViewModel.class);
         View root = inflater.inflate(R.layout.fragment_match, container, false);
 
         release_year_start = root.findViewById(R.id.release_date_start);
@@ -303,7 +303,6 @@ public class MatchFragment extends Fragment {
                         startActivity(savePreferencesIntent);
                     }
                 });
-
         return root;
     }
 
@@ -334,6 +333,11 @@ public class MatchFragment extends Fragment {
             MatchPreferences MPfromQR = (MatchPreferences) data.getSerializableExtra(
                     ViewAllSavedPreferencesActivity.INTENT_EXTRAS_MP);
             matchViewModel.setMP(MPfromQR);
+            //Need to set the map within the viewModel
+            /*for(int i = 0; i < MPfromQR.getNumSelectedExcludedGenres(); i++)
+            {
+                matchViewModel.setExcludedGenreVal(matchViewModel.getGenreID(MPfromQR.getExcluded_genres_list().get(i)), true);
+            }*/
             setUI(MPfromQR);
 
             try {
@@ -612,7 +616,7 @@ public class MatchFragment extends Fragment {
         );
 
         // Sets the UI to its default state
-        matchViewModel.setMP(new MatchPreferences());
+        matchViewModel.getMP().resetMatchPreference();
         setUI(matchViewModel.getMP());
     }
 
