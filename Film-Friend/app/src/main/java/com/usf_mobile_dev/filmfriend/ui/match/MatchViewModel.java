@@ -3,6 +3,7 @@ package com.usf_mobile_dev.filmfriend.ui.match;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.AndroidViewModel;
@@ -316,11 +317,11 @@ public class MatchViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<LanguageResponse>> getLanguages() {
-        return this.languages;
+        return languages;
     }
 
     public MutableLiveData<String> getSelectedLanguage() {
-        return this.selectedLanguage;
+        return selectedLanguage;
     }
 
     public String getLanguageFromID(String id) {
@@ -333,7 +334,9 @@ public class MatchViewModel extends AndroidViewModel {
     }
 
     public void setSelectedLanguage(String language) {
-        this.selectedLanguage.postValue(language);
+        selectedLanguage.postValue(language);
+        Log.d("LANGUAGE", "in setSelectedLanguage: " + language);
+        Log.d("LANGUAGE", "in setSelectedLanguage: " + languages_to_iso_id.get(language));
         this.MP.setSelected_language_code(languages_to_iso_id.get(language));
         this.MP.setSelected_language_name(language);
     }

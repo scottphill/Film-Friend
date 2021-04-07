@@ -579,6 +579,7 @@ public class MatchFragment extends Fragment {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         String language = buttonView.getText().toString();
+                        Log.d("LANGUAGE","in OnCheckedChanged " + language);
                         if(isChecked && !matchViewModel.getSelectedLanguage()
                                 .getValue()
                                 .equals(language)) {
@@ -594,6 +595,7 @@ public class MatchFragment extends Fragment {
                 new Observer<List<LanguageResponse>>() {
                     @Override
                     public void onChanged(List<LanguageResponse> languageResponses) {
+                        //Log.d("LANGUAGE","in OnChanged for languages");
                         languagesGridAdapter.setLanguages(languageResponses);
                     }
                 }
@@ -603,6 +605,7 @@ public class MatchFragment extends Fragment {
                 new Observer<String>() {
                     @Override
                     public void onChanged(String selectedLanguage) {
+                        Log.d("LANGUAGE","in OnChanged: " + selectedLanguage);
                         languagesGridAdapter.setSelectedLanguage(selectedLanguage);
                     }
                 }
