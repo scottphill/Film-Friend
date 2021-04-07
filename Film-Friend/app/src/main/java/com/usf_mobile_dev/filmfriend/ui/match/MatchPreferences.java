@@ -154,6 +154,40 @@ public class MatchPreferences implements Serializable {
         selected_language_name = mp.getSelected_language_name();
     }
 
+    public void resetMatchPreference()
+    {
+        release_year_start = 1850;
+        release_year_end = 2021;
+        rating_min = 0;
+        rating_max = 10;
+        runtime_min = 0;
+        runtime_max = 500;
+        vote_count_min = 20;
+        vote_count_max = 1000000;
+
+        //genres_to_include = new HashMap<Integer, Boolean>();
+        //Reset map without clearing the keys
+        for(Map.Entry mapElement : genres_to_include.entrySet()){
+            genres_to_include.put((Integer) mapElement.getKey(), false);
+        }
+        //genres_to_exclude = new HashMap<Integer, Boolean>();
+        //Reset map without clearing the keys
+        for(Map.Entry mapElement : genres_to_exclude.entrySet()){
+            genres_to_include.put((Integer) mapElement.getKey(), false);
+        }
+        watch_providers_to_include = new HashMap<Integer, Boolean>();
+        included_genres_list = new ArrayList<>();
+        excluded_genres_list = new ArrayList<>();
+        watch_providers_list = new ArrayList<>();
+        watch_providers_to_include.put(8, WP_CB_INIT);
+        watch_providers_to_include.put(15, WP_CB_INIT);
+        watch_providers_to_include.put(337, WP_CB_INIT);
+        watch_providers_to_include.put(9, WP_CB_INIT);
+        watch_providers_to_include.put(3, WP_CB_INIT);
+        selected_language_code = "en";
+        selected_language_name = "English";
+        preference_title = "EXAMPLE TITLE";
+    }
     public String getIncludedGenresString() {
         return genres_to_include.entrySet().stream()
                 .filter(Map.Entry::getValue)

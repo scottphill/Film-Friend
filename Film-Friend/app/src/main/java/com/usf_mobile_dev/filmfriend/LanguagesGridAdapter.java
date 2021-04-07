@@ -1,5 +1,6 @@
 package com.usf_mobile_dev.filmfriend;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,12 +53,16 @@ public class LanguagesGridAdapter
             @NonNull LanguagesGridAdapter.ViewHolder holder,
             int position
     ) {
-        if(selectedLanguage.equals(languages.get(position).english_name))
+        holder.getRadioButton().setText(languages.get(position).english_name);
+        holder.getRadioButton().setOnCheckedChangeListener(checkedChangeListener);
+        //Log.d("LANGUAGE", "in onBindViewHolder: " + String.valueOf(position));
+        if(selectedLanguage.equals(languages.get(position).english_name)) {
+            Log.d("LANGUAGE", "in onBindViewHolder: " + position);
+            Log.d("LANGUAGE", "in onBindViewHolder: " + languages.get(position).english_name);
             holder.getRadioButton().setChecked(true);
+        }
         else
             holder.getRadioButton().setChecked(false);
-        holder.getRadioButton().setText(languages.get(position).english_name);
-        holder.getRadioButton().setOnCheckedChangeListener(this.checkedChangeListener);
     }
 
     @Override
