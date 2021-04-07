@@ -18,7 +18,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:text="Release Years" />
+                android:text="@string/release_years_label" />
 
             <TextView
                 android:id="@+id/txtViewReleaseYearStart"
@@ -53,7 +53,7 @@
                 android:layout_margin="8dp"
                 android:gravity="start"
                 android:layout_height="wrap_content"
-                android:text="Chosen Genres:" />
+                android:text="@string/chosen_genres" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chosen_genres_recyclerview"
@@ -66,7 +66,7 @@
             android:layout_margin="8dp"
             android:gravity="start"
             android:layout_height="wrap_content"
-            android:text="Genres Not Wanted:" />
+            android:text="@string/genres_not_wanted" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rejected_genres_recyclerview"
@@ -85,7 +85,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:text="Ratings Range:" />
+                android:text="@string/ratings_range" />
 
             <TextView
                 android:id="@+id/txtViewRatingLowerBound"
@@ -120,7 +120,7 @@
                 android:layout_margin="8dp"
                 android:gravity="start"
                 android:layout_height="wrap_content"
-                android:text="Chosen Watch Providers:" />
+                android:text="@string/chosen_watch_providers" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/watch_providers_recyclerview"
@@ -139,7 +139,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:text="Runtime Range (in minutes):" />
+                android:text="@string/runtime_range_in_minutes" />
 
             <TextView
                 android:id="@+id/txtViewRuntimeLowerBound"
@@ -180,7 +180,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:text="Vote Count Range:" />
+                android:text="@string/vote_count_range" />
 
             <TextView
                 android:id="@+id/txtViewVoteCountLowerBound"
@@ -221,7 +221,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:text="Chosen Language:" />
+                android:text="@string/chosen_language" />
 
             <TextView
                 android:id="@+id/txtViewChosenLanguage"

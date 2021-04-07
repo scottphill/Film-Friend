@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_weight="4"
-            android:text="Match Preferences Name" />
+            android:text="@string/match_preferences_name" />
 
         <EditText
             android:id="@+id/preferences_name_edit_text"
@@ -42,6 +42,6 @@
         android:layout_height="0dp"
         android:layout_margin="8dp"
         android:layout_weight="1"
-        android:text="Save Match Preferences" />
+        android:text="@string/save_match_preferences" />
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.usf_mobile_dev.filmfriend.ui.history;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.usf_mobile_dev.filmfriend.HistoryRecyclerViewAdapter;
 import com.usf_mobile_dev.filmfriend.Movie;
 import com.usf_mobile_dev.filmfriend.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
+import com.usf_mobile_dev.filmfriend.Tutorial;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoViewModel;
 
@@ -56,6 +58,7 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.history_menu, menu);
+        inflater.inflate(R.menu.tutorial_menu, menu);
     }
 
     @Override
@@ -127,13 +130,24 @@ public class HistoryFragment extends Fragment {
             }
         });
     }
+
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.analytics_menu) {
-            Intent intent_pref = new Intent(getActivity(),
-                    AnalyticsActivity.class);
-            startActivity(intent_pref);
-            return true;
+
+        switch (item.getItemId()) {
+            case R.id.analytics_menu:
+                Intent intent_pref = new Intent(getActivity(),
+                        AnalyticsActivity.class);
+                startActivity(intent_pref);
+                return true;
+
+            case R.id.tutorial:
+                Tutorial t = new Tutorial();
+                t.launchPageTutorial(this.getContext(), "History");
+                return true;
+            default:
+                // do nothing.
         }
         return super.onOptionsItemSelected(item);
     }

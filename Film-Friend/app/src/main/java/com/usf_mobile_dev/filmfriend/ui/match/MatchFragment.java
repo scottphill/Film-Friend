@@ -1,5 +1,6 @@
 package com.usf_mobile_dev.filmfriend.ui.match;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,6 +35,7 @@ import com.usf_mobile_dev.filmfriend.LanguagesGridAdapter;
 import com.usf_mobile_dev.filmfriend.R;
 import com.usf_mobile_dev.filmfriend.SaveMatchPreferencesActivity;
 import com.usf_mobile_dev.filmfriend.SaveMatchPreferencesViewModel;
+import com.usf_mobile_dev.filmfriend.Tutorial;
 import com.usf_mobile_dev.filmfriend.api.GenreResponse;
 import com.usf_mobile_dev.filmfriend.api.LanguageResponse;
 import com.usf_mobile_dev.filmfriend.ui.qr.MPJSONHandling;
@@ -68,10 +71,15 @@ public class MatchFragment extends Fragment {
     final private int DEF_VOTE_COUNT_MIN = 0;
     final private int DEF_VOTE_COUNT_MAX = 10000;
 
+    final private String Intent_QR_CurrentMatchPreference =
+            "com.usf_mobile_dev.filmfriend.ui.qr.CurrentMatchPreference";
+    final private String Intent_QR_NewMatchPreferencesFromQR =
+            "com.usf_mobile_dev.filmfriend.ui.qr.NewMatchPreferencesFromQR";
+  
     // Unique tag for the intent reply
     public static final int QR_REQUEST = 1;
     public static final int MP_REQUEST = 2;
-
+  
     // Made these private variables so they can be put into an intent for QR
     private EditText release_year_start;
     private EditText release_year_end;
@@ -87,18 +95,19 @@ public class MatchFragment extends Fragment {
     private EditText vote_count_min;
     private EditText vote_count_max;
 
-    private static MatchPreferences MPfromQR;
+    private TextView label_rating_min;
+    private TextView label_rating_max;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        MPfromQR = null;
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.match_nav_menu, menu);
+        inflater.inflate(R.menu.tutorial_menu, menu);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -113,8 +122,11 @@ public class MatchFragment extends Fragment {
         rating_min = root.findViewById(R.id.seekBar_rating_min);
         rating_max = root.findViewById(R.id.seekBar_rating_max);
 
+        label_rating_min = root.findViewById(R.id.label_rating_min);
         // Ensures that min is always less than max.
         rating_min.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
+
+            @SuppressLint("DefaultLocale")
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -126,22 +138,23 @@ public class MatchFragment extends Fragment {
                 if (rating_max.getProgress() <= progress) {
                     rating_max.setProgress(progress + 1);
                 }
+
+                // Updates the label for rating_min so the user can see where the bar is at.
+                label_rating_min.setText(String.format("%.1f",
+                        ((double) seekBar.getProgress() / seekBar.getMax() * DEF_RATING_MAX)));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(
-                        getActivity(),
-                        String.format("%.1f",
-                                ((double) seekBar.getProgress() / seekBar.getMax() * DEF_HIGHEST_RATING)),
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
+            public void onStopTrackingTouch(SeekBar seekBar)  { }
+
         }));
 
+        label_rating_max = root.findViewById(R.id.label_rating_max);
         // Ensures that max is always greater than min.
         rating_max.setOnSeekBarChangeListener((new SeekBar.OnSeekBarChangeListener() {
+
+            @SuppressLint("DefaultLocale")
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -153,18 +166,16 @@ public class MatchFragment extends Fragment {
                 if (rating_min.getProgress() >= progress) {
                     rating_min.setProgress(progress - 1);
                 }
+
+                // Updates the label for rating_max so the user can see where the bar is at.
+                label_rating_max.setText(String.format("%.1f",
+                        ((double) seekBar.getProgress() /  seekBar.getMax()) * DEF_RATING_MAX));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { }
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(
-                        getActivity(),
-                        String.format("%.1f",
-                                ((double) seekBar.getProgress() /  seekBar.getMax()) * DEF_HIGHEST_RATING),
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+          
         }));
 
         wp_cb_0 = (CheckBox)root.findViewById(R.id.wp_button_0);
@@ -265,10 +276,11 @@ public class MatchFragment extends Fragment {
                         Toast.LENGTH_SHORT
                 ).show();
 
-                Intent intent = new Intent(view.getContext(), QRGenerateActivity.class);
+                Intent intent = new Intent(view.getContext(),
+                        QRGenerateActivity.class);
 
                 intent.putExtra(
-                        "com.usf_mobile_dev.filmfriend.ui.qr.CurrentMatchPreference",
+                        Intent_QR_CurrentMatchPreference,
                         matchViewModel.getMP());
 
                 startActivity(intent);
@@ -301,27 +313,24 @@ public class MatchFragment extends Fragment {
 
         // Test for the right intent reply.
         if (requestCode == QR_REQUEST && resultCode == Activity.RESULT_OK) {
-            //*
-            Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
+
+            //Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
             MatchPreferences MPfromQR = (MatchPreferences) data.getSerializableExtra(
                     QRCameraActivity.INTENT_EXTRAS_QR_MP);
             matchViewModel.setMP(MPfromQR);
             setUI(MPfromQR);
 
             try {
-                Log.d("Setting Match UI", MPJSONHandling.mpToPrettyJSON(MPfromQR));
+                Log.d("Setting Match UI", MPJSONHandling.mpToPrettyJSON(MP_from_QR));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
 
-            if (MPfromQR != null) {
-                setUI(MPfromQR);
-            }
-             //*/
+            setUI(MP_from_QR);
         }
         else if (requestCode == MP_REQUEST && resultCode == Activity.RESULT_OK) {
             //*
-            Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
             MatchPreferences MPfromQR = (MatchPreferences) data.getSerializableExtra(
                     ViewAllSavedPreferencesActivity.INTENT_EXTRAS_MP);
             matchViewModel.setMP(MPfromQR);
@@ -604,8 +613,10 @@ public class MatchFragment extends Fragment {
             setUI(matchViewModel.getMP());
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.preferences_menu:
                 Intent intent_pref = new Intent(getActivity(),
@@ -620,6 +631,10 @@ public class MatchFragment extends Fragment {
                 ).show();
                 Intent intent = new Intent(getActivity(), QRCameraActivity.class);
                 startActivityForResult(intent, QR_REQUEST);
+                return true;
+            case R.id.tutorial:
+                Tutorial t = new Tutorial();
+                t.launchPageTutorial(this.getContext(), "Match");
                 return true;
             default:
                 // Do nothing

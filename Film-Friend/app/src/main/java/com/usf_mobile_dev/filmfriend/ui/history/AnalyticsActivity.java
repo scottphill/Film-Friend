@@ -69,7 +69,7 @@ public class AnalyticsActivity extends AppCompatActivity {
                 analyticsViewModel.setStatistics(Objects.requireNonNull(movies));
                 decadeList = analyticsViewModel.getDecadeList();
                 totalMovies.setText(String.valueOf(analyticsViewModel.getTotalMovies()));
-                averageRating.setText(String.valueOf(formatter.format(analyticsViewModel.getAverageRating())));
+                averageRating.setText(formatter.format(analyticsViewModel.getAverageRating()));
                 entries.clear();
                 for(int i = 0; i < decadeList.size(); i++)
                 {
@@ -82,7 +82,7 @@ public class AnalyticsActivity extends AppCompatActivity {
                 entries.add(new BarEntry(3f, 50f));*/
                 BarDataSet set = new BarDataSet(entries, "Movies by Decade");
 
-                set.setColors(new int[] {R.color.purple_500}, context);
+                set.setColors(new int[] {R.color.FF_blue}, context);
                 BarData data = new BarData(set);
                 data.setValueTextSize((float)18.0);
                 data.setValueFormatter(new ValueFormatter() {
@@ -103,7 +103,7 @@ public class AnalyticsActivity extends AppCompatActivity {
                 x_axis.setPosition(XAxis.XAxisPosition.BOTTOM);
                 x_axis.setDrawGridLines(false);
                 x_axis.setGranularity(1);
-                x_axis.setTextSize(16);
+                x_axis.setTextSize(12);
                 //x_axis.setDrawLabels(true);
                 Log.d("BAR_CHART", "formatting label");
                 x_axis.setValueFormatter(new ValueFormatter() {
