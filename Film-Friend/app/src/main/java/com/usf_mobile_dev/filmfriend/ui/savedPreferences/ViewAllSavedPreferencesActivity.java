@@ -1,6 +1,8 @@
 package com.usf_mobile_dev.filmfriend.ui.savedPreferences;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,7 +38,8 @@ import com.usf_mobile_dev.filmfriend.ui.qr.QRGenerateActivity;
 import java.util.List;
 
 
-public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
+public class ViewAllSavedPreferencesActivity extends AppCompatActivity
+        implements DeletePreferencesDialogFragment.DeletePreferencesDialogListener {
 
     public static final int VIEW_MP_REQUEST = 45;
     public static final String INTENT_EXTRAS_MP = "com.usf_mobile_dev.filmfriend.ui.savedPreferences.ViewAllSavedPreferencesActivity.intent_extras_mp";
@@ -45,7 +49,7 @@ public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
     private ViewAllSavedPreferencesViewModel viewModel;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
@@ -70,15 +74,7 @@ public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
                     //   match preferences from the room database.
                     @Override
                     public void onClick(View v) {
-                        viewModel.deleteMatchPreferences(
-                                (MatchPreferences) (v.getTag())
-                        );
-
-                        Toast.makeText(
-                                v.getContext(),
-                                "Match Preferences Deleted!",
-                                Toast.LENGTH_SHORT
-                        ).show();
+                        launchDeleteDialog((MatchPreferences) v.getTag());
                     }});
 
         // Connect the adapter with the recycler view.
@@ -129,7 +125,17 @@ public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
                 INTENT_EXTRAS_MP,
                 matchPreferences
         );
-        startActivityForResult(intent_view_mp, VIEW_MP_REQUEST);
+        ((AppCompatActivity)this).startActivityForResult(intent_view_mp,
+                VIEW_MP_REQUEST);
+    }
+
+    public void launchDeleteDialog(MatchPreferences preferences) {
+        DeletePreferencesDialogFragment deleteDialog = new DeletePreferencesDialogFragment();
+        deleteDialog.setPreferences(preferences);
+        deleteDialog.show(
+                getSupportFragmentManager(),
+                "DeletePreferencesDialogFragment"
+        );
     }
 
     @Override
@@ -151,5 +157,19 @@ public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onDialogPositiveClick(DeletePreferencesDialogFragment dialog) {
+        viewModel.deleteMatchPreferences(dialog.getPreferences());
 
+        Toast.makeText(
+                getApplication(),
+                "Match Preferences Deleted",
+                Toast.LENGTH_SHORT
+        ).show();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DeletePreferencesDialogFragment dialog) {
+
+    }
 }

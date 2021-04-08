@@ -99,4 +99,8 @@
     <string name="vote_count_label_2">Vote Count:</string>
     <string name="language_label">Language:</string>
     <string name="empty_string" />
+    <string name="confirm_delete_mp">Yes DELETE</string>
+    <string name="delete_mp_title">Delete Movie Match Preferences</string>
+    <string name="deny_delete_mp">No</string>
+    <string name="preferences_delete_toast">Match Preferences Deleted!</string>
 </resources>
