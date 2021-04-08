@@ -14,8 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
@@ -29,13 +27,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.installations.FirebaseInstallations;
-import com.usf_mobile_dev.filmfriend.Movie;
-import com.usf_mobile_dev.filmfriend.MovieListing;
-import com.usf_mobile_dev.filmfriend.MovieRepository;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.Movie;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.MovieListing;
+import com.usf_mobile_dev.filmfriend.data_sources.repository.MovieRepository;
 import com.usf_mobile_dev.filmfriend.R;
-import com.usf_mobile_dev.filmfriend.RoomCallback;
-import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
-import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
+import com.usf_mobile_dev.filmfriend.data_sources.local_db.RoomCallback;
+import com.usf_mobile_dev.filmfriend.data_sources.tmdb_api.DiscoverResponse;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.MatchPreferences;
 
 import org.jetbrains.annotations.NotNull;
 

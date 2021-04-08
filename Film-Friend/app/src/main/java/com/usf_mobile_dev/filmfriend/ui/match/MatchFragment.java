@@ -30,18 +30,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.usf_mobile_dev.filmfriend.GenresGridAdapter;
-import com.usf_mobile_dev.filmfriend.LanguagesGridAdapter;
+import com.usf_mobile_dev.filmfriend.ui.recycler_adapters.GenresGridAdapter;
+import com.usf_mobile_dev.filmfriend.ui.recycler_adapters.LanguagesGridAdapter;
 import com.usf_mobile_dev.filmfriend.R;
-import com.usf_mobile_dev.filmfriend.SaveMatchPreferencesActivity;
-import com.usf_mobile_dev.filmfriend.SaveMatchPreferencesViewModel;
-import com.usf_mobile_dev.filmfriend.Tutorial;
-import com.usf_mobile_dev.filmfriend.api.GenreResponse;
-import com.usf_mobile_dev.filmfriend.api.LanguageResponse;
-import com.usf_mobile_dev.filmfriend.ui.qr.MPJSONHandling;
+import com.usf_mobile_dev.filmfriend.ui.save_match_preferences.SaveMatchPreferencesActivity;
+import com.usf_mobile_dev.filmfriend.ui.save_match_preferences.SaveMatchPreferencesViewModel;
+import com.usf_mobile_dev.filmfriend.ui.tutorial_popups.Tutorial;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.MatchPreferences;
+import com.usf_mobile_dev.filmfriend.data_sources.tmdb_api.GenreResponse;
+import com.usf_mobile_dev.filmfriend.data_sources.tmdb_api.LanguageResponse;
+import com.usf_mobile_dev.filmfriend.utils.MPJSONHandling;
 import com.usf_mobile_dev.filmfriend.ui.qr.QRCameraActivity;
 import com.usf_mobile_dev.filmfriend.ui.qr.QRGenerateActivity;
-import com.usf_mobile_dev.filmfriend.ui.savedPreferences.ViewAllSavedPreferencesActivity;
+import com.usf_mobile_dev.filmfriend.ui.saved_preferences.ViewAllSavedPreferencesActivity;
 
 import java.util.Arrays;
 import java.util.HashMap;

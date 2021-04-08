@@ -1,17 +1,13 @@
 package com.usf_mobile_dev.filmfriend.ui.history;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import com.usf_mobile_dev.filmfriend.Movie;
-import com.usf_mobile_dev.filmfriend.MovieListing;
-import com.usf_mobile_dev.filmfriend.MovieRepository;
-import com.usf_mobile_dev.filmfriend.RepositoryCallback;
-import com.usf_mobile_dev.filmfriend.RoomCallback;
-import com.usf_mobile_dev.filmfriend.ThreadResult;
+
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.MovieListing;
+import com.usf_mobile_dev.filmfriend.data_sources.repository.MovieRepository;
 
 import java.util.List;
 

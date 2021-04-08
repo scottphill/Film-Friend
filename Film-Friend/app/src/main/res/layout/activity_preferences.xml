@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.savedPreferences.ViewAllSavedPreferencesActivity"
+    tools:context=".ui.saved_preferences.ViewAllSavedPreferencesActivity"
     >
 
     <androidx.recyclerview.widget.RecyclerView

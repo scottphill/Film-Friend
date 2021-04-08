@@ -1,11 +1,8 @@
 package com.usf_mobile_dev.filmfriend.ui.discover;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,43 +14,25 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
-import com.firebase.geofire.GeoQueryEventListener;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.usf_mobile_dev.filmfriend.DiscoverRecyclerAdapter;
-import com.usf_mobile_dev.filmfriend.Movie;
-import com.usf_mobile_dev.filmfriend.MovieListing;
+import com.usf_mobile_dev.filmfriend.ui.recycler_adapters.DiscoverRecyclerAdapter;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.Movie;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
-import com.usf_mobile_dev.filmfriend.Tutorial;
+import com.usf_mobile_dev.filmfriend.ui.tutorial_popups.Tutorial;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoViewModel;
-import com.usf_mobile_dev.filmfriend.ui.qr.QRCameraActivity;
-import com.usf_mobile_dev.filmfriend.ui.savedPreferences.ViewAllSavedPreferencesActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class DiscoverFragment extends Fragment {
 

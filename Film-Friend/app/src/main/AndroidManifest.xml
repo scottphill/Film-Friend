@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FilmFriend">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.FilmFriend_NoBar">
             <intent-filter>
@@ -33,20 +33,12 @@
 
         </activity>
         <activity
-            android:name=".ui.savedPreferences.ViewAllSavedPreferencesActivity"
+            android:name=".ui.saved_preferences.ViewAllSavedPreferencesActivity"
             android:label="Preferences List"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
-        <activity
-            android:name=".ui.qr.QrActivity"
-            android:label="QR Page"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".ui.MainActivity" />
         </activity>
         <activity
             android:name=".ui.qr.QRCameraActivity"
@@ -61,15 +53,15 @@
             android:label="Analytics Page">
         </activity>
         <activity
-            android:name=".SaveMatchPreferencesActivity"
+            android:name=".ui.save_match_preferences.SaveMatchPreferencesActivity"
             android:label="Save Your Match Preferences!"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".ui.MainActivity" />
         </activity>
         <activity
-            android:name=".ViewMatchPreferencesActivity"
+            android:name=".ui.view_match_preferences.ViewMatchPreferencesActivity"
             android:label="Match Preferences">
         </activity>
     </application>

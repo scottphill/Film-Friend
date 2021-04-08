@@ -10,12 +10,13 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.usf_mobile_dev.filmfriend.Movie;
-import com.usf_mobile_dev.filmfriend.MovieRepository;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.Movie;
+import com.usf_mobile_dev.filmfriend.data_sources.repository.MovieRepository;
 import com.usf_mobile_dev.filmfriend.R;
-import com.usf_mobile_dev.filmfriend.api.DiscoverResponse;
-import com.usf_mobile_dev.filmfriend.api.GenreResponse;
-import com.usf_mobile_dev.filmfriend.api.LanguageResponse;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.MatchPreferences;
+import com.usf_mobile_dev.filmfriend.data_sources.tmdb_api.DiscoverResponse;
+import com.usf_mobile_dev.filmfriend.data_sources.tmdb_api.GenreResponse;
+import com.usf_mobile_dev.filmfriend.data_sources.tmdb_api.LanguageResponse;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoViewModel;
 

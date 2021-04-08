@@ -23,11 +23,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.usf_mobile_dev.filmfriend.HistoryRecyclerViewAdapter;
-import com.usf_mobile_dev.filmfriend.Movie;
-import com.usf_mobile_dev.filmfriend.MovieListing;
+import com.usf_mobile_dev.filmfriend.ui.recycler_adapters.HistoryRecyclerViewAdapter;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.Movie;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
-import com.usf_mobile_dev.filmfriend.Tutorial;
+import com.usf_mobile_dev.filmfriend.ui.tutorial_popups.Tutorial;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoActivity;
 import com.usf_mobile_dev.filmfriend.ui.movieInfo.MovieInfoViewModel;
 

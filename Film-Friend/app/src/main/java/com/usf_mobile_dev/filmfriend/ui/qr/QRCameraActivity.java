@@ -1,8 +1,6 @@
 package com.usf_mobile_dev.filmfriend.ui.qr;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -28,12 +25,12 @@ import com.budiyev.android.codescanner.ScanMode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.zxing.Result;
 
-import com.usf_mobile_dev.filmfriend.MainActivity;
 import com.usf_mobile_dev.filmfriend.R;
-import com.usf_mobile_dev.filmfriend.Tutorial;
-import com.usf_mobile_dev.filmfriend.SaveMatchPreferencesActivity;
-import com.usf_mobile_dev.filmfriend.SaveMatchPreferencesViewModel;
-import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
+import com.usf_mobile_dev.filmfriend.ui.tutorial_popups.Tutorial;
+import com.usf_mobile_dev.filmfriend.ui.save_match_preferences.SaveMatchPreferencesActivity;
+import com.usf_mobile_dev.filmfriend.ui.save_match_preferences.SaveMatchPreferencesViewModel;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.MatchPreferences;
+import com.usf_mobile_dev.filmfriend.utils.MPJSONHandling;
 
 import org.jetbrains.annotations.NotNull;
 

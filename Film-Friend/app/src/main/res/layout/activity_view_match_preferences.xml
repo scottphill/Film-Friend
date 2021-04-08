@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SaveMatchPreferencesActivity">
+    tools:context=".ui.save_match_preferences.SaveMatchPreferencesActivity">
 
     <TextView
         android:id="@+id/match_preferences_title_txt_view"

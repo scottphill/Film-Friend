@@ -22,13 +22,11 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.usf_mobile_dev.filmfriend.R;
-import com.usf_mobile_dev.filmfriend.Tutorial;
-import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.usf_mobile_dev.filmfriend.ui.tutorial_popups.Tutorial;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.MatchPreferences;
+import com.usf_mobile_dev.filmfriend.utils.MPJSONHandling;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 public class QRGenerateActivity extends AppCompatActivity {
 

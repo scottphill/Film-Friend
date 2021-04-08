@@ -1,18 +1,11 @@
 package com.usf_mobile_dev.filmfriend.ui.movieInfo;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,29 +13,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.installations.FirebaseInstallations;
-import com.usf_mobile_dev.filmfriend.Movie;
-import com.usf_mobile_dev.filmfriend.MovieListing;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.Movie;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.MovieListing;
 import com.usf_mobile_dev.filmfriend.R;
-import com.usf_mobile_dev.filmfriend.RoomCallback;
-import com.usf_mobile_dev.filmfriend.ui.match.MatchPreferences;
-import com.usf_mobile_dev.filmfriend.ui.history.HistoryViewModel;
+import com.usf_mobile_dev.filmfriend.data_sources.local_db.RoomCallback;
+import com.usf_mobile_dev.filmfriend.data_sources.data_classes.MatchPreferences;
+
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Date;
 import java.util.List;
-
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 
 public class MovieInfoActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
