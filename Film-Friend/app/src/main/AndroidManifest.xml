@@ -34,7 +34,7 @@
         </activity>
         <activity
             android:name=".ui.savedPreferences.ViewAllSavedPreferencesActivity"
-            android:label="Preference Activity"
+            android:label="Preferences List"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -42,7 +42,7 @@
         </activity>
         <activity
             android:name=".ui.qr.QrActivity"
-            android:label="QR Activity"
+            android:label="QR Page"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -58,7 +58,7 @@
         </activity>
         <activity
             android:name=".ui.history.AnalyticsActivity"
-            android:label="Analytics Activity">
+            android:label="Analytics Page">
         </activity>
         <activity
             android:name=".SaveMatchPreferencesActivity"

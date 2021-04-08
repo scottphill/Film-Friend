@@ -23,7 +23,7 @@ public class Tutorial {
             case "Match":
                 popUp.setLayout( .7, .8);
                 popUp.setHeading(title);
-                popUp.setText("This page offers will match \n" +
+                popUp.setText("This page offers filters for selecting movies.\n" +
                         "There are a number major buttons:\n\n" +
                         "Camera Icon (Top Right): This opens your phones camera for scanning QR codes\n\n" +
                         "List Icon (Next to Camera): This takes you to your saved preferences.\n" +
@@ -36,17 +36,21 @@ public class Tutorial {
                         "filters!\n");
                 break;
             case "History":
-                popUp.setLayout( .7, .8);
+                popUp.setLayout( .4, .8);
                 popUp.setHeading(title);
                 popUp.setText("Each time you view a movie, you can see that movie here.\n" +
-                        "By changing the filter, you can show all of the movies, or just" +
-                        "the movies in your Watch List.\n");
+                        "By changing the filter, you can show all of the movies, or just " +
+                        "the movies in your Watch List.\n\n" +
+                        "Graph Icon (Top Right): This opens your app's Analytics page. " +
+                        "This page allows you to view your personal trends in infographic form.");
                 break;
             case "Discover":
-                popUp.setLayout( .7, .8);
+                popUp.setLayout( .4, .8);
                 popUp.setHeading(title);
-                popUp.setText("Movies that other users have added to their Watch List appear here.\n" +
-                        "You can increase the search range by changing the drop down at the top of the page.\n");
+                popUp.setText("Movies that other users have added to their Watch List " +
+                        "appear here.\n" +
+                        "You can increase the search range by changing the drop down at the " +
+                        "top of the page.\n");
                 break;
             case "Preferences List":
                 popUp.setLayout( .4, .8);
@@ -135,9 +139,10 @@ public class Tutorial {
                 popUp.setLayout( .4, .8);
                 popUp.setHeading("Vote Count");
                 popUp.setText(
-                        "Enter in the vote count range for your movie." +
-                        "This represents how many people have rated this movie." +
-                        "We recommend keeping the minimum at 20.\n" +
+                        "Enter in the vote count range for your movie. " +
+                        "This represents how many people have rated this movie. " +
+                        "We recommend the minimum being no lower than 20 " +
+                        "to keep the rating is as accurate as possible.\n" +
                         "Leave blank if you do not wish to have this affect your results.\n");
                 break;
             case R.id.tut_button_language:
