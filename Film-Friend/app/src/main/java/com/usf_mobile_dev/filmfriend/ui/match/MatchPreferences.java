@@ -347,7 +347,8 @@ public class MatchPreferences implements Serializable {
     }
 
     public void addIncludedGenreToList(String genre) {
-        this.included_genres_list.add(genre);
+        if(!this.included_genres_list.contains(genre))
+            this.included_genres_list.add(genre);
     }
 
     public void removeIncludedGenreFromList(String genre) {
@@ -363,7 +364,8 @@ public class MatchPreferences implements Serializable {
     }
 
     public void addExcludedGenreToList(String genre) {
-        this.excluded_genres_list.add(genre);
+        if(!this.excluded_genres_list.contains(genre))
+            this.excluded_genres_list.add(genre);
     }
 
     public void removeExcludedGenreFromList(String genre) {
@@ -379,7 +381,8 @@ public class MatchPreferences implements Serializable {
     }
 
     public void addWatchProviderToList(String watch_provider) {
-        this.watch_providers_list.add(watch_provider);
+        if(!this.watch_providers_list.contains(watch_provider))
+            this.watch_providers_list.add(watch_provider);
     }
 
     public void removeWatchProviderFromList(String watch_provider) {

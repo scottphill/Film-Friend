@@ -94,7 +94,6 @@ public class MatchFragment extends Fragment {
     private EditText runtime_max;
     private EditText vote_count_min;
     private EditText vote_count_max;
-
     private TextView label_rating_min;
     private TextView label_rating_max;
 
