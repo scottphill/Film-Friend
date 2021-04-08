@@ -139,9 +139,10 @@ public class Tutorial {
                 popUp.setLayout( .4, .8);
                 popUp.setHeading("Vote Count");
                 popUp.setText(
-                        "Enter in the vote count range for your movie." +
-                        "This represents how many people have rated this movie." +
-                        "We recommend keeping the minimum at 20.\n" +
+                        "Enter in the vote count range for your movie. " +
+                        "This represents how many people have rated this movie. " +
+                        "We recommend the minimum being no lower than 20 " +
+                        "to keep the rating is as accurate as possible.\n" +
                         "Leave blank if you do not wish to have this affect your results.\n");
                 break;
             case R.id.tut_button_language:
