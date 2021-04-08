@@ -34,7 +34,7 @@
         </activity>
         <activity
             android:name=".ui.savedPreferences.ViewAllSavedPreferencesActivity"
-            android:label="Preference Activity"
+            android:label="Preferences List"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

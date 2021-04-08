@@ -50,6 +50,7 @@ public class QRCameraActivity extends AppCompatActivity {
         setContentView(R.layout.activity_camera);
 
         setUpPermissions();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         CodeScannerView scannerView = findViewById(R.id.scanner_view);
         mCodeScanner = new CodeScanner(this, scannerView);
@@ -167,7 +168,11 @@ public class QRCameraActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.tutorial) {
             Tutorial t = new Tutorial();
-        t.launchPageTutorial(this, "QR Camera");
+            t.launchPageTutorial(this, "QR Camera");
+            return true;
+        }
+        if (item.getItemId() == R.id.home) {
+            this.finish();
             return true;
         }
 

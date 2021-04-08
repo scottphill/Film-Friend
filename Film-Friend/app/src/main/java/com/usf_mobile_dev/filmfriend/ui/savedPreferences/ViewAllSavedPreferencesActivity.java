@@ -138,8 +138,8 @@ public class ViewAllSavedPreferencesActivity extends AppCompatActivity {
 
         // Test for the right intent reply.
         if (requestCode == VIEW_MP_REQUEST && resultCode == Activity.RESULT_OK) {
-            //*
-            Toast.makeText(this, "MP Has Been Passed!", Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(this, "Preference Imported!", Toast.LENGTH_SHORT).show();
             MatchPreferences mp = (MatchPreferences) data.getSerializableExtra(
                     INTENT_EXTRAS_MP);
 
