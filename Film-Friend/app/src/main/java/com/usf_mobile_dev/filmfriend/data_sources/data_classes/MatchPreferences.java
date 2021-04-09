@@ -172,7 +172,7 @@ public class MatchPreferences implements Serializable {
         //genres_to_exclude = new HashMap<Integer, Boolean>();
         //Reset map without clearing the keys
         for(Map.Entry mapElement : genres_to_exclude.entrySet()){
-            genres_to_include.put((Integer) mapElement.getKey(), false);
+            genres_to_exclude.put((Integer) mapElement.getKey(), false);
         }
         watch_providers_to_include = new HashMap<Integer, Boolean>();
         included_genres_list = new ArrayList<>();
