@@ -1,3 +1,2 @@
-# Mobile-Dev-Project
-Semester Project for COP4656 (Software Development for Mobile Devices)\
-Will change repo name later...
+# Film Friend
+An Android app that picks a movie for you based on your preferences.
